@@ -1,0 +1,196 @@
+﻿@using Entity.CentralModels
+@model List<UvAspnetUserRole>
+
+
+<div class="card bg-info-subtle shadow-none position-relative overflow-hidden mb-4">
+    <div class="card-body px-4 py-3">
+        <div class="row align-items-center">
+            <div class="col-9">
+                <h4 class="fw-semibold mb-8">Administración de Usuarios</h4>
+                <nav aria-label="breadcrumb">
+                    <ol class="breadcrumb">
+                        <li class="breadcrumb-item">
+                            <a class="text-muted text-decoration-none" asp-action="Index" asp-controller="Home">Inicio</a>
+                        </li>
+                        <li class="breadcrumb-item">
+                            <a class="text-muted text-decoration-none" asp-action="ImportarUsuarios" asp-controller="Usuario">Importar</a>
+                        </li>
+                        <li class="breadcrumb-item" aria-current="page">Lista de usuarios</li>
+                    </ol>
+                </nav>
+            </div>
+            <div class="col-3">
+                <div class="text-center mb-n5">
+                    <img src="../assets/images/breadcrumb/ChatBc.png"
+                         alt=""
+                         class="img-fluid mb-n4" />
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="col-md-3 ms-auto mb-2">
+    <div class="input-group">
+        <input type="text" class="form-control" aria-label="Text input with segmented dropdown button" id="search">
+        <button type="button" class="btn bg-primary-subtle text-primary " id="searchBtn">
+            Buscar
+        </button>
+        <button type="button" class="btn bg-primary-subtle text-primary dropdown-toggle rounded-end dropdown-toggle-split show" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
+            <span class="sr-only">Toggle Dropdown</span>
+        </button>
+        <div class="dropdown-menu" style="position: absolute; inset: 0px auto auto 0px; margin: 0px; transform: translate(470px, 41px);" data-popper-placement="bottom-start">
+            <div class="col-md-8 col-xl-9 ps-3">
+                <div class="form-check">
+                    <input class="form-check-input primary check-outline outline-primary" type="radio" id="success-outline-radio" name="searchField" value="Nombres">
+                    <label class="form-check-label" for="success-outline-radio">Nombre</label>
+                </div>
+                <div class="form-check">
+                    <input class="form-check-input primary check-outline outline-primary" type="radio" id="success2-outline-radio" name="searchField" value="Apellido">
+                    <label class="form-check-label" for="success2-outline-radio">Apellido</label>
+                </div>
+                <div class="form-check">
+                    <input class="form-check-input primary check-outline outline-primary" type="radio" id="success3-outline-radio" name="searchField" value="Email" checked="">
+                    <label class="form-check-label" for="success3-outline-radio">Email</label>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="datatables">
+ <!-- File export -->
+ <div class="row">
+   <div class="col-12">
+     <!-- start File export -->
+     <div class="card">
+       <div class="card-body">
+         <div class="table-responsive">
+           <table id="userRolesTable" class="table border w-100 table-striped table-bordered display text-nowrap">
+             <thead>
+               <!-- start row -->
+               <tr>
+                <th>Email</th>
+                <th>LockoutEnabled</th>
+                <th>FechaRegistro</th>
+                <th>Nombres</th>
+                <th>Apellidos</th>
+                <th>Telefono</th>
+                <th>Accion</th>
+
+               </tr>
+               <!-- end row -->
+             </thead>
+             <tbody>
+             </tbody>
+           </table>
+         </div>
+       </div>
+     </div>
+     <!-- end File export -->
+   </div>
+ </div>
+</div>
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+    <script src="~/assets/libs/datatables.net/js/jquery.dataTables.min.js" asp-append-version="true"></script>
+@*     <script src="https://cdn.datatables.net/buttons/2.4.2/js/dataTables.buttons.min.js" asp-append-version="true"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js" asp-append-version="true"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.1.53/pdfmake.min.js" asp-append-version="true"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.1.53/vfs_fonts.js" asp-append-version="true"></script>
+    <script src="https://cdn.datatables.net/buttons/2.4.2/js/buttons.html5.min.js" asp-append-version="true"></script>
+    <script src="https://cdn.datatables.net/buttons/2.4.2/js/buttons.print.min.js" asp-append-version="true"></script> *@
+    <script src="~/assets/js/datatable/datatable-advanced.init.js" asp-append-version="true"></script>
+
+    <script>
+        $(document).ready(function () {
+            var dataTable = $('#userRolesTable').DataTable({
+                "processing": true,
+                "serverSide": true,
+                "ajax": {
+                    "url": '@Url.Action("LoadData", "Usuario")',
+                    "type": "POST",
+                    "datatype": "json",
+                    "data": function (d) {
+                        d.value = $('#search').val(); // Agregar el valor de búsqueda a los datos de la solicitud
+                        d.field = $('input[name="searchField"]:checked').val(); // Agregar el nombre del campo
+                    }
+                },
+                "searching": false, // Desactivar el cuadro de búsqueda
+                "columns": [
+                    { "data": "email" },
+                    { "data": "lockoutEnabled",
+                        "render": function (data, type, row) {
+                            if (data && row.lockoutEnd !== null && new Date(row.lockoutEnd) > new Date()) {
+                                console.log("data: " + data + " - type: " + type + " - row: " + row.lockoutEnd)
+                                return '<span class="badge fw-semibold py-1 w-50 bg-danger-subtle text-danger">Inactivo</span>';
+                            } else {
+                                return '<span class="badge fw-semibold py-1 w-50 bg-success-subtle text-success">Activo</span>';
+                            }
+                        }
+                    },
+                    { "data": "creadoFecha",
+                        "render": function (data, type, row) {
+                            if (data && row.creadoFecha !== null) {
+                                // Puedes usar el método .toLocaleDateString() para formatear la fecha
+                                return new Date(row.creadoFecha).toLocaleString(); // Cambié toLocaleDateString() por toLocaleString() para incluir la hora
+                            }
+                            return ''; // Si no hay fechaHora, se muestra una cadena vacía
+                        }
+                    },
+                    { "data": "nombres" },
+                    { "data": "apellidoPaterno" },
+                    { "data": "telefono" },
+                    { // Botones de acción
+                        "data": null,
+                        "render": function (data, type, row) {
+                            return '<button type="button" class="btn btn-outline-primary btn-sm editar-btn mx-1" data-id="' + row.id + '"><i class="ti ti-eye fs-5"></i></button>' +
+                                '<button type="button" class="btn btn-outline-danger btn-sm eliminar-btn mx-1" data-id="' + row.id + '"><i class="ti ti-trash fs-4 remove-note"></i></button>';
+                        }
+                    }
+                    // Agregar más columnas según tus datos
+                ]
+            });
+
+
+            $('#searchBtn').on('click', function () {
+                // var value = $('#search').val();
+                // dataTable.search(value).draw();
+                // dataTable.search(field).draw();
+                console.log($('#searchField').val());
+                dataTable.ajax.reload(); // Recargar los datos con los nuevos parámetros de búsqueda y campo
+            });
+
+            $('#userRolesTable').on('click', '.editar-btn', function () {
+                var id = $(this).data('id');
+                // Redireccionar a la página de edición con el email como parámetro
+                var url = '@Url.Action("Editar", "Usuario", new { id = "__id__" })';
+                url = url.replace('__id__', id);
+                window.location.href = url;
+            });
+
+            $('#userRolesTable').on('click', '.eliminar-btn', function () {
+                var id = $(this).data('id');
+                Swal.fire({
+                    title: '¿Estás seguro?',
+                    text: "Esta acción no se puede deshacer",
+                    icon: 'warning',
+                    showCancelButton: true,
+                    confirmButtonColor: '#d33',
+                    cancelButtonColor: '#3085d6',
+                    confirmButtonText: 'Sí, eliminar',
+                    cancelButtonText: 'Cancelar'
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        // Puedes hacer una solicitud AJAX al servidor para eliminar el usuario
+                        var url = '@Url.Action("Eliminar", "Usuario", new { id = "__id__" })';
+                        url = url.replace('__id__', id);
+                        window.location.href = url;
+                    }
+                });
+
+            });
+        });
+    </script>
+}

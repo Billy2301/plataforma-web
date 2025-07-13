@@ -1,0 +1,55 @@
+﻿@{
+    ViewData["title"] = "Confirmación de registro";
+    Layout = "~/Views/Shared/_LayoutAcceso.cshtml";
+}
+<div class="authentication-login min-vh-100 bg-body row justify-content-center align-items-center p-4">
+    <div class="auth-max-width col-sm-8 col-md-6 col-xl-7 px-4">
+        <h2 class="mb-1 fs-7 fw-bolder text-primary"><small>Bienvenido al</small><br /> Portal del usuario</h2>
+        @* <h7 class="mb-1 fw-bolder text-primary">Del Instituto de Diagnóstico y Tratamiento CPAL</h7> *@
+        <div class="subtitle-warning mb-2"></div>
+        <h2 class="mb-1 fs-7 fw-bolder"> <br /><small>¡Ha alcanzado el número de intentos fallidos para acceder a su cuenta!</small></h2>
+        <div class="text-center my-3">
+            <svg xmlns="http://www.w3.org/2000/svg" width="80" height="80" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon icon-tabler icons-tabler-outline icon-tabler-lock-x">
+                <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+                <path d="M13 21h-6a2 2 0 0 1 -2 -2v-6a2 2 0 0 1 2 -2h10a2 2 0 0 1 2 2v.5" />
+                <path d="M11 16a1 1 0 1 0 2 0a1 1 0 0 0 -2 0" />
+                <path d="M8 11v-4a4 4 0 1 1 8 0v4" />
+                <path d="M22 22l-5 -5" />
+                <path d="M17 22l5 -5" />
+            </svg>
+        </div>
+        <p class="mb-7" style=" text-align: justify; ">Por razones de seguridad su cuenta ha sido temporalmente bloqueada. Espere 3 minutos antes de volver a intentar ingresar.</p>
+        <a class="btn btn-primary w-100 py-8" asp-controller="Acceso" asp-action="IniciarSesion">Volver a iniciar sesión</a>
+    </div>
+    
+
+    <div class="row">
+        <div class="order-last text-center">
+            <div><span>Visitanos en : </span></div>
+            <ul class="list-unstyled d-flex align-items-center justify-content-center  my-3 mx-4 gap-3">
+
+                <li class="position-relative">
+                    <a class="d-flex align-items-center justify-content-center text-bg-primary p-2 fs-4 rounded-circle" href="https://www.facebook.com/CPAL.IDT/?locale=es_LA" width="30" height="30" title="Facebook/cpal">
+                        <i class="ti ti-brand-facebook"></i>
+                    </a>
+                </li>
+                <li class="position-relative">
+                    <a class="text-bg-secondary d-flex align-items-center justify-content-center p-2 fs-4 rounded-circle" href="https://idt.cpal.edu.pe/" title="www.idt.cpal.edu.pe">
+                        <i class="ti ti-brand-dribbble"></i>
+                    </a>
+                </li>
+                <li class="position-relative">
+                    <a class="text-bg-dark d-flex align-items-center justify-content-center p-2 fs-4 rounded-circle" href="https://www.youtube.com/watch?v=4LDgNX8jKYY" title="Youtube">
+                        <i class="ti ti-brand-youtube"></i>
+                    </a>
+                </li>
+                <li class="position-relative">
+                    <a class="text-bg-danger d-flex align-items-center justify-content-center p-2 fs-4 rounded-circle" href="https://www.instagram.com/p/Cyy0_qOt4q0/?hl=fr" title="Instagram">
+                        <i class="ti ti-brand-instagram"></i>
+                    </a>
+                </li>
+            </ul>
+        </div>
+    </div>
+
+</div>

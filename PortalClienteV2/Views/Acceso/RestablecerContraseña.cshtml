@@ -1,0 +1,130 @@
+﻿@model RestablecerContraseñaViewModel
+@{
+    ViewData["title"] = "Restablecer contraseña";
+    Layout = "~/Views/Shared/_LayoutAcceso.cshtml";
+}
+<div class="authentication-login min-vh-100 bg-body row justify-content-center align-items-center p-4">
+    <div class="auth-max-width col-sm-8 col-md-6 col-xl-7 px-4">
+        <h2 class="mb-1 fs-7 fw-bolder text-primary"><small>Bienvenido al</small><br /> Portal del usuario</h2>
+        <div class="subtitle-warning mb-2"></div>
+        <h2 class="mb-3 fs-7 fw-bolder"> <br /><small>Restablece tu contraseña</small></h2>
+        <form asp-controller="Acceso" asp-action="RestablecerContraseña" method="post">
+            @{
+                if (ViewBag.Error != null)
+                {
+                    <div class="alert customize-alert alert-dismissible alert-light-danger bg-danger-subtle text-danger fade show remove-close-icon" role="alert">
+                        <a class="btn-close" data-bs-dismiss="alert" aria-label="Close"></a>
+                        <div class="d-flex align-items-center  me-3 me-md-0">
+                            <i class="ti ti-info-circle fs-5 me-2 text-danger"></i> 
+                            @{
+                                ViewBag.Error = ViewBag.Error.Replace("Passwords must have at least one lowercase", "Las contraseñas deben tener al menos una minúscula")
+                                .Replace("Passwords must have at least one uppercase", "Las contraseñas deben tener al menos una mayúscula")
+                                .Replace("Passwords must have at least one non alphanumeric character", "Las contraseñas deben tener al menos un carácter no alfanumérico")
+                                .Replace("Passwords must have at least one digit", "Las contraseñas deben tener al menos un dígito")
+                                .Replace("Invalid token", "Token no valido");
+                            } 
+                            @Html.Raw(ViewBag.Error) !
+                        </div>
+                    </div>
+                }
+
+            }
+            <input type="hidden" asp-for="Code" />
+            <div class="form-floating mb-3">
+                <input asp-for="Email" id="Email" class="form-control" placeholder="Correo" data-val-email="Ingrese una dirección de correo electrónico válida." autocomplete="off">
+                <label asp-for="Email"><i class="ti ti-mail me-2 fs-4"></i>Correo</label>
+                <span asp-validation-for="Email" class="text-danger"></span>
+            </div>
+            <div class="form-floating mb-4">
+                <i onclick="toggleShowPassword('Password')" id="iPassword" class="show-password ti ti-eye-off"></i>
+                <input asp-for="Password" type="password" id="txtPassword" class="form-control" placeholder="Clave" onkeyup="checkPasswordStrength()" autocomplete="off">
+                <label asp-for="Password"><i class="ti ti-lock me-2 fs-4"></i>Contraseña</label>
+                <span asp-validation-for="Password" class="text-danger"></span>
+            </div>
+            <div class="form-floating mb-4">
+                <i onclick="toggleShowPassword('ConfirmPassword')" id="iConfirmPassword" class="show-password ti ti-eye-off"></i>
+                <input asp-for="ConfirmPassword" type="password" id="txtConfirmPassword" class="form-control" placeholder="Confirmar clave" autocomplete="off">
+                <label asp-for="ConfirmPassword"><i class="ti ti-lock me-2 fs-4"></i>Confirmar contraseña</label>
+                <span asp-validation-for="ConfirmPassword" class="text-danger"></span>
+            </div>
+            <div class="my-3 px-2">
+                <div id="passwordStrengthIndicator"></div>
+                <small class="text-muted"> 
+                    La contraseña debe tener mínimo 6 caracteres entre <b>Dígitos</b> , <b>Letras</b>, <b>Mayúsculas</b> y al menos un caracter no <b>alfanumérico</b>.
+                </small>
+            </div>
+            <button type="submit" class="btn btn-primary w-100 py-8 mb-4 rounded-2">Restablecer contraseña</button>
+            <a class="btn bg-warning-subtle text-primary w-100 py-8" asp-controller="Acceso" asp-action="IniciarSesion">Volver a iniciar sesión</a>
+        </form>
+    </div>
+</div>
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+    <script type="text/javascript">
+        function toggleShowPassword(id) {
+            var passwordField = document.getElementById("txt" + id);
+            var eye = document.getElementById("i" + id);
+            console.log(eye)
+            //Mostrar u ocultar el password
+            if (passwordField.type === "password") {
+                passwordField.type = "text";
+                eye.classList.remove("ti-eye-off");
+                eye.classList.add("ti-eye");
+            } else {
+                passwordField.type = "password";
+                eye.classList.remove("ti-eye");
+                eye.classList.add("ti-eye-off");
+            }
+        }
+
+        function checkPasswordStrength() {
+            const password = document.getElementById('txtPassword').value;
+              const strengthIndicator = document.getElementById('passwordStrengthIndicator');
+  
+              let strength = 0;
+
+              // Verificar la longitud
+              if (password.length >= 6) strength++;
+
+              // Verificar si contiene letras mayúsculas
+              if (/[A-Z]/.test(password)) strength++;
+
+              // Verificar si contiene letras minúsculas
+              if (/[a-z]/.test(password)) strength++;
+
+              // Verificar si contiene números
+              if (/\d/.test(password)) strength++;
+
+              // Verificar si contiene caracteres especiales
+              if (/[@@$!%*?&_]/.test(password)) strength++;
+
+              // Actualizar el indicador de dificultad
+              let strengthClass;
+              let strengthtext;
+              switch (strength) {
+                case 1:
+                case 2:
+                    strengthClass = 'easy';
+                    strengthtext = "Debil ✖"
+                  break;
+                case 3:
+                case 4:
+                    strengthClass = 'medium';
+                    strengthtext = "Debil  ✖"
+                  break;
+                case 5:
+                    strengthClass = 'hard';
+                    strengthtext = "Seguro ✔"
+                  break;
+                default:
+                  strengthClass = '';
+                  strengthtext = '';
+              }
+
+            strengthIndicator.innerHTML = `<div class="strength-bar ${strengthClass}" style="width: ${strength * 20}%">${strengthtext}</div>`;
+        }
+
+    </script>
+}

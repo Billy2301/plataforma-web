@@ -1,0 +1,52 @@
+﻿<script src="~/lib/jquery-validation/dist/jquery.validate.min.js"></script>
+<script src="~/lib/jquery-validation-unobtrusive/jquery.validate.unobtrusive.min.js"></script>
+<script>
+    function subminLoagin(form) {
+        var submitButton = form.querySelector("button[type='submit']");
+
+        if(submitButton){
+            // Deshabilitar el botón y agregar el icono de carga
+            submitButton.classList.add("disabled-button");
+            submitButton.disabled = true;
+
+            var loadingIcon = document.createElement("div");
+            loadingIcon.className = "loading-icon";
+            submitButton.appendChild(loadingIcon);
+
+            setTimeout(function () {
+                submitButton.classList.remove("disabled-button");
+                submitButton.disabled = false;
+                if (loadingIcon) {
+                    submitButton.removeChild(loadingIcon);
+                }
+            }, 3000);
+
+            return true;
+        }
+
+    }
+
+    function actionLoagin(a) {
+        // Deshabilitar el botón y agregar el icono de carga
+        if(a){
+            a.classList.add("disabled-button");
+            a.disabled = true;
+
+            var loadingIcon = document.createElement("div");
+            loadingIcon.className = "loading-icon";
+            a.appendChild(loadingIcon);
+
+            setTimeout(function () {
+                a.classList.remove("disabled-button");
+                a.disabled = false;
+                if (loadingIcon) {
+                    a.removeChild(loadingIcon);
+                }
+            }, 3000);
+
+            return true;
+        }
+
+    }
+
+</script>

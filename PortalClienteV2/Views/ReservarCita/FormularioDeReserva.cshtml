@@ -1,0 +1,619 @@
+﻿@model FormularioDeReservaViewModel
+@{
+    ViewData["title"] = "Reserve su cita";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    string grado = Model.Tab1.PacienteGrado != null ? Model.Tab1.PacienteGrado : "";
+}
+<style>
+    .tooltip {
+        --bs-tooltip-bg: #fff !important;
+        opacity: 100% !important;
+    }
+
+    .tooltip-inner {
+        box-shadow: rgba(0, 0, 0, 0.24) 0px 3px 8px;
+        max-width: 500px !important;
+        color: #224078;
+        text-align: justify;
+        background-color: #e8edf2 !important;
+        border-color: #e8edf2 !important;
+        opacity: 100%;
+    }
+
+    .cpal-box > i {
+        opacity: 0.3;
+    }
+
+    .cpal-box:hover > i {
+        opacity: 1;
+    }
+
+    .wizard.vertical > .steps.clearfix {
+        margin-top: 2rem !important;
+    }
+
+/*     .swal2-cancel{
+        background-color: #FF9800 !important;
+        border-radius: 25px;
+    } */
+    .bg-cancelar {
+        background-color: #5a6a85 !important;
+    }
+
+    .bg-eliminar{
+        background-color: #f64e60 !important;
+    }
+    
+</style>
+
+<div class="card bg-info-subtle shadow-none position-relative overflow-hidden mb-4">
+    <div class="card-body px-4 py-3">
+        <div class="row align-items-center">
+            <div class="col-9">
+                <h4 class="fw-semibold mb-8 text-primary">
+                    Reserve su cita
+                </h4>
+                <nav aria-label="breadcrumb">
+                    <ol class="breadcrumb">
+                        <li class="breadcrumb-item">
+                            <a class="text-muted text-decoration-none" asp-action="Index" asp-controller="Home">Inicio</a>
+                        </li>
+                        <li class="breadcrumb-item" aria-current="page">Reserve su cita</li>
+                    </ol>
+                </nav>
+            </div>
+            <div class="col-3">
+                <div class="text-center">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="2.5em" height="2.5em" viewBox="0 0 24 24" class="cc BTC text-primary fs-7">
+                        <g fill="none" stroke="currentColor" stroke-linecap="round" stroke-width="2">
+                            <!-- Primer trazo -->
+                            <path d="M9 5H7a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V7a2 2 0 0 0-2-2h-2" stroke-dasharray="62" stroke-dashoffset="62">
+                                <animate fill="freeze" attributeName="stroke-dashoffset" begin="0.7s" dur="0.5s" values="62;0"></animate>
+                            </path>
+                            <!-- Segundo trazo -->
+                            <path d="M9 5a2 2 0 0 1 2-2h2a2 2 0 0 1 2 2v0a2 2 0 0 1-2 2h-2a2 2 0 0 1-2-2" stroke-dasharray="44" stroke-dashoffset="44">
+                                <animate fill="freeze" attributeName="stroke-dashoffset" begin="0.7s" dur="0.5s" values="44;0"></animate>
+                            </path>
+                        </g>
+                    </svg>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<div class="row noVisibleInExito">
+    <div class="col-12">
+        <!--  start Step wizard with validation -->
+        <div class="card">
+            <div class="p-1 p-md-5 wizard-content">
+
+                
+                <script>
+                    document.addEventListener("DOMContentLoaded", function (event) {
+                        document.getElementById("ShowEvalButon").classList.remove("d-none")
+                    });
+
+                </script>
+
+                @{
+                    var isShowEval = Model.Tab1.PagoCitaID != 0 ? "show" : "";
+                    // Obtiene el valor de ViewBag.Pago
+                    var pago = ViewBag.Pago?.ToString();
+                    bool sinPago = string.IsNullOrEmpty(pago) || pago == "0";
+                    var starIndex = "0";
+                    var doAction = ViewBag.doAction;
+                }
+                @if (ViewBag.doAction == "Guardar")
+                {
+                    isShowEval = "";
+                    if (sinPago)
+                    {
+                        <script>
+                            document.addEventListener("DOMContentLoaded", function (event) {
+                                showAlertWithConfirmed(
+                                    "success",
+                                    "",
+                                    "En breve una especialista se comunicará con usted.",
+                                    '@Url.Action("Index", "Home")',
+                                    '<i class="fas fa-home me-2"></i> Ir a inicio'
+                                );
+                            });
+                        </script>
+                    }
+                    else
+                    {
+                        <script>
+                            document.addEventListener("DOMContentLoaded", function (event) {
+                                showAlertWithConfirmed(
+                                    "success",
+                                    "",
+                                    "Datos actualizados",
+                                    '@Url.Action("Index", "Home")',
+                                    '<i class="fas fa-home me-2"></i> Ir a inicio'
+                                );
+                            });
+                        </script>
+                    }
+                }
+
+                @if (ViewBag.Error != null)
+                {
+                    <script>
+                        document.addEventListener("DOMContentLoaded", function (event) {
+                            showAlert("error", "¡Error!", "@(System.Net.WebUtility.HtmlDecode(ViewBag.Error))");
+                        });
+                    </script>
+                }
+
+                @if (ViewBag.doAction == "Agregar")
+                {
+                    starIndex = "3";
+                    <script>
+                        document.addEventListener("DOMContentLoaded", function (event) {
+                            showAlertSIyNO(
+                                "success",
+                                "",
+                                "Los datos se guardaron correctamente. ¿Desea agregar otra evaluación?",
+                                "@Url.Action("FormularioDeReserva", "ReservarCita", new { triajeId = ViewBag.triajeOL, id = ViewBag.Pago })",
+                                "SI",
+                                "@Url.Action("Evaluaciones", "Apertura", new { id = ViewBag.Pago })",
+                                "NO",
+                                "@Url.Action("Index", "Home", new { id = ViewBag.Pago })",
+                                "ss"
+                            );
+                        });
+                    </script>
+                }
+
+                @if (ViewBag.doAction == "Revisar")
+                {
+                    <script>
+                        document.addEventListener("DOMContentLoaded", function (event) {
+                            document.getElementById("containerEspecialidades").classList.add("d-none")
+                            document.getElementById("containerAddEspecialidad").classList.remove("d-none")
+                        });
+                    </script>
+                }
+
+                <form asp-controller="ReservarCita" asp-action="FormularioDeReserva" method="post" id="formTriaje" class="validation-wizard  tab-wizard wizard-circle">
+                    <div class="text-danger d-none" asp-validation-summary="All" role="alert"></div>
+                    <input type="hidden" asp-for="Tab1.UsuarioId">
+                    <input type="hidden" asp-for="Tab1.Hc">
+                    <input type="hidden" asp-for="Tab1.Edad">
+                    <input type="hidden" asp-for="Tab1.TriageOnlineID">
+                    <input type="hidden" asp-for="Tab1.PagoCitaID">
+
+                    <!-- Step 1 -->
+                    <h6 class="d-none d-md-block">DATOS</h6>
+                    <section class="p-0">
+                        <div class="row text-primary fs-6">
+                            <b>
+                                Ingrese los datos de la persona que recibirá la atención:
+                            </b>
+                        </div>
+                        <hr />
+                        <div class="row p-0">
+                            <div class="col-lg-6">
+                                <div class="form-floating mb-3">
+                                    <select class="form-select border border-primary text-primary" asp-for="Tab1.TipoDocumento" onchange="verifyTipoDoc()" placeholder="">
+                                        <option value="" disabled>--SELECCIONE TIPO DOC.--</option>
+                                        <option value="DNI">DNI</option>
+                                        <option value="PASAPORTE">PASAPORTE</option>
+                                        <option value="CARNET_EXT">CARNET DE EXTRANJERIA</option>
+                                    </select>
+                                    <label><i class="ti ti-id me-2 fs-4"></i>Tipo de documento<b class="text-warning ms-1">*</b></label>
+                                </div>
+                            </div>
+                            <div class="col-lg-6">
+                                <div class="form-floating mb-3">
+                                    <input class="form-control upperCase border border-primary text-primary nroDoc" asp-for="Tab1.PacienteDNI" placeholder="">
+                                    <label for="txtDniPaciente"><i class="ti ti-id me-2 fs-4"></i>Nro. de documento<b class="text-warning ms-1">*</b></label>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="row p-0">
+                            <div class="col-lg-12">
+                                <div class="form-floating mb-3">
+                                    <input class="form-control upperCase border border-primary text-primary" asp-for="Tab1.NombresPaciente" placeholder="">
+                                    <label><i class="ti ti-mood-boy me-2 fs-4"></i>Nombre<b class="text-warning ms-1">*</b></label>
+                                    @* <span class="text-danger" asp-validation-for="Tab1.NombresPaciente"></span> *@
+                                </div>
+                            </div>
+
+                        </div>
+
+                        <div class="row p-0">
+                            <div class="col-lg-6">
+                                <div class="form-floating mb-3">
+                                    <input class="form-control upperCase border border-primary text-primary" asp-for="Tab1.ApellidoPaternoPaciente" placeholder="">
+                                    <label><i class="ti ti-man me-2 fs-4"></i>Apellido paterno<b class="text-warning ms-1">*</b></label>
+                                </div>
+                            </div>
+                            <div class="col-lg-6">
+                                <div class="form-floating mb-3">
+                                    <input class="form-control upperCase border border-primary text-primary" asp-for="Tab1.ApellidoMaternoPaciente" placeholder="">
+                                    <label for="txtApMaternoPaciente"><i class="ti ti-woman me-2 fs-4"></i>Apellido materno<b class="text-warning ms-1">*</b></label>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="row p-0">
+                            <div class="col-lg-6">
+                                <div class="form-floating mb-3">
+                                    <select class="form-select border border-primary text-primary" asp-for="Tab1.Procedencia" placeholder="">
+                                        <option selected disabled>--SELECCIONE PROCEDENCIA--</option>
+                                        <option value="LIMA">LIMA</option>
+                                        <option value="PROVINCIA">PROVINCIA</option>
+                                        <option value="EXTRANJERO">EXTRANJERO</option>
+                                    </select>
+                                    <label><i class="ti ti-map-pin me-2 fs-4"></i>Procedencia<b class="text-warning ms-1">*</b></label>
+                                </div>
+                            </div>
+                            <div class="col-lg-6">
+                                <div class="form-floating mb-3">
+                                    <input type="text" class="form-control upperCase border border-primary text-primary" asp-for="Tab1.FechaNacimientoPaciente" required="" pattern="^(0[1-9]|[1-2][0-9]|3[0-1])/(0[1-9]|1[0-2])/[0-9]{4}$" placeholder="">
+                                    <label><i class="ti ti-calendar me-2 fs-4"></i>Fecha de nacimiento<b class="text-warning ms-1">*</b></label>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="row p-0 isDependiente">
+                            <div class="col-md-6 mb-3">
+                                <div class="form-floating mb-3">
+                                    <select class="form-select upperCase border border-primary text-primary" asp-for="Tab1.NivelEducacion" onchange="showColegioGrado(this)" placeholder="" title="El campo 'Nivel de educación' es obligatorio.">
+                                        <option value="" disabled selected>--SELECCIONE NIVEL DE EDUCACIÓN--</option>
+                                        <option value="INICIAL">INICIAL</option>
+                                        <option value="PRIMARIA">PRIMARIA</option>
+                                        <option value="SECUNDARIA">SECUNDARIA</option>
+                                        <option value="SUPERIOR">SUPERIOR</option>
+                                        <option value="OTROS">OTROS</option>
+                                    </select>
+                                    <label><i class="ti ti-certificate me-2 fs-4"></i>Nivel educativo<b class="text-warning ms-1">*</b></label>
+                                </div>
+                            </div>
+                            <div class="col-md-6 mb-3 d-flex hideColegioGrado">
+                                <div class="col-8 pe-2">
+                                    <div class="form-floating mb-3">
+                                        <input type="text" class="form-control upperCase border border-primary text-primary" asp-for="Tab1.Colegio" placeholder="">
+                                        <label for="Colegio"><i class="ti ti-school me-2 fs-4"></i>Centro educativo<b class="text-warning ms-1">*</b></label>
+                                    </div>
+                                </div>
+                                <div class="col-4">
+                                    <div class="form-floating mb-3">
+                                        <select class="form-select upperCase border border-primary text-primary" asp-for="Tab1.PacienteGrado" placeholder="">
+                                        </select>
+                                        <label for="PacienteGrado"><i class="ti ti-stairs-up me-2 fs-4"></i>Grado<b class="text-warning ms-1">*</b></label>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="row p-0 isDependiente">
+                            <div class="col-12 me-md-4 pt-3">
+                                <p class="text-primary fs-6">
+                                    <b>
+                                        Ingrese los datos de la persona que completa el formulario:
+                                    </b>
+                                </p>
+                            </div>
+                            <div class="mb-3 fs-5">
+                                <div class="form-check form-check-inline  col-12 col-md-2">
+                                    <input class="form-check-input warning check-outline outline-warning rdo-comprobante" id="rdMama" type="radio" asp-for="Tab1.Parentesco" value="MAMÁ" title="El campo 'Parentesco' es obligatorio.">
+                                    <label class="form-check-label" for="rdMama"><b>Mamá</b></label>
+                                </div>
+                                <div class="form-check form-check-inline  col-12 col-md-2">
+                                    <input class="form-check-input warning check-outline outline-warning rdo-comprobante" id="rdPapa" type="radio" asp-for="Tab1.Parentesco" value="PAPÁ" title="El campo 'Parentesco' es obligatorio.">
+                                    <label class="form-check-label" for="rdPapa"><b>Papá</b></label>
+                                </div>
+                                <div class="form-check form-check-inline  col-12 col-md-2">
+                                    <input class="form-check-input warning check-outline outline-warning rdo-comprobante" id="rdApod" type="radio" asp-for="Tab1.Parentesco" value="APODERADO" title="El campo 'Parentesco' es obligatorio.">
+                                    <label class="form-check-label" for="rdApod"><b>Apoderado</b></label>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="row p-0 isDependiente">
+                            <div class="col-md-12 mb-3">
+                                <div class="form-floating mb-3">
+                                    <input type="text" class="form-control upperCase border border-primary text-primary" asp-for="Tab1.ApoderadoNombre" placeholder="" title="El campo 'Nombre y apellidos' es obligatorio.">
+                                    <label><i class="ti ti-user me-2 fs-4"></i>Nombre y apellidos<b class="text-warning ms-1">*</b></label>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="row p-0 isDependiente">
+                            <div class="col-md-6 mb-3">
+                                <div class="form-floating mb-3">
+                                    <select class="form-select upperCase border border-primary text-primary" asp-for="Tab1.ContactoTipoDoc" onchange="verifyTipoDocCont()" placeholder="" title="El campo 'Tipo de documento' es obligatorio.">
+                                        <option selected disabled>-- SELEC. TIPO DE DOCUMENTO --</option>
+                                        <option value="DNI">DNI</option>
+                                        <option value="PASAPORTE">PASAPORTE</option>
+                                        <option value="CARNET_EXT">CARNET DE EXTRANJERIA</option>
+                                    </select>
+                                    <label><i class="ti ti-id me-2 fs-4"></i>Tipo de documento<b class="text-warning ms-1">*</b></label>
+                                </div>
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <div class="form-floating mb-3">
+                                    <input type="text" class="form-control upperCase border border-primary text-primary nroDocAp" asp-for="Tab1.ContactoNroDoc" placeholder="" title="El campo 'Nro. de documento' es obligatorio.">
+                                    <label for="txtContactoNroDoc"><i class="ti ti-id me-2 fs-4"></i>Número de documento<b class="text-warning ms-1">*</b></label>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="row p-0">
+                            <div class="col-12 d-flex mt-3 @(Model.Tab1.GuardarEnPerfil ? "" : "d-none")">
+                                <label class="form-check-label" for="GuardarEnPerfil"><h5 class="text-primary">Guardar estos datos en la información de mi perfil</h5></label>
+                                <div class="form-check form-switch ms-5">
+                                    <input class="form-check-input" type="checkbox" asp-for="Tab1.GuardarEnPerfil">
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="row p-0">
+                            <div class="col-md-6 mb-3">
+                                <div class="form-floating mb-3">
+                                    <input type="text" class="form-control upperCase border border-primary text-primary" asp-for="Tab1.ContactoTelCelular" placeholder="">
+                                    <label><i class="ti ti-phone me-2 fs-4"></i>Teléfono de contacto<b class="text-warning ms-1">*</b></label>
+                                </div>
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <div class="form-floating mb-3">
+                                    <input type="email" class="form-control upperCase border border-primary text-primary" asp-for="Tab1.ContactoCorreo" placeholder="" readonly>
+                                    <label for="EmailRegistro"><i class="ti ti-mail me-2 fs-4"></i>Correo de contacto<b class="text-warning ms-1">*</b></label>
+                                </div>
+                            </div>
+                        </div>
+
+
+                        <div class="row p-0 d-none">
+                            <div>
+                                <input type="radio" value="SI" asp-for="Tab1.Dependiente" id="Tab1_DependienteSi" onchange="isCheckedDependiente()">
+                                <label><b>SI</b></label>
+                            </div>
+                            <div>
+                                <input type="radio" value="NO" asp-for="Tab1.Dependiente" id="Tab1_DependienteNo" onchange="isCheckedDependiente()">
+                                <label><b>NO</b></label>
+                            </div>
+                        </div>
+                    </section>
+                    <!-- Step 2 -->
+                    <h6 class="d-none d-md-block">MOTIVO DE CONSULTA</h6>
+                    <section class="p-0">
+                        <div class="row text-primary fs-6">
+                            <b>
+                                Describa el motivo de consulta:
+                            </b>
+                        </div>
+                        <hr />
+                        <div class="row">
+                            <div class="mb-3">
+                                <div class="form-floating mb-3">
+                                    <textarea class="form-control border border-primary text-primary " asp-for="Tab2.MotivoConsulta" required="" rows="5" placeholder="Detallar el motivo de consulta (No exceder los 1000 caracteres)" style="height: 162px;" title="El campo 'Motivo de consulta' es obligatorio."></textarea>
+                                    <label for="MotivoConsulta"><i class="ti ti-clipboard-heart me-2 fs-4"></i>Motivo de consulta<b class="text-warning ms-1">*</b></label>
+                                    <small class="ms-3">Caracteres restantes: <span id="contador">1000</span></small>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row text-primary fs-6">
+                            <b>
+                                Seleccione la sede de atención:
+                            </b>
+                        </div>
+                        <div class="row d-flex">
+                            <div class="col-1"></div>
+                            <div class="col-11">
+                                <div class="mb-3 mt-4 fs-5">
+                                    <div class="form-check form-check-inline col-md-2 col-12">
+                                        <input class="form-check-input warning check-outline outline-warning rdo-comprobante" type="radio" asp-for="Tab2.SedeID" id="rdSurco" value="1" required title="El campo 'Sede' es obligatorio.">
+                                        <label class="form-check-label" for="rdSurco"><b>Surco</b></label>
+                                    </div>
+                                    <a class="fs-3 fst-italic" target="_blank" href="http://bit.ly/41Io0OQ">
+                                        <i class="ti ti-map-pin fs-6 text-danger me-2"></i>
+                                        <span class="fst-italic text-decoration-underline">Mi dirección - Perú</span>
+                                    </a>
+                                </div>
+                                <div class="mb-3 mt-4 fs-5">
+                                    <div class="form-check form-check-inline col-md-2 col-12">
+                                        <input class="form-check-input warning check-outline outline-warning rdo-comprobante" type="radio" asp-for="Tab2.SedeID" id="rdMagdalena" value="2" required title="El campo 'Sede' es obligatorio.">
+                                        <label class="form-check-label" for="rdMagdalena"><b>Magdalena</b></label>
+                                    </div>
+                                    <a class="fs-3 fst-italic" target="_blank" href="https://bit.ly/41NTH9t">
+                                        <i class="ti ti-map-pin fs-6 text-danger me-2"></i> 
+                                        <span class="fst-italic text-decoration-underline">Av. Pershing 910, Magdalena, Lima 17 - Perú</span>
+                                    </a>
+                                </div>
+                            </div>
+                            
+                        </div>
+                    </section>
+                    <!-- Step 3 -->
+                    <h6 class="d-none d-md-block">ESPECIALIDAD</h6>
+                    <section class="p-0">
+                        @* <div class="row text-primary fs-6">
+                            <b>
+                                Seleccione la evaluación que desea realizar:
+                            </b>
+                        </div> *@
+                        <div class="">
+                            <div class="row d-flex flex-wrap justify-content-center" id="containerEspecialidades">
+
+                                @if (Model.Tab3?.Especialidades != null && Model.Tab3.Especialidades.Any())
+                                {
+                                    var totalEv = 0;
+                                    @foreach (var item in Model.Tab3.Especialidades)
+                                    {
+                                        string classDisabled = "";
+
+                                        @if (Model.Tab3?.EvaluacionesPago != null && Model.Tab3.EvaluacionesPago.Any())
+                                        {
+                                            @foreach (var evPago in Model.Tab3.EvaluacionesPago)
+                                                {
+                                                if (evPago.EvaluacionAreaId == item.EspecialidadId)
+                                                {
+                                                    classDisabled = "disable-box";
+                                                    totalEv ++;
+                                                }
+                                            }
+                                        }
+
+                                        string? url = Url.Content($"~/assets/images/iconeval/{item.EspecialidadVariable}.svg");
+                                        <div class="py-2 col-md-4 @classDisabled">
+                                            <input type="checkbox"
+                                                   class="btn-check"
+                                                   id="cbx_@item.EspecialidadVariable"
+                                                   autocomplete="off"
+                                                   value="@item.EspecialidadId"
+                                                   asp-for="Tab3.EspecialidadSeleccionada">
+
+                                            <label class="cpal-box btn btn-outline-primary d-flex align-items-center p-y4 card-hover"
+                                                   id="box_@item.EspecialidadVariable"
+                                                   for="cbx_@item.EspecialidadVariable"
+                                                   onclick="especialidadSelect('cbx_@item.EspecialidadVariable', '@item.EspecialidadVariable','@item.EspecialidadId')"
+                                                   data-bs-html="true"
+                                                   data-bs-toggle="tooltip"
+                                                   data-bs-placement="top"
+                                                   aria-label="@item.EspecialidadVariable"
+                                                   data-bs-original-title="<b>@item.EspecialidadPublica</b><br>@item.EspecialidadDescripcion">
+
+                                                <a href="JavaScript:void(0);">
+                                                    <img src="@url" alt="@item.EspecialidadPublica" width="50" height="50" />
+                                                </a>
+
+                                                <div class="mx-auto mt-2">
+                                                    <h5>@item.EspecialidadPublica</h5>
+                                                </div>
+                                            </label>
+                                        </div>
+                                    }
+                                    if (totalEv > 0)
+                                    {
+                                        <script>
+                                            document.addEventListener("DOMContentLoaded", function () {
+                                                const evalCount = document.getElementById("evalCount");
+                                                const btnCloseCar = document.getElementById("btnCloseCar");
+
+                                                if (evalCount) {
+                                                    evalCount.innerHTML = "<i class='ti ti-shopping-cart fs-5'></i> <span class='popup-badge rounded-pill bg-danger text-white fs-2' style='left: 20px; '>" + @totalEv.ToString() + "</span>";
+                                                }
+
+                                                if (btnCloseCar) {
+                                                    btnCloseCar.innerHTML = "<i class='ti ti-shopping-cart fs-5'></i> <span class='popup-badge rounded-pill bg-danger text-white fs-2' style='left: 30px; top: 8px; '>" + @totalEv.ToString() + "</span>";
+                                                }
+                                            });
+                                        </script>
+                                    }
+
+
+                                }
+
+                                <!-- box Orientación-->
+                                <div class="py-2 col-12" id="divOrientacion">
+                                    <input type="checkbox" class="btn-check" id="cbx_Orientacion" autocomplete="off">
+                                    <label class="cpal-box p-2 rounded-2 bg-warning-subtle d-flex align-items-center p-y4 card-hover" id="box_Orientacion" onclick="especialidadSelect('cbx_Orientacion','Orientacion')" for="cbx_Orientacion" style="border: 1px solid #ff9000;">
+                                        <a href="JavaScript: void(0);">
+                                            <img src="~/assets/images/iconeval/Orientacion.svg" alt="" width="50" height="50" />
+                                        </a>
+                                        <div class="m-auto mt-3">
+                                            <h5>DESEA OTRA OPCIÓN / SOLICITAR ORIENTACIÓN</h5>
+                                        </div>
+                                    </label>
+                                </div>
+                            </div>
+                            <div id="containerEvaluaciones">
+                            </div>
+                            <div id="containerAddEspecialidad" class="d-none">
+                                <div class="text-primary fs-6 mb-4 text-center">
+                                    <b>
+                                        Si deseas agregar una nueva evaluación a tu reserva :
+                                    </b>
+                                    <a class="btn btn-outline-warning btn-sm ms-3 px-3" onclick="showListEspecialidades()"><i class="ti ti-arrow-up-left me-2"></i><b>Clic aqui</b></a>
+                                </div>
+                            </div>
+                        </div>
+
+
+                    </section>
+                    <button type="submit" class="d-none" id="btnGuardar">Guardar</button>
+                </form>
+
+            </div>
+        </div>
+        <!--  end Step wizard with validation -->
+    </div>
+</div>
+
+
+
+<button id="btnCloseCar" class="btn btn-warning p-3 rounded-circle d-flex align-items-center justify-content-center customizer-btn noVisibleInExito d-md-none" type="button" data-bs-toggle="offcanvas" data-bs-target="#offcanvasExample" aria-controls="offcanvasExample"><i class="ti ti-shopping-cart fs-5"></i></button>
+
+<div class="offcanvas customizer offcanvas-end @isShowEval" tabindex="-1" id="offcanvasExample"
+     aria-labelledby="offcanvasExampleLabel">
+    <div class="d-flex align-items-center justify-content-between p-3 border-bottom">
+        <h4 class="offcanvas-title fw-semibold" id="offcanvasExampleLabel">
+            Evaluaciones
+        </h4>
+        <button type="button" class="btn-close" data-bs-dismiss="offcanvas" aria-label="Close"></button>
+    </div>
+    <div class="offcanvas-body h-n80" data-simplebar>
+        <div class="d-flex align-items-center">
+            <h5 class="text-dark"> Reserva para :<br /> <b class="text-primary">@Model.Tab1.NombresPaciente @Model.Tab1.ApellidoPaternoPaciente</b> </h5>
+        </div>
+        <hr />
+        <div class="simplebar-content">
+            
+                @if (Model.Tab3?.EvaluacionesPago != null && Model.Tab3.EvaluacionesPago.Any())
+                {
+                var pagoCita = 0;
+                <ul class="mb-0">
+                        @foreach (var item in Model.Tab3.EvaluacionesPago)
+                        {
+                        pagoCita = item.PagoCitaId;
+                        var imgEval = item.ImagenUrl.Replace("../../img/iconEval/", "assets/images/iconeval/");
+                            <li class="py-2 border-bottom border-1">
+                                <div class="d-flex align-items-center">
+                                <img src="~/@imgEval" width="30" height="30" class="rounded-1 me-2 flex-shrink-0" alt="">
+                                <div class="text-dark w-100 pe-3">
+                                        <b>@item.Nombre</b>
+                                        <div class="d-flex align-items-center justify-content-between mt-0">
+                                            <h6 class="fs-2 fw-semibold mb-0 text-muted">@item.TotalSesiones sesiones</h6>
+                                            @* <h6 class="fs-2 fw-semibold mb-0 text-muted">. . . . . .</h6>
+                                            <h6 class="fs-2 fw-semibold mb-0 text-muted">S/ @item.Precio   c/u</h6> *@
+                                        </div>
+                                    </div>
+                                    <a onclick="DeleteEvaluacionPagoCita('@pagoCita','@item.EvaluacionId')" class="text-danger btn btn-sm ms-auto"><i class="ti ti-trash fs-5"></i></a>
+                                </div>
+                            </li>
+                        }
+                    </ul>
+                    <div class="align-bottom mt-5">
+                        <a asp-action="Evaluaciones" asp-controller="Apertura" asp-route-id="@pagoCita" class="btn btn-warning w-100"><i class="fa fa-credit-card fs-5 me-2"></i> Ir a pagos</a>
+                        <a asp-action="Index" asp-controller="Home" class="btn btn-primary w-100 mt-2"><i class="fa fa-home fs-5 me-2"></i> Ir a Inicio</a>
+                    </div>
+                }
+        </div>
+        
+    </div>
+</div>
+
+@section scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+    <script>
+        const urlEvaluciones = '@Url.Action("GetEvaluaciones", "ReservarCita")';
+        const urlSesioness = '@Url.Action("GetSesiones", "ReservarCita")';
+        const urlDeleteEvalPagocita = '@Url.Action("EliminarEvaluacionPagoCita", "ReservarCita")';
+        const grado = "@Html.Raw(grado)";
+        const starIndex = @starIndex;
+        const doAction = "@doAction";
+        const urlPendiente = '@Url.Action("GetReservaPendiente", "ReservarCita")';
+    </script>
+    <script src="~/assets/libs/Toasty/toasty.js" asp-append-version="true"></script>
+    <script src="~/assets/js/alertSound/alertSound.js" asp-append-version="true"></script>
+    <script src="~/js/obtenTuCita.js" asp-append-version="true"></script>
+    
+}

@@ -1,0 +1,148 @@
+﻿@using Entity.ClinicaModels
+@model HistoriasViewModel
+@{
+    ViewData["title"] = "Lista de HC";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div class="card bg-info-subtle shadow-none position-relative overflow-hidden mb-4">
+    <div class="card-body px-4 py-3">
+        <div class="row align-items-center">
+            <div class="col-9">
+                <h4 class="fw-semibold mb-8 text-primary">
+                    Pagos pendientes
+                </h4>
+                <nav aria-label="breadcrumb">
+                    <ol class="breadcrumb">
+                        <li class="breadcrumb-item">
+                            <a class="text-muted text-decoration-none" asp-action="Index" asp-controller="Home">Inicio</a>
+                        </li>
+                        <li class="breadcrumb-item" aria-current="page">Pagos pendientes</li>
+                    </ol>
+                </nav>
+            </div>
+            <div class="col-3">
+                <div class="text-center">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="2.5em" height="2.5em" viewBox="0 0 24 24" class="cc BTC text-primary fs-7">
+                        <g fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" color="currentColor">
+                            <path d="M22 11.5V6.114c0-.791 0-1.186-.194-1.594a2.4 2.4 0 0 0-.565-.71c-.354-.28-.65-.347-1.241-.483c-.92-.21-1.934-.327-3-.327c-1.917 0-3.668.378-5 1S8.917 5 7 5c-1.066 0-2.08-.117-3-.327c-.96-.22-2 .456-2 1.441v10.772c0 .791 0 1.187.194 1.594c.11.233.363.55.565.71c.354.28.65.347 1.241.483c.92.21 1.934.327 3 .327c1.469 0 2.84-.222 4-.605M14 19s1 0 2 2c0 0 3.177-5 6-6" stroke-dasharray="120" stroke-dashoffset="120">
+                                <animate fill="freeze" attributeName="stroke-dashoffset" begin="0.5s" dur="1s" values="120;0" />
+                            </path>
+                            <path d="M14.5 11.5a2.5 2.5 0 1 1-5 0a2.5 2.5 0 0 1 5 0m-9 1v.009m13-2.017v.01" stroke-dasharray="35" stroke-dashoffset="35">
+                                <animate fill="freeze" attributeName="stroke-dashoffset" begin="0.7s" dur="0.7s" values="35;0" />
+                            </path>
+                        </g>
+                    </svg>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<div class="row">
+    <div class="col-12">
+        <div class="card">
+            <div class="card-body wizard-content">
+                @if (ViewBag.Exito != null)
+                {
+                    <script>
+                        document.addEventListener("DOMContentLoaded", function (event) {
+                            Swal.fire({
+                                title: "Genial !",
+                                text: "@(System.Net.WebUtility.HtmlDecode(ViewBag.Exito))",
+                                icon: "success",
+                                allowOutsideClick: false,
+                                allowEscapeKey: false,
+                                allowEnterKey: false,
+                                confirmButtonText: '<i class="fas fa-home"></i> Volver a Inicio!'
+                            }).then((result) => {
+                                if (result.isConfirmed) {
+                                    window.location.href = '@Url.Action("Index", "Home")';
+                                } else if (result.isDenied) {
+                                    window.location.href = '@Url.Action("Index", "Home")';
+                                }
+                            });
+                        });
+                    </script>
+                }
+                @if (ViewBag.Error != null)
+                {
+                    <script>
+                        document.addEventListener("DOMContentLoaded", function (event) {
+                            Swal.fire({
+                                title: "Error !",
+                                text: "@(System.Net.WebUtility.HtmlDecode(ViewBag.Error))",
+                                icon: "error"
+                            });
+                        });
+                    </script>
+                }
+
+                @if (Model != null && Model.ListPacientes.Count > 0)
+                {
+                    <form id="historiasForm" method="post" action="@Url.Action("Historias", "HistoriaClinica")">
+                        <input type="hidden" asp-for="NroHistoriaClinica" id="txtNroHistoriaClinica" />
+                        <div class="">
+                            <h5 class="fs-5 fw-semibold mb-4">
+                                Historias Clínicas asociadas a este usuario
+                            </h5>
+                            <p style="text-align:justify;">
+                                En esta sección, por favor seleccione a la persona en consulta cuyo historial desee revisar para gestionar pagos pendientes o citas programadas.
+                            </p>
+                            <div class="row shadow-none mt-3 mb-0 d-md-flex">
+                                @foreach (var paciente in Model.ListPacientes)
+                                {
+                                    <div class="py-3 border-bottom col-md-6">
+                                        <a id="@paciente.NumeroHistoriaClinica" class="btn text-bg-light border d-flex align-items-center gap-3 card-hover" onclick="ValidateHc(@paciente.NumeroHistoriaClinica)">
+                                            <div>
+                                                <span class="fs-2">Hist. Clinica</span>
+                                                <h6 class="mb-0 fw-semibold text-warning">@paciente.NumeroHistoriaClinica</h6>
+                                            </div>
+                                            <div class="ms-auto ms-md-5 text-start">
+                                                <span class="fs-2">@paciente.Nombres</span>
+                                                <h6 class="mb-0 fw-semibold">@paciente.ApellidoPaterno  @paciente.ApellidoMaterno</h6>
+                                            </div>
+                                            <div class="ms-auto p-8 rounded-2 d-flex align-items-center justify-content-center me-6">
+                                                <svg xmlns="http://www.w3.org/2000/svg" width="2em" height="2em" viewBox="0 0 24 24" class="text-danger">
+                                                    <path fill="currentColor" d="M11.398 19.074A4.47 4.47 0 0 1 10.521 14H4.253a2.25 2.25 0 0 0-2.25 2.25v.92c0 .571.18 1.129.511 1.595C4.056 20.928 6.58 22 10 22q2.121 0 3.774-.55zM10 2.004a5 5 0 1 1 0 10a5 5 0 0 1 0-10m7.044 20.991a.75.75 0 0 1-.53-.22l-4.409-4.408a3.467 3.467 0 0 1 4.903-4.902l.036.036l.036-.036a3.467 3.467 0 0 1 4.903 4.902l-4.409 4.409a.75.75 0 0 1-.53.22" />
+                                                </svg>
+                                            </div>
+                                        </a>
+                                    </div>
+
+                                }
+                            </div>
+                        </div>
+                    </form>
+                }
+                else
+                {
+                    <div class="order-summary border rounded p-4 my-4 ms-auto">
+                        <div class=" p-3 ">
+                            <h5 class="fs-5 fw-semibold mb-4">
+                                Aún no existen Historias Clinicas relacionadas a este usuario
+                            </h5>
+                        </div>
+                    </div>
+                }
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+
+    <script>
+        function ValidateHc(hc){
+            var a = document.getElementById(hc);
+            actionLoagin(a);
+            document.getElementById("txtNroHistoriaClinica").value = hc
+            document.getElementById('historiasForm').submit();
+        }
+    </script>
+
+}

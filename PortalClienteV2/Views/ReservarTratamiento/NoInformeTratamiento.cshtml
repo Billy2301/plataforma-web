@@ -1,0 +1,277 @@
+﻿@model NoInformeTratamientoViewModel
+@{
+    ViewData["title"] = "Informe de tratamiento";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div class="card bg-info-subtle shadow-none position-relative overflow-hidden mb-4">
+    <div class="card-body px-4 py-3">
+        <div class="row align-items-center">
+            <div class="col-9">
+                <h4 class="fw-semibold mb-8 text-primary">
+                    Reserve su cita para tratamiento
+                </h4>
+            </div>
+            <div class="col-3">
+                <div class="text-center">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="2.5em" height="2.5em" viewBox="0 0 24 24" class="cc BTC text-primary fs-7">
+                        <g fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2">
+                            <path d="M9 5H7a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V7a2 2 0 0 0-2-2h-2"
+                                  stroke-dasharray="120" stroke-dashoffset="120">
+                                <animate fill="freeze" attributeName="stroke-dashoffset" begin="0.5s" dur="1s" values="120;0" />
+                            </path>
+                            <path d="M9 5a2 2 0 0 1 2-2h2a2 2 0 0 1 2 2v0a2 2 0 0 1-2 2h-2a2 2 0 0 1-2-2"
+                                  stroke-dasharray="50" stroke-dashoffset="50">
+                                <animate fill="freeze" attributeName="stroke-dashoffset" begin="0.6s" dur="0.7s" values="50;0" />
+                            </path>
+                            <path d="M9 12v-1h6v1"
+                                  stroke-dasharray="30" stroke-dashoffset="30">
+                                <animate fill="freeze" attributeName="stroke-dashoffset" begin="0.7s" dur="0.5s" values="30;0" />
+                            </path>
+                            <path d="M12 11v6"
+                                  stroke-dasharray="20" stroke-dashoffset="20">
+                                <animate fill="freeze" attributeName="stroke-dashoffset" begin="0.8s" dur="0.5s" values="20;0" />
+                            </path>
+                            <path d="M11 17h2"
+                                  stroke-dasharray="10" stroke-dashoffset="10">
+                                <animate fill="freeze" attributeName="stroke-dashoffset" begin="0.9s" dur="0.3s" values="10;0" />
+                            </path>
+                        </g>
+                    </svg>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="row">
+    <div class="col-12">
+        <!--  start Step wizard with validation -->
+        <div class="card"> 
+            <div class="card-body wizard-content p-3 p-md-5">
+                @if (ViewBag.Error != null)
+                {
+                    <script>
+                        document.addEventListener("DOMContentLoaded", function (event) {
+                            Swal.fire({
+                                title: "Error !",
+                                text: "@(System.Net.WebUtility.HtmlDecode(ViewBag.Error))",
+                                icon: "error"
+                            });
+                        });
+                    </script>
+                }
+
+                @if (ViewBag.Exito != null)
+                {
+                    <script>
+                        document.addEventListener("DOMContentLoaded", function (event) {
+                            showAlertWithConfirmed(
+                                    "",
+                                    "Datos guardados",
+                                    "Su información fue guardada. Una asesora se contactará con usted.",
+                                    '@Url.Action("Index", "Home")',
+                                    '<i class="fas fa-home me-2"></i> Ir a inicio'
+                                );
+                        });
+                    </script>
+                }
+
+                @if (ViewBag.info != null)
+                {
+                    <script>
+                        document.addEventListener("DOMContentLoaded", function (event) {
+                            playSound('info'); // Reproducir el sonido asociado al tipo de alerta
+
+                            Swal.fire({
+                                title: 'Importante',
+                                text: 'Ya tiene una solicitud pendiente. ¿Desea actualizarla?',
+                                icon: 'info',
+                                allowOutsideClick: false,
+                                allowEscapeKey: false,
+                                allowEnterKey: false,
+                                showCancelButton: true,
+                                confirmButtonText: "Aceptar",
+                                cancelButtonText: "Cancelar",
+                                customClass: {
+                                    confirmButton: "bg-primary fs-5 py-1",
+                                    cancelButton: "bg-cancelar fs-5 py-1"
+                                },
+                            }).then((result) => {
+                                if (result.isConfirmed) {
+                                    formSubmit()
+                                } else if (result.isDenied) {
+                                    window.location.href = '@Url.Action("Index", "Home")';
+                                } else{
+                                    window.location.href = '@Url.Action("Index", "Home")';
+                                }
+                            });
+                        });
+                    </script>
+                }
+
+
+                <div class="row">
+                    <div class="col-12 d-flex text-primary fs-6 mb-2">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="1.5em" height="1.5em" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="me-3 icon icon-tabler icons-tabler-outline icon-tabler-hexagon-number-1"><path stroke="none" d="M0 0h24v24H0z" fill="none" /><path d="M19.875 6.27a2.225 2.225 0 0 1 1.125 1.948v7.284c0 .809 -.443 1.555 -1.158 1.948l-6.75 4.27a2.269 2.269 0 0 1 -2.184 0l-6.75 -4.27a2.225 2.225 0 0 1 -1.158 -1.948v-7.285c0 -.809 .443 -1.554 1.158 -1.947l6.75 -3.98a2.33 2.33 0 0 1 2.25 0l6.75 3.98h-.033z" /><path d="M10 10l2 -2v8" /></svg>
+                        <div class="col-10 fw-bolder">No tengo informe</div>
+                    </div>
+                    <span class="fs-4 ps-md-5 ms-md-2">
+                        Si no cuenta con un informe de evaluación, debe reservar una cita en el
+                        departamento de diagnóstico haciendo<a class="text-warning" asp-controller="ReservarCita" asp-action="InicioDeReserva"><b> clic aquí.</b></a>
+                    </span>
+                </div>
+                <hr />
+                <div class="row">
+                    <div class="col-12 d-flex text-primary fs-6 mb-2">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="1.5em" height="1.5em" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="me-3 icon icon-tabler icons-tabler-outline icon-tabler-hexagon-number-2"><path stroke="none" d="M0 0h24v24H0z" fill="none" /><path d="M19.875 6.27a2.225 2.225 0 0 1 1.125 1.948v7.284c0 .809 -.443 1.555 -1.158 1.948l-6.75 4.27a2.269 2.269 0 0 1 -2.184 0l-6.75 -4.27a2.225 2.225 0 0 1 -1.158 -1.948v-7.285c0 -.809 .443 -1.554 1.158 -1.947l6.75 -3.98a2.33 2.33 0 0 1 2.25 0l6.75 3.98h-.033z" /><path d="M10 8h3a1 1 0 0 1 1 1v2a1 1 0 0 1 -1 1h-2a1 1 0 0 0 -1 1v2a1 1 0 0 0 1 1h3" /></svg>
+                        <div class="col-10 fw-bolder">Tengo informe de evaluación de otra institución</div>
+                        
+                    </div>
+                    <span class="fs-4 ps-md-5 ms-md-2">
+                        Si cuenta con un informe de evaluación de otra institución, indíquenos por qué medio
+                        prefiere que una especialista se comunique con usted para brindarle las indicaciones
+                        necesarias y facilitar el inicio de su tratamiento.
+                    </span>
+                </div>
+                
+                <form asp-controller="ReservarTratamiento" asp-action="NoInformeTratamiento" method="post" id="formReservaTx">
+                    <div class="text-danger" asp-validation-summary="All" role="alert">
+                    </div>
+                    <input type="hidden" asp-for="flag" id="flag" />
+                    <div class="row">
+                        <div class="my-4 ps-md-5 ms-md-2 col-md-5">
+                            <div class="text-start fs-4 ms-3 mb-2">
+                                <div class="form-check form-check-inline">
+                                    <input class="form-check-input warning check-outline outline-warning" type="radio" asp-for="OrientacionSeleccionada" id="rdOrientacion_0" value="1" data-input="whatsappInput">
+                                    <label class="form-check-label" for="rdOrientacion_0">
+                                        <b>Por WhatsApp</b>
+                                    </label>
+                                </div>
+                            </div>
+                            <div class="text-start fs-4 ms-3 mb-2">
+                                <div class="form-check form-check-inline">
+                                    <input class="form-check-input warning check-outline outline-warning" type="radio" asp-for="OrientacionSeleccionada" id="rdOrientacion_1" value="2" data-input="llamadaInput">
+                                    <label class="form-check-label" for="rdOrientacion_1">
+                                        <b>Por llamada telefónica</b>
+                                    </label>
+                                </div>
+                            </div>
+                            <div class="text-start fs-4 ms-3 mb-2">
+                                <div class="form-check form-check-inline">
+                                    <input class="form-check-input warning check-outline outline-warning" type="radio" asp-for="OrientacionSeleccionada" id="rdOrientacion_2" value="3" data-input="emailInput">
+                                    <label class="form-check-label" for="rdOrientacion_2">
+                                        <b>Por correo electrónico</b>
+                                    </label>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="my-4 ps-md-5 ms-md-2 col-md-4">
+                            <div class="input-group mb-3" id="whatsappInput" style="display:none;">
+                                <span class="input-group-text text-success" id="basic-addon1"><i class="ti ti-brand-whatsapp fs-7 ms-3"></i></span>
+                                <input asp-for="ContactoWhatsApp" type="text" class="form-control" placeholder="Número de WhatsApp">
+                              </div>
+                            <div class="input-group mb-3" id="llamadaInput" style="display:none;">
+                                <span class="input-group-text text-indigo" id="basic-addon1"><i class="ti ti-phone-call fs-7 ms-3"></i></span>
+                                <input asp-for="ContactoTelefono" type="text" class="form-control" placeholder="Número de Teléfono">
+                            </div>
+                            <div class="input-group mb-3" id="emailInput" style="display:none;">
+                                <span class="input-group-text text-info" id="basic-addon1"><i class="ti ti-mail fs-7 ms-3"></i></span>
+                                <input asp-for="ContactoCorreo" type="text" class="form-control" placeholder="Correo de contacto">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-2 ms-auto text-end">
+                            <button type="submit" class="btn btn-primary w-100">Enviar datos</button>
+                        </div>
+                    </div>
+                </form>
+                
+            </div>
+        </div>
+        <!--  end Step wizard with validation -->
+    </div>
+</div>
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+    <script src="~/assets/libs/Toasty/toasty.js" asp-append-version="true"></script>
+    <script src="~/assets/js/alertSound/alertSound.js" asp-append-version="true"></script>
+    <script>
+        var toasty = new Toasty({
+            transition: "slideDownFade",
+            duration: 5, // calculated automatically.
+            enableSounds: true,
+            progressBar: true,
+            autoClose: true,
+            onShow: function (type) {
+                console.log("a toast " + type + " message is shown!");
+            },
+            onHide: function (type) {
+                console.log("the toast " + type + " message is hidden!");
+            }
+        });
+
+        document.addEventListener("DOMContentLoaded", function() {
+            const inputs = {
+                whatsappCheck: document.getElementById("whatsappInput"),
+                llamadaCheck: document.getElementById("llamadaInput"),
+                emailCheck: document.getElementById("emailInput")
+            };
+
+            document.querySelectorAll('input[type="radio"]').forEach(radio => {
+                radio.addEventListener("change", function() {
+                    // Ocultar todos los inputs
+                    Object.values(inputs).forEach(input => input.style.display = "none");
+
+                    // Mostrar el input correspondiente al checkbox seleccionado
+                    if (this.checked) {
+                        const inputId = this.dataset.input;
+                        document.getElementById(inputId).style.display = "flex";
+                        // inputs[this.id].style.display = "block";
+                    }
+                });
+            });
+
+            document.getElementById("formReservaTx").addEventListener("submit", function(event) {
+                const selectedRadio = document.querySelector('input[name="OrientacionSeleccionada"]:checked');
+                
+                if (!selectedRadio) {
+                    toasty.error("Seleccione un medio de contacto.", 2500);
+                    event.preventDefault();
+                    return;
+                }
+
+                const inputId = selectedRadio.dataset.input;
+                const inputField = document.querySelector(`#${inputId} input`);
+                
+                if (!inputField || !inputField.value.trim()) {
+                    toasty.error("Ingrese los datos requeridos", 2500);
+                    event.preventDefault(); // Evita el envío si el campo está vacío
+                    return;
+                }
+
+            });
+
+            // 🔹 Verificar qué radio está seleccionado al cargar la página
+            const checkedRadio = document.querySelector('input[type="radio"]:checked');
+            if (checkedRadio) {
+                const inputId = checkedRadio.dataset.input;
+                if(inputId){
+                    document.getElementById(inputId).style.display = "flex";
+                }
+            }
+
+        });
+
+        function formSubmit(){
+            document.getElementById("flag").value = 'false';
+            const form1 = document.getElementById("formReservaTx");
+            form1.submit();
+        }
+    </script>
+
+
+}

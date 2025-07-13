@@ -1,0 +1,244 @@
+﻿@using Microsoft.Extensions.Options
+@using PortalClienteV2.Models.Model
+@inject IOptions<HotjarSettings> HotjarSettings
+<!DOCTYPE html>
+<html lang="en" dir="ltr" data-bs-theme="cpal" data-color-theme="cpal_Theme" data-layout="vertical">
+
+<head>
+    <!-- Required meta tags -->
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+    <!-- Favicon icon-->
+    <link rel="shortcut icon" type="image/png" href="~/assets/images/logos/favicon.png" asp-append-version="true" />
+
+    <!-- Core Css -->
+    <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
+    <link rel="stylesheet" href="~/css/SignIn.css" asp-append-version="true" />
+    <link rel="stylesheet" href="~/assets/css/styles.css" asp-append-version="true" />
+    <link rel="stylesheet" href="~/assets/libs/bootstrap-datepicker/dist/css/bootstrap-datepicker.min.css" asp-append-version="true">
+
+    <title>@ViewData["Title"] - PortalClienteV2</title>
+
+    <!-- Hotjar Tracking Code for Sitio 5093405 (falta el nombre) -->
+    <script>
+        (function (h, o, t, j, a, r) {
+            h.hj = h.hj || function () { (h.hj.q = h.hj.q || []).push(arguments) };
+            h._hjSettings = { hjid: @HotjarSettings.Value.SiteId, hjsv: 6 };
+            a = o.getElementsByTagName('head')[0];
+            r = o.createElement('script'); r.async = 1;
+            r.src = t + h._hjSettings.hjid + j + h._hjSettings.hjsv;
+            a.appendChild(r);
+        })(window, document, 'https://static.hotjar.com/c/hotjar-', '.js?sv=');
+    </script>
+    <style>
+        .carousel-control-next-icon{
+            display:none;
+        }
+        .carousel-control-prev-icon{
+            display:none;
+        }
+
+        /* Fondo oscuro */
+        #popup-background {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 999;
+        }
+
+        /* Contenedor del popup */
+        #popup {
+            position: relative;
+            background: white;
+            padding: 20px;
+            border-radius: 12px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+            max-width: 90%;
+            max-height: 90%;
+            overflow: auto;
+        }
+
+            /* Imagen dentro del popup */
+            #popup img {
+                max-width: 100%;
+                height: auto;
+                border-radius: 8px;
+            }
+
+        /* Botón de cerrar */
+        #close-btn {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            background: #ff4d4d;
+            color: white;
+            border: none;
+            border-radius: 50%;
+            width: 30px;
+            height: 30px;
+            font-size: 18px;
+            cursor: pointer;
+        }
+
+            #close-btn:hover {
+                background: #e60000;
+            }
+    </style>
+</head>
+
+<body>
+    <div id="popup-background">
+        <div id="popup">
+            <button id="close-btn">&times;</button>
+            <div>
+                <img style="outline:0px" src="https://ci3.googleusercontent.com/meips/ADKq_NbfDvilVx7azj9cttyVHmBOTV9lcIhJcJf2VanHG2rH4QIId1Lo0iU3q6Is0Na7Z0IGpELi6qjOPRF3CKMCw7HcraoT5_5JSw=s0-d-e1-ft#https://share1.cloudhq-mkt3.net/8cc2d3db13786b.png" alt="" width="600" height="228" class="CToWUd a6T" data-bit="iit" tabindex="0">
+
+            </div>
+            <div>
+                <img style="outline:0px" src="https://ci3.googleusercontent.com/meips/ADKq_NYHT1znKcN01_U72mML96Us2PFsZt2QZ3BerW1wUEOHvx2IuDtyV7wl35ppyfnOBojnrE-6lW2Sht4J1vNlBgxlgAIJq75oJg=s0-d-e1-ft#https://share1.cloudhq-mkt3.net/0e3926a002ddb3.gif" alt="" width="600" height="600" class="CToWUd a6T" data-bit="iit" tabindex="0">
+            </div>
+            <div>
+                <img style="outline:0px" src="https://ci3.googleusercontent.com/meips/ADKq_NY2VId0hPEhJUBkzBtl1HNtiALITY1ur9RfGE0l8wqdmJWT6RfMsj1LCPW8mHwsubkggnX7CiBUnvlj1r9iBavRXyXVv3BnRQ=s0-d-e1-ft#https://share1.cloudhq-mkt3.net/2824fe943297ba.png" alt="" width="600" height="57" class="CToWUd" data-bit="iit">
+            </div>
+        </div>
+    </div>
+    <div id="main-wrapper">
+        <div class="position-relative overflow-hidden radial-gradient min-vh-100 w-100">
+            <div class="position-relative z-index-5">
+                <div class="row">
+                    <div class="col-md-7 col-xxl-8 bg-white pe-0">
+                        <a href="~/Acceso/Index" class="text-nowrap bg-primary logo-img d-block px-4 py-9 w-100">
+                            <img src="../assets/images/logos/CPAL-IDT.png" class="light-logo" alt="Logo-light" width="300" />
+                        </a>
+                        <div id="carouselExampleFade" class=" d-xl-flex carousel slide carousel-fade carousel-dark align-items-center justify-content-center"
+                             data-bs-ride="carousel">
+                            <div class="carousel-inner">
+                                @if (ViewBag.ImgSlider1 != null)
+                                {
+                                    <div class="carousel-item active slider-container">
+                                        <img src="@ViewBag.ImgSlider1" class="d-block w-100" alt="..." />
+                                    </div> 
+                                }
+                                @if (ViewBag.ImgSlider2 != null)
+                                {
+                                    <div class="carousel-item slider-container">
+                                        <img src="@ViewBag.ImgSlider2" class="d-block w-100" alt="..." />
+                                    </div>
+                                }
+                                @if (ViewBag.ImgSlider3 != null)
+                                {
+                                    <div class="carousel-item slider-container">
+                                        <img src="@ViewBag.ImgSlider3" class="d-block w-100" alt="..." />
+                                    </div>
+                                }
+                            </div>
+                            <a class="carousel-control-prev" href="#carouselExampleFade" role="button" data-bs-slide="prev">
+                                <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                                <span class="visually-hidden">Previous</span>
+                            </a>
+                            <a class="carousel-control-next" href="#carouselExampleFade" role="button" data-bs-slide="next">
+                                <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                                <span class="visually-hidden">Next</span>
+                            </a>
+                        </div>
+                    </div>
+                    <div class="col-md-5 bg-white col-xxl-4">
+                        @RenderBody()
+                    </div>
+                </div>
+            </div>
+        </div>
+        <script>
+            function handleColorTheme(e) {
+                $("html").attr("data-color-theme", e);
+                $(e).prop("checked", !0);
+            }
+        </script>
+
+    </div>
+
+            
+
+    <!-- sample modal content -->
+    <div id="modal-politicas" class="modal fade" tabindex="-1"
+         aria-labelledby="bs-example-modal-md" aria-hidden="true">
+        <div class="modal-dialog  modal-lg">
+            <div class="modal-content">
+                <div class="modal-header d-flex align-items-center">
+                    <h3 class="modal-title m-auto text-primary">
+                        Política de Privacidad
+                    </h3>
+                    <button type="button" class="btn-close m-0" data-bs-dismiss="modal"
+                            aria-label="Close"></button>
+                </div>
+                <div class="modal-body text-primary p-3 pt-0 p-md-5 pt-md-0" style="font-weight:normal; text-align:justify">
+                    <p>
+                        De conformidad con la Ley N° 29733 (en adelante, la Ley) y el Decreto Supremo N° 003-2013-JUS (en adelante, el Reglamento), el usuario autoriza, mediante su firma o cualquier otra forma de aceptación expresa automatizada, el tratamiento de los datos personales que facilite al Centro Peruano de Audición,
+                        Lenguaje y Aprendizaje – CPAL (en adelante, el Centro), por cualquier medio físico o electrónico. El Centro, con domicilio en Calle Martín Pizarro N° 172, distrito de Santiago de Surco, declara ser el titular del Banco de Datos Personales e informa que los destinatarios de los datos personales serán las oficinas de la Escuela de Estudios Superiores,
+                        Instituto de Diagnóstico y Tratamiento, Colegio Antares, Colegio Fernando Wiese, Marketing, Sistemas y cualquier unidad académica o administrativa del Centro, con la finalidad de utilizarlos en gestiones institucionales, administrativas y comerciales, así como procesar y manejar información para cubrir las necesidades de sus interesados. En función a ello,
+                        el Centro queda autorizado a remitir información, para lo cual se utilizará la vía postal, telefónica o electrónica, o cualquier otro medio de comunicación, sobre sus diferentes servicios de diagnóstico, tratamiento, servicios de educación, programas académicos de posgrado, capacitación, encuestas de satisfacción, y eventos académicos, culturales, entretenimiento y comercialización de productos y servicios.
+                    </p>
+                    <p>
+                        Se pone en conocimiento de los usuarios que los formularios, mediante los cuales otorguen sus datos personales, incluyen preguntas obligatorias y facultativas, las cuales podrán ser identificadas en cada formulario. Las consecuencias de la concesión de datos personales,
+                        faculta al Centro a utilizarlos de acuerdo a la finalidad señalada en el párrafo anterior. La negativa en la entrega de los datos personales del usuario imposibilita al Centro a incluirlos en su base de datos que remite información instantánea y actualizada respecto a las capacitaciones,
+                        cursos, talleres o cualquier programa que ofrezca el Centro, así como otras actividades relacionadas al Centro.
+                    </p>
+                    <p>
+                        Asimismo, el usuario acepta y consiente los eventuales encargos, transferencias y flujos transfronterizos que se realicen sobre sus Datos proporcionados, a empresas vinculadas o proveedores del Centro, toda vez que sea necesario para: (a) Remitir información con fines comerciales, promocionales o publicidad relacionada a los servicios que el Centro presta,
+                        así como encuestas o estudios de mercado. (b) Comercialización de productos o servicios prestados por el Centro. De manera particular, acepta el flujo transfronterizo de sus datos personales a los Estados Unidos de América en la medida que el servidor de datos de la página web del CPAL se encuentra alojado en DigitalOcean, LLC ubicado en 101 Ave of the Americas, 10th Floor, Nueva York, Nueva York, 10013, Estados Unidos de América.
+                    </p>
+                    <p>
+                        La información que usted provea será almacenada y custodiada en el Banco de datos personales de titularidad del Centro, por un periodo de 10 años.
+                    </p>
+                    <p>
+                        En caso que el usuario desee ejercer sus derechos de revocatoria de consentimiento, modificación o cualquier otro derecho reconocido por la normativa de protección de datos personales, podrá recurrir a la oficina de Sistemas, la misma que se encuentra ubicada en la Calle Martín Pizarro N° 172, distrito de Santiago de Surco o escribir a comunicate@cpal.edu.pe, indicando el derecho que se quiere hacer valer.
+                    </p>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn bg-primary-subtle text-primary  waves-effect"
+                            data-bs-dismiss="modal">
+                        Cerrar
+                    </button>
+                </div>
+            </div>
+            <!-- /.modal-content -->
+        </div>
+        <!-- /.modal-dialog -->
+    </div>
+
+    <div class="dark-transparent sidebartoggler"></div>
+    <script src="../lib/jquery/dist/jquery.min.js"></script>
+
+    <!-- Import Js Files -->
+    <script src="../assets/libs/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="../assets/libs/simplebar/dist/simplebar.min.js"></script>
+    <script src="../assets/js/theme/app.minisidebar.init.js"></script>
+    <script src="../assets/js/theme/theme.js"></script>
+    <script src="../assets/js/theme/app.min.js"></script>
+    <script src="../assets/js/theme/sidebarmenu.js"></script>
+
+    <!-- Import DatePicker -->
+    <script src="../assets/js/extra-libs/moment/moment.min.js"></script>
+    <script src="../assets/libs/bootstrap-datepicker/dist/js/bootstrap-datepicker.min.js"></script>
+    <script src="../assets/js/forms/datepicker-init.js"></script>
+
+    <!-- solar icons -->
+    <script src="https://cdn.jsdelivr.net/npm/iconify-icon@1.0.8/dist/iconify-icon.min.js"></script>
+    @await RenderSectionAsync("Scripts", required: false)
+    <script>
+        // Cerrar popup al hacer clic en el botón
+        document.getElementById("close-btn").addEventListener("click", function() {
+          document.getElementById("popup-background").style.display = "none";
+        });
+    </script>
+</body>
+
+</html>

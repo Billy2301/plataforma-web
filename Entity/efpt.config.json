@@ -1,0 +1,101 @@
+﻿{
+   "CodeGenerationMode": 4,
+   "ContextClassName": "CPALClinicaContext",
+   "ContextNamespace": null,
+   "DefaultDacpacSchema": null,
+   "FilterSchemas": false,
+   "IncludeConnectionString": false,
+   "ModelNamespace": null,
+   "OutputContextPath": null,
+   "OutputPath": "DraftData",
+   "PreserveCasingWithRegex": true,
+   "ProjectRootNamespace": "Entity",
+   "Schemas": null,
+   "SelectedHandlebarsLanguage": 2,
+   "SelectedToBeGenerated": 0,
+   "T4TemplatePath": null,
+   "Tables": [
+      {
+         "Name": "[dbo].[DetalleReservaTratamiento]",
+         "ObjectType": 0
+      },
+      {
+         "Name": "[dbo].[EvaluacionCita]",
+         "ObjectType": 0
+      },
+      {
+         "Name": "[dbo].[PagoCita]",
+         "ObjectType": 0
+      },
+      {
+         "Name": "[dbo].[PagoCitaDetalle]",
+         "ObjectType": 0
+      },
+      {
+         "Name": "[dbo].[PagosTriaje]",
+         "ObjectType": 0
+      },
+      {
+         "Name": "[dbo].[ReservaTratamiento]",
+         "ObjectType": 0
+      },
+      {
+         "Name": "[dbo].[ReservaTratamientoEstado]",
+         "ObjectType": 0
+      },
+      {
+         "Name": "[dbo].[Triage]",
+         "ObjectType": 0
+      },
+      {
+         "Name": "[dbo].[TriageOnline]",
+         "ObjectType": 0
+      },
+      {
+         "Name": "[dbo].[uvCitasPublicas]",
+         "ObjectType": 3
+      },
+      {
+         "Name": "[dbo].[uvEspecilidadesPublicas]",
+         "ObjectType": 3
+      },
+      {
+         "Name": "[dbo].[uvEvaluacionesPublicas]",
+         "ObjectType": 3
+      },
+      {
+         "Name": "[dbo].[UvHistoriaDiagnosticoBusqueda2]",
+         "ObjectType": 3
+      },
+      {
+         "Name": "[dbo].[uvReservaDiagnosticoSearch]",
+         "ObjectType": 3
+      },
+      {
+         "Name": "[dbo].[uvReservaTratamientoSearch]",
+         "ObjectType": 3
+      }
+   ],
+   "UiHint": "cpal-sql2022.CPALClinica.dbo",
+   "UncountableWords": null,
+   "UseBoolPropertiesWithoutDefaultSql": false,
+   "UseDatabaseNames": false,
+   "UseDateOnlyTimeOnly": true,
+   "UseDbContextSplitting": false,
+   "UseDecimalDataAnnotationForSprocResult": true,
+   "UseFluentApiOnly": true,
+   "UseHandleBars": false,
+   "UseHierarchyId": false,
+   "UseInflector": true,
+   "UseLegacyPluralizer": false,
+   "UseManyToManyEntity": false,
+   "UseNoDefaultConstructor": false,
+   "UseNoNavigations": false,
+   "UseNoObjectFilter": false,
+   "UseNodaTime": false,
+   "UseNullableReferences": false,
+   "UseSchemaFolders": false,
+   "UseSchemaNamespaces": false,
+   "UseSpatial": false,
+   "UseT4": false
+}

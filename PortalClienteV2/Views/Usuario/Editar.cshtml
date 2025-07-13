@@ -1,0 +1,356 @@
+﻿@model UsuarioViewModel
+
+<div class="card bg-info-subtle shadow-none position-relative overflow-hidden mb-4">
+    <div class="card-body px-4 py-3">
+        <div class="row align-items-center">
+            <div class="col-9">
+                <h4 class="fw-semibold mb-8">
+                    Administración de usuarios
+                </h4>
+                <nav aria-label="breadcrumb">
+                    <ol class="breadcrumb">
+                        <li class="breadcrumb-item">
+                            <a class="text-muted text-decoration-none" asp-action="Index" asp-controller="Home">Inicio</a>
+                        </li>
+                        <li class="breadcrumb-item" aria-current="page">Editar Usuario</li>
+                    </ol>
+                </nav>
+            </div>
+            <div class="col-3">
+                <div class="text-center mb-n5">
+                    <img src="../assets/images/breadcrumb/ChatBc.png"
+                         alt=""
+                         class="img-fluid mb-n4" />
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="card">
+    <ul class="nav nav-pills user-profile-tab" id="pills-tab" role="tablist">
+        <li class="nav-item" role="presentation">
+            <button class="nav-link position-relative rounded-0 active d-flex align-items-center justify-content-center bg-transparent fs-3 py-4"
+                    id="pills-account-tab" data-bs-toggle="pill" data-bs-target="#pills-account" type="button" role="tab"
+                    aria-controls="pills-account" aria-selected="true">
+                <i class="ti ti-user-circle me-2 fs-6"></i>
+                <span class="d-none d-md-block">Usuarios</span>
+            </button>
+        </li>
+    </ul>
+    <div class="card-body">
+        <div class="tab-content" id="pills-tabContent">
+            <div class="tab-pane fade show active" id="pills-account" role="tabpanel"
+                 aria-labelledby="pills-account-tab" tabindex="0">
+                <div class="row">
+                    <div class="col-lg-12 d-flex align-items-stretch">
+                        <div class="card w-100 position-relative overflow-hidden">
+                            <div class="card-body p-4">
+                                <h5 class="card-title fw-semibold">Detalle de usuario</h5>
+                                <p class="card-subtitle mb-4">
+                                    Para cambiar tus datos personales, edítalo y guárdalo desde aquí
+                                </p>
+                                @if (ViewBag.Exito != null)
+                                {
+                                    <script>
+                                        document.addEventListener("DOMContentLoaded", function (event) {
+                                            Swal.fire({
+                                                title: "Genial !",
+                                                text: "@(System.Net.WebUtility.HtmlDecode(ViewBag.Exito))",
+                                                icon: "success"
+                                            });
+                                        });
+                                    </script>
+                                }
+                                @if (ViewBag.Error != null)
+                                {
+                                    <script>
+                                        document.addEventListener("DOMContentLoaded", function (event) {
+                                            Swal.fire({
+                                                title: "Error !",
+                                                text: "@(System.Net.WebUtility.HtmlDecode(ViewBag.Error))",
+                                                icon: "error"
+                                            });
+                                        });
+                                    </script>
+                                }
+
+                                <form asp-controller="Usuario" asp-action="Editar" method="post">
+                                    <input type="hidden" asp-for="Id" />
+                                    <input type="hidden" asp-for="Rol" id="txtRol" />
+                                    <input type="hidden" asp-for="UrlImagen" id="txtUrlImagen" />
+
+                                    <div class="row">
+                                        <duv class="col-lg-3 mb-3 border-2 border rounded-2 d-flex align-items-center justify-content-center">
+                                            <div class="text-center">
+                                                @if (!string.IsNullOrEmpty(Model.UrlImagen))
+                                                {
+                                                    <img src="@Url.Action("VerImagen", "Usuario", new { img = Model.UrlImagen, h = 120, w = 120 })" alt="Imagen del usuario" />
+                                                }
+                                                else
+                                                {
+                                                    <img src="~/assets/images/user/user.png" alt="Usuario" height="120" width="120" />
+                                                }
+                                            </div>
+                                        </duv>
+                                        <div class="row col-lg-9">
+                                            <div class="col-lg-12">
+                                                <div class="form-floating mb-3">
+                                                    <input asp-for="Nombre" class="form-control bg-light pe-none" id="txtNombre" placeholder="@Html.DisplayNameFor(m => m.Nombre)" readonly="">
+                                                    <label asp-for="Nombre"><i class="ti ti-user me-2 fs-4"></i>Nombres</label>
+                                                </div>
+                                            </div>
+                                            <div class="col-lg-6">
+                                                <div class="form-floating mb-3">
+                                                    <input asp-for="ApellidoPaterno" class="form-control bg-light pe-none" id="txtApellidoPaterno" placeholder="@Html.DisplayNameFor(m => m.ApellidoPaterno)" readonly="">
+                                                    <label asp-for="ApellidoPaterno"><i class="ti ti-user me-2 fs-4"></i>@Html.DisplayNameFor(m => m.ApellidoPaterno)</label>
+                                                    <span asp-validation-for="ApellidoPaterno" class="text-danger"></span>
+                                                </div>
+                                            </div>
+                                            <div class="col-lg-6">
+                                                <div class="form-floating mb-3">
+                                                    <input asp-for="ApellidoMaterno" class="form-control bg-light pe-none" id="txtApellidoMaterno" placeholder="@Html.DisplayNameFor(m => m.ApellidoMaterno)" readonly="">
+                                                    <label asp-for="ApellidoMaterno"><i class="ti ti-user me-2 fs-4"></i>@Html.DisplayNameFor(m => m.ApellidoMaterno)</label>
+                                                    <span asp-validation-for="ApellidoMaterno" class="text-danger"></span>
+                                                </div>
+                                            </div>
+                                            <div class="col-lg-6 ">
+                                                <div class="form-floating mb-3">
+
+                                                    <select asp-for="IdRol" class="form-control" asp-items="@Model.ListaRoles" onchange="ActualizarRol(this.options[this.selectedIndex].text);" id="sltRoles">
+                                                        <option disabled selected>--Seleccionar --</option>
+                                                    </select>
+                                                    <label asp-for="IdRol"><i class="ti ti-user me-2 fs-4"></i>@Html.DisplayNameFor(m => m.IdRol)</label>
+                                                    <span asp-validation-for="IdRol" class="text-danger"></span>
+                                                </div>
+                                            </div>
+                                            <div class="col-lg-6 ">
+                                                <div class="form-floating mb-3">
+                                                    <input asp-for="Email" class="form-control bg-light pe-none" id="txtEmail" placeholder="@Html.DisplayNameFor(m => m.Email)" readonly="">
+                                                    <label asp-for="Email"><i class="ti ti-user me-2 fs-4"></i> @Html.DisplayNameFor(m => m.Email)</label>
+                                                    <span asp-validation-for="Email" class="text-danger"></span>
+                                                </div>
+                                            </div>
+                                            <div class="col-lg-6 ">
+                                                <div class="form-floating mb-3">
+                                                    <input asp-for="fechaRegistro" class="form-control bg-light pe-none" id="txtfechaRegistro" placeholder="@Html.DisplayNameFor(m => m.fechaRegistro)" readonly="">
+                                                    <label asp-for="fechaRegistro"><i class="ti ti-user me-2 fs-4"></i> @Html.DisplayNameFor(m => m.fechaRegistro)</label>
+                                                    <span asp-validation-for="fechaRegistro" class="text-danger"></span>
+                                                </div>
+                                            </div>
+                                            <div class="col-lg-6 ">
+                                                <a class="btn me-1 mb-1 bg-info-subtle text-info px-4 fs-4 " data-bs-toggle="modal"
+                                                   data-bs-target="#bs-example-modal-xlg">
+                                                    Revisar Log
+                                                </a>
+                                            </div>
+                                            <div class="d-md-flex align-items-center justify-content-between mb-4">
+                                                <div class="form-check mb-4 mb-md-0">
+                                                    <input class="form-check-input primary" type="checkbox" asp-for="Bloqueo">
+                                                    <label class="form-check-label text-dark fs-3">
+                                                        @Html.DisplayNameFor(m => m.Bloqueo)
+                                                    </label>
+                                                </div>
+                                            </div>
+                                            <div class="d-md-flex align-items-center justify-content-between mb-4">
+                                                <div class="form-check mb-4 mb-md-0">
+                                                    <input class="form-check-input primary" type="checkbox" asp-for="EsActivo">
+                                                    <label class="form-check-label text-dark fs-3">
+                                                        @Html.DisplayNameFor(m => m.EsActivo)
+                                                    </label>
+                                                </div>
+                                            </div>
+                                            <div class="d-md-flex align-items-center justify-content-between mb-4">
+                                                <div class="form-check mb-4 mb-md-0">
+                                                    <input class="form-check-input primary" type="checkbox" asp-for="EsConfirmado">
+                                                    <label class="form-check-label text-dark fs-3">
+                                                        @Html.DisplayNameFor(m => m.EsConfirmado)
+                                                    </label>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <div class="col-12">
+                                            <div class="d-flex align-items-center justify-content-end mt-4 gap-6">
+                                                <a class="btn btn-danger" asp-controller="Usuario" asp-action="Index">Volver</a>
+                                                <button type="submit" class="btn btn-primary">Guardar</button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<div>
+    <!-- ------------------------------------------ -->
+    <!-- Extra Large -->
+    <!-- ------------------------------------------ -->
+    <div class="modal fade" id="bs-example-modal-xlg" tabindex="-1"
+         aria-labelledby="bs-example-modal-lg" aria-hidden="true">
+        <div class="modal-dialog modal-xl">
+            <div class="modal-content">
+                <div class="modal-header d-flex align-items-center">
+                    <h4 class="modal-title" id="myLargeModalLabel">
+                        Extra Large modal
+                    </h4>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"
+                            aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="d-md-flex">
+                        <div class="col-md-3 me-auto mb-2">
+                            <div class="input-group">
+                                <label class="input-group-text" for="slcClase">Filtrar</label>
+                                <select class="form-select" id="slcClase">
+                                    <option value="" selected>Todos</option>
+                                    <option value="Pago">Pagos</option>
+                                    <option value="Acceso">Accesos</option>
+                                    <option value="Reserva">Reservas</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="col-md-3 me-auto mb-2">
+                            <div class="form-group">
+                                <input type="date" class="form-control" id="txtFecha">
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="table-responsive">
+                        <table id="userLogTable" class="table border w-100 table-striped table-bordered display text-nowrap">
+                            <thead>
+                                <!-- start row -->
+                                <tr>
+                                    <th>clase</th>
+                                    <th>nivel</th>
+                                    <th>fechaHora</th>
+                                    <th>mensaje</th>
+                                    <th>informacionAdicional</th>
+                                    <th>modulo</th>
+                                    <th>browser</th>
+                                </tr>
+                                <!-- end row -->
+                            </thead>
+                            <tbody>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn bg-danger-subtle text-danger  waves-effect text-start"
+                            data-bs-dismiss="modal" id="verdatos">
+                        Close
+                    </button>
+                </div>
+            </div>
+            <!-- /.modal-content -->
+        </div>
+        <!-- /.modal-dialog -->
+    </div>
+    <!-- /.modal -->
+</div>
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+    <script src="~/assets/libs/datatables.net/js/jquery.dataTables.min.js" asp-append-version="true"></script>
+    <script src="~/assets/js/datatable/datatable-advanced.init.js" asp-append-version="true"></script>
+    <script>
+        function ActualizarRol(nombreRol){
+            $('#txtRol').val(nombreRol)
+        }
+
+        $(document).ready(function () {
+            var dataTable = $('#userLogTable').DataTable({
+                "processing": true,
+                "serverSide": true,
+                "ajax": {
+                    "url": '@Url.Action("LoadLog", "Usuario")',
+                    "type": "POST",
+                    "datatype": "json",
+                    "data": function (d) {
+                        d.user = $('#txtEmail').val();
+                        d.fecha = $('#txtFecha').val(); // Agregar el valor de búsqueda a los datos de la solicitud
+                        d.clase = $('#slcClase').val();
+                        d.orderColumn = d.order[0].column; // Índice de la columna seleccionada para ordenar
+                        d.orderDirection = d.order[0].dir; // Dirección de la ordenación (asc o desc)
+
+                    }
+                },
+                "searching": false, // Desactivar el cuadro de búsqueda
+                "order": [[2, 'desc']], // Orden por la primera columna (índice 0) en orden ascendente por defecto
+                "columnDefs": [
+                    {
+                        "targets": [0, 1], // Columna 0 y columna 1 son ordenables
+                        "orderable": true
+                    },
+                    {
+                        "targets": [4, 5], // Columna 4 y columna 5 no son ordenables
+                        "orderable": false
+                    }
+                ],
+                "columns": [
+                    { "data": "clase" },
+                    { "data": "nivel",
+                        "render": function (data, type, row) {
+                            if (data && row.nivel == "Error") {
+                                console.log("data: " + data + " - type: " + type + " - row: " + row.lockoutEnd)
+                                return '<span class="badge fw-semibold py-1 w-50 bg-danger-subtle text-danger">Error</span>';
+                            }else if(data && row.nivel == "Warning") {
+                                return '<span class="badge fw-semibold py-1 w-50 bg-warning-subtle text-warning">Alerta</span>';
+                            } else {
+                                return '<span class="badge fw-semibold py-1 w-50 bg-info-subtle text-info">Info</span>';
+                            }
+                        }
+                    },
+                    { "data": "fechaHora",
+                        "render": function (data, type, row) {
+                            if (data && row.fechaHora !== null) {
+                                // Puedes usar el método .toLocaleDateString() para formatear la fecha
+                                return new Date(row.fechaHora).toLocaleString(); // Cambié toLocaleDateString() por toLocaleString() para incluir la hora
+                            }
+                            return ''; // Si no hay fechaHora, se muestra una cadena vacía
+                        }
+                    },
+                    { "data": "mensaje" },
+                    { "data": "informacionAdicional" },
+                    { "data": "modulo" },
+                    { "data": "browser",
+                        "render": function (data, type, row) {
+                            if (data && row.browser.includes("PC")) {
+                                return '<span class="text-primary"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-width="1.5"><path stroke-linecap="round" stroke-linejoin="round" d="M7 22h10"/><path d="M2 17V4a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v13a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2Z"/><path stroke-linecap="round" stroke-linejoin="round" d="m9 10.5l2 2l4-4"/></g></svg></span>';
+                            } else {
+                                return '<span class="text-dark"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"><path fill="currentColor" d="M16 2H8a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h8a2 2 0 0 0 2-2V4a2 2 0 0 0-2-2m-3 19h-2v-1h2zm3-2H8V5h8z"/></svg></span>';
+                            }
+                        }
+                    },
+                    // Agregar más columnas según tus datos
+                ]
+            });
+
+
+            $('#txtFecha').on('change', function () {
+                var fecha = $('#txtFecha').val();
+                dataTable.search(fecha).draw();
+                // dataTable.search(field).draw();
+                console.log(fecha);
+                dataTable.ajax.reload(); // Recargar los datos con los nuevos parámetros de búsqueda y campo
+            });
+
+            $('#slcClase').on('change', function () {
+                 var clase = $('#slcClase').val();
+                 dataTable.search(clase).draw();
+                // dataTable.search(field).draw();
+                console.log(clase);
+                dataTable.ajax.reload(); // Recargar los datos con los nuevos parámetros de búsqueda y campo
+            });
+
+
+        });
+
+    </script>
+}

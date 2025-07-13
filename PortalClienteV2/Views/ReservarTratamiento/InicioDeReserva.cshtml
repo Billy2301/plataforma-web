@@ -1,0 +1,100 @@
+﻿@{
+    ViewData["title"] = "Reserve su cita para tratamiento";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div class="card bg-info-subtle shadow-none position-relative overflow-hidden mb-4">
+    <div class="card-body px-4 py-3">
+        <div class="row align-items-center">
+            <div class="col-9">
+                <h4 class="fw-semibold mb-8 text-primary">
+                    Reserve su cita para tratamiento
+                </h4>
+            </div>
+            <div class="col-3">
+                <div class="text-center">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="2.5em" height="2.5em" viewBox="0 0 24 24" class="cc BTC text-primary fs-7">
+                        <g fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2">
+                            <path d="M9 5H7a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V7a2 2 0 0 0-2-2h-2"
+                                  stroke-dasharray="120" stroke-dashoffset="120">
+                                <animate fill="freeze" attributeName="stroke-dashoffset" begin="0.5s" dur="1s" values="120;0" />
+                            </path>
+                            <path d="M9 5a2 2 0 0 1 2-2h2a2 2 0 0 1 2 2v0a2 2 0 0 1-2 2h-2a2 2 0 0 1-2-2"
+                                  stroke-dasharray="50" stroke-dashoffset="50">
+                                <animate fill="freeze" attributeName="stroke-dashoffset" begin="0.6s" dur="0.7s" values="50;0" />
+                            </path>
+                            <path d="M9 12v-1h6v1"
+                                  stroke-dasharray="30" stroke-dashoffset="30">
+                                <animate fill="freeze" attributeName="stroke-dashoffset" begin="0.7s" dur="0.5s" values="30;0" />
+                            </path>
+                            <path d="M12 11v6"
+                                  stroke-dasharray="20" stroke-dashoffset="20">
+                                <animate fill="freeze" attributeName="stroke-dashoffset" begin="0.8s" dur="0.5s" values="20;0" />
+                            </path>
+                            <path d="M11 17h2"
+                                  stroke-dasharray="10" stroke-dashoffset="10">
+                                <animate fill="freeze" attributeName="stroke-dashoffset" begin="0.9s" dur="0.3s" values="10;0" />
+                            </path>
+                        </g>
+                    </svg>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<div class="row">
+    <div class="col-12">
+        <!--  start Step wizard with validation -->
+        <div class="card">
+            <div class="card-body wizard-content px-1 px-md-4">
+                <div class="py-3 col-md-8 mx-auto">
+                    <a asp-action="InformeTratamiento" asp-controller="ReservarTratamiento" class="btn text-bg-light border d-flex align-items-center card-hover icon-container border-primary">
+                        <div class="ms-auto text-start col-9">
+                            <h4 class="mb-0 fw-semibold">Tengo informe de evaluación del CPAL</h4>
+                        </div>
+                        <div class="ms-auto p-8 col-3 rounded-2 d-flex align-items-center justify-content-center me-6 text-primary">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="2.5em" height="2.5em" viewBox="0 0 24 24">
+                                <g fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2">
+                                    <path stroke-dasharray="64" stroke-dashoffset="64" d="M3 12c0 4.97 4.03 9 9 9c4.97 0 9 -4.03 9 -9c0 -4.97 -4.03 -9 -9 -9c-4.97 0 -9 4.03 -9 9Z">
+                                        <animate fill="freeze" attributeName="stroke-dashoffset" dur="0.6s" values="64;0" />
+                                    </path>
+                                    <path stroke-dasharray="12" stroke-dashoffset="12" d="M7 12h9.5">
+                                        <animate fill="freeze" attributeName="stroke-dashoffset" begin="0.7s" dur="0.2s" values="12;0" />
+                                    </path>
+                                    <path stroke-dasharray="8" stroke-dashoffset="8" d="M17 12l-4 4M17 12l-4 -4">
+                                            <animate fill="freeze" attributeName="stroke-dashoffset" begin="0.9s" dur="0.2s" values="8;0" />
+                                    </path>
+                                </g>
+                            </svg>
+                        </div>
+                    </a>
+                </div>
+                <div class="py-3 col-md-8 mx-auto">
+                    <a asp-action="NoInformeTratamiento" asp-controller="ReservarTratamiento" class="btn text-bg-light border d-flex align-items-center card-hover icon-container border-primary">
+                        <div class="ms-auto col-9 text-start">
+                            <h4 class="mb-0 fw-semibold">Tengo informe de evaluación de otra institución /<br /> No tengo informe</h4>
+                        </div>
+                        <div class="ms-auto p-8 col-3 rounded-2 d-flex align-items-center justify-content-center me-6 text-primary">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="2.5em" height="2.5em" viewBox="0 0 24 24">
+                                <g fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2">
+                                    <path stroke-dasharray="64" stroke-dashoffset="64" d="M3 12c0 4.97 4.03 9 9 9c4.97 0 9 -4.03 9 -9c0 -4.97 -4.03 -9 -9 -9c-4.97 0 -9 4.03 -9 9Z">
+                                        <animate fill="freeze" attributeName="stroke-dashoffset" dur="0.6s" values="64;0" />
+                                    </path>
+                                    <path stroke-dasharray="12" stroke-dashoffset="12" d="M7 12h9.5">
+                                        <animate fill="freeze" attributeName="stroke-dashoffset" begin="0.7s" dur="0.2s" values="12;0" />
+                                    </path>
+                                    <path stroke-dasharray="8" stroke-dashoffset="8" d="M17 12l-4 4M17 12l-4 -4">
+                                        <animate fill="freeze" attributeName="stroke-dashoffset" begin="0.9s" dur="0.2s" values="8;0" />
+                                    </path>
+                                </g>
+                            </svg>
+                        </div>
+                    </a>
+                </div>
+            </div>
+        </div>
+   </div>
+</div>
+

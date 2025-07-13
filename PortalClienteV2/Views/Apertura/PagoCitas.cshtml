@@ -1,0 +1,279 @@
+﻿@using Entity.ClinicaModels
+@using PortalClienteV2.Utilities.Helpers
+@model PagoCitasViewModel
+@{
+    ViewData["title"] = "Pago de citas programadas";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    string? culqiPublicKey = ViewData["publicKey"] as string;
+}
+<link rel="stylesheet" href="~/assets/libs/timer-color/timer-color.css">
+
+<div class="card bg-info-subtle shadow-none position-relative overflow-hidden mb-4">
+    <div class="card-body px-4 py-3">
+        <div class="row align-items-center">
+            <div class="col-9">
+                <h4 class="fw-semibold mb-8 text-primary">
+                    Proceso de Pago
+                </h4>
+                <nav aria-label="breadcrumb">
+                    <ol class="breadcrumb">
+                        <li class="breadcrumb-item">
+                            <a class="text-muted text-decoration-none" asp-action="Index" asp-controller="Home">Inicio</a>
+                        </li>
+                        <li class="breadcrumb-item" aria-current="page">Proceso de Pago</li>
+                    </ol>
+                </nav>
+            </div>
+            <div class="col-3">
+                <div class="text-center">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="2.5em" height="2.5em" viewBox="0 0 24 24" class="cc BTC text-primary fs-7">
+                        <path fill="currentColor" d="M7 4C4.8 4 3 5.8 3 8s1.8 4 4 4s4-1.8 4-4s-1.8-4-4-4m0 6c-1.1 0-2-.9-2-2s.9-2 2-2s2 .9 2 2s-.9 2-2 2m0 4c-3.9 0-7 1.8-7 4v2h11v-2H2c0-.6 1.8-2 5-2c1.8 0 3.2.5 4 1v-2.2c-1.1-.5-2.5-.8-4-.8M22 4h-7c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h7c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2m-6 14h-1V6h1zm6 0h-4V6h4z" />
+                    </svg>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="timer-container customizer-timer d-none" id="timerContainer">
+    <div id="timer" class="timer">5:00</div>
+</div>
+
+<div class="row">
+    <div class="col-12">
+        <div class="card">
+            <div class="card-body wizard-content">
+
+                @if (ViewBag.Exito != null)
+                {
+                    <script>
+                        document.addEventListener("DOMContentLoaded", function (event) {
+                            Swal.fire({
+                                title: "Genial !",
+                                text: "@(System.Net.WebUtility.HtmlDecode(ViewBag.Exito))",
+                                icon: "success",
+                                allowOutsideClick: false,
+                                allowEscapeKey: false,
+                                allowEnterKey: false,
+                                confirmButtonText: '<i class="fas fa-home"></i> Volver a Inicio!'
+                            }).then((result) => {
+                                if (result.isConfirmed) {
+                                    window.location.href = '@Url.Action("Index", "Home")';
+                                } else if (result.isDenied) {
+                                    window.location.href = '@Url.Action("Index", "Home")';
+                                }
+                            });
+                        });
+                    </script>
+                }
+                @if (ViewBag.Error != null)
+                {
+                    <script>
+                        document.addEventListener("DOMContentLoaded", function (event) {
+                            Swal.fire({
+                                title: "Error !",
+                                text: "@(System.Net.WebUtility.HtmlDecode(ViewBag.Error))",
+                                icon: "error"
+                            });
+                        });
+                    </script>
+                }
+                @{
+                    decimal total = 0;
+                }
+
+
+                @if (Model != null && Model.ListaPagoCitasSearch.Count > 0)
+                {
+                    <form id="evaluacionesForm" method="post" action="@Url.Action("PagoCitas", "Apertura")">
+@*                         <input type="hidden" id="__selectedIds" name="CitasSeleccionadas" asp-for="CitasSeleccionadas" />
+                        <input type="hidden" id="__pagoCitaId" name="PagoCitaId" asp-for="PagoCitaId" />
+                        <input type="hidden" id="__triajeOnlineId" name="TriajeOnlineId" asp-for="TriajeOnlineId" />
+                        <input type="hidden" id="__sedeId" name="sedeId" asp-for="sedeId" />
+                        <input type="hidden" id="__hc" name="Hc" asp-for="Hc" />
+                        <input type="hidden" id="__email" asp-for="Cargo.Email" />
+                        <input type="hidden" id="__card" asp-for="Cargo.Card" />
+                        <input type="hidden" id="__ip" asp-for="Cargo.Ip" />
+                        <input type="hidden" id="__cardtype" asp-for="Cargo.Cardtype" />
+                        <input type="hidden" id="__browser" asp-for="Cargo.Browser" />
+                        <input type="hidden" id="__cardbrand" asp-for="Cargo.Cardbrand" />
+                        <input type="hidden" id="__devicetype" asp-for="Cargo.Devicetype" />
+                        <input type="hidden" id="__installments" asp-for="Cargo.Installments" />
+                        <input type="hidden" id="__tokenId" asp-for="Cargo.TokenId" />
+                        <input type="hidden" id="__monto" asp-for="Monto" /> *@
+
+                        <div class="">
+                            <div class="action-btn layout-top-spacing mb-4 d-md-flex text-center align-items-center justify-content-between flex-wrap gap-6">
+                                <h5 class="fw-semibold fs-5">Evaluaciones seleccionadas</h5>
+                            </div>
+                            <p style="text-align:justify;">
+                                En esta sección se muestra el número de sesiones totales, seleccione la(s) que desee pagar. <br />
+                                <b>Nota: Seleccione como mínimo una opción por especialidad.</b>
+                            </p>
+                            <div class="table-responsive">
+                                <table class="table align-middle text-nowrap mb-0">
+                                    <thead class="fs-2">
+                                        <tr class="text-center">
+                                            <th width="5%">Seleccionar</th>
+                                            <th width="5%" class="d-none d-md-block"></th>
+                                            <th>Especialidad</th>
+                                            <th>Tipo</th>
+                                            <th>fecha</th> 
+                                            <th class="text-end">Precio</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        @foreach (var cita in Model.ListaPagoCitasSearch)
+                                        {
+                                            var imgEval = cita.ImagenUrl.Replace("../../img/iconEval/", "../../assets/images/iconeval/");
+                                            total += Convert.ToDecimal(cita.Precio);
+                                            <tr>
+                                                <td class="border-bottom-0 text-center">
+                                                    <input class="form-check-input check-cita-detalle" type="checkbox" data-index="@cita.NumeroCita" data-group="@cita.EvaluacionId" @(cita.NumeroCita == 1 ? "checked" : "disabled") onclick="toggleNext(this)" value="@cita.Precio" id="cbx_@cita.PagoCitaDetalleId" data-precio="@cita.Precio" data-id="@cita.PagoCitaDetalleId">
+                                                </td>
+                                                <td class="border-bottom-0 d-none d-md-block text-center">
+                                                    <img src="@imgEval" alt="" class="img-fluid rounded" width="40">
+                                                </td>
+                                                <td class="border-bottom-0">
+                                                    <div class="d-flex align-items-center gap-3 overflow-hidden">
+                                                        <div>
+                                                            <h6 class="fw-semibold fs-4 mb-0">@cita.Nombre</h6>
+                                                            <p class="mb-0 text-muted">@cita.CitaNombre - @cita.EstadoPago</p>
+                                                        </div>
+                                                    </div>
+                                                </td>
+                                                <td class="border-bottom-0">
+                                                    @if (cita.TipoCitaId == 2)
+                                                    {
+                                                        
+                                                        <span class="badge fw-semibold py-1 w-85  bg-ligth  text-muted">
+                                                            <span class="text-dark px-2 fs-7 bg-hover-primary nav-icon-hover position-relative z-index-5"><i class="ti ti-video"></i></span>
+                                                            Virtual
+                                                        </span>
+
+                                                    }
+                                                    else
+                                                    {
+                                                        <span class="badge fw-semibold py-1 w-85  bg-ligth  text-muted">Presencial</span>
+                                                    }
+                                                </td>
+                                                <td class="border-bottom-0">
+                                                @if (cita.FechaCita == null)
+                                                {
+                                                    <a class="btn me-1 mb-1 bg-primary-subtle text-primary px-4 fs-4 ">
+                                                     no programada
+                                                    </a>
+                                                }else{
+                                                    <span class="text-muted">
+                                                            <b>@Convert.ToDateTime(cita.FechaCita).ToString("dd-MM-yyyy")</b> <br />de
+                                                            @Helper.ConvertirHora(cita.HoraCitaDesde) - @Helper.ConvertirHora(cita.HoraCitaHasta) horas
+                                                    </span>
+                                                }
+                                                </td>
+                                                <td class="text-end border-bottom-0">
+                                                    <h6 class="fs-4 fw-semibold mb-0">@cita.Precio</h6>
+                                                </td>
+                                            </tr>
+                                        }
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                        <div class="d-md-flex">
+                            <div class="order-summary border rounded p-md-3 my-4 col-md-7">
+                                <div class="row p-3 ">
+                                    <h5 class="fs-5 fw-semibold mb-4">
+                                        Datos para comprobante de pago
+                                    </h5>
+                                    <div class="col-md-12 mb-3 text-center">
+                                        <div class="form-check form-check-inline">
+                                            <input class="form-check-input warning check-outline outline-warning rdo-comprobante" type="radio" name="TipoComprobante" id="cbxBoleta" value="1" checked>
+                                            <label class="form-check-label" for="cbxBoleta"><b>Boleta</b></label>
+                                        </div>
+                                        <div class="form-check form-check-inline">
+                                            <input class="form-check-input warning check-outline outline-warning rdo-comprobante" type="radio" name="TipoComprobante" id="cbxFactura" value="2">
+                                            <label class="form-check-label" for="cbxFactura"><b>Factura</b></label>
+                                        </div>
+                                    </div>
+                                    <div class="form-group col-md-6 mb-3">
+                                        <label><b id="textHtmlDocumento">DNI</b></label>
+                                        <input type="text" class="form-control" asp-for="NroDocumento" oninput="validateNroDocumento()">
+                                        <span id="validationMessage" class="text-danger"></span>
+                                    </div>
+                                    <div class="form-group col-md-6 mb-3">
+                                        <label><b id="textHtmlRazonSocial">Nombre y Apellido</b></label>
+                                        <input type="text" class="form-control" asp-for="RazonSocial" oninput="validateRazonSocial()">
+                                        <span id="razonSocialValidationMessage" class="text-danger"></span>
+                                    </div>
+                                    <div class="form-group col-md-6 mb-3">
+                                        <label><b>Dirección </b></label>
+                                        <input type="text" class="form-control" asp-for="Direccion">
+                                    </div>
+                                    <div class="form-group col-md-6 mb-3">
+                                        <label><b>Teléfono </b></label>
+                                        <input type="text" class="form-control" asp-for="Telefono">
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="order-summary border rounded p-3 my-4 ms-auto col-md-4">
+                                <div class=" p-3 ">
+                                    <h5 class="fs-5 fw-semibold mb-4">
+                                        Resumen de pago
+                                    </h5>
+                                    <div class="d-flex justify-content-between mb-4">
+                                        <p class="mb-0 fs-4">Sub Total</p>
+                                        <h6 id="subtotal" class="mb-0 fs-4 fw-semibold">S/. @total</h6>
+                                    </div>
+                                    <div class="d-flex justify-content-between mb-4">
+                                    </div>
+                                    <div class="d-flex justify-content-between mb-4">
+                                        <h6 class="mb-0 fs-4 fw-semibold">Total</h6>
+                                        <h6 id="total" class="mb-0 fs-5 fw-semibold">@total</h6>
+                                    </div>
+                                    <div class="d-flex justify-content-between mb-4">
+                                        <a id="btnPagar" class="btn btn-primary w-100" onclick="javascript:IniciarPagoExterno();">Realizar el pago</a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </form>
+                }
+                else
+                {
+                    <div class="order-summary border rounded p-4 my-4 ms-auto">
+                        <div class=" p-3 ">
+                            <h5 class="fs-5 fw-semibold mb-4">
+                                No tiene Evaluaciones seleccionadas
+                            </h5>
+                        </div>
+                    </div>
+                }
+
+            </div>
+        </div>
+    </div>
+</div>
+
+<div id="app" class="customizer-timer"></div>
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+    <script>
+        var fechaExpiracion = '@(Model.TiempoDeExpiracion.HasValue ? Convert.ToDateTime(Model.TiempoDeExpiracion).ToString("o") : "null")';
+        var tiempoTotal = @Model.TiempoEsperaEnSegundos // tiempo en segundos
+    </script>
+    <script src="~/assets/libs/timer-color/timer-color.js" asp-append-version="true"></script>
+
+
+    <script>
+        $(document).ready(function () {
+            // Si la fecha de exiracion existe y es mayor a la fecha actual
+            if (fechaExpiracion !== "null" && new Date(fechaExpiracion) > new Date()) {
+                //Inicializar el timer
+                startTimer();
+            }
+        });
+    </script>
+}

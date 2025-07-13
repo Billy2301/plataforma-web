@@ -1,0 +1,389 @@
+
+.subtitle-primary {
+    height: 3px;
+    width: 100%;
+    background: linear-gradient(to right, #0652A4, #00438c, transparent);
+}
+.subtitle-warning {
+    height: 3px;
+    width: 100%;
+    background: linear-gradient(to right, #FFAD3B, #FFA323, transparent);
+}
+.subtitle-info {
+    height: 3px;
+    width: 100%;
+    background: linear-gradient(to right, #62a3fc, #539bff, transparent);
+}
+.subtitle-success {
+    height: 3px;
+    width: 100%;
+    background: linear-gradient(to right, #13deb9, #13deb9, transparent);
+}
+.subtitle-danger {
+    height: 3px;
+    width: 100%;
+    background: linear-gradient(to right, #fa896b, #fa896b, transparent);
+}
+.form-floating .show-password {
+    position: absolute;
+    top: 0;
+    right: 0;
+    z-index: 2;
+    height: 100%;
+    padding: 1rem 16px;
+    text-align: end;
+    text-overflow: ellipsis;
+    overflow: hidden; /* Agregado */
+    white-space: nowrap; /* Corregido */
+    border: var(--bs-border-width) solid transparent;
+    transform-origin: 0 0;
+    transition: opacity 0.1s ease-in-out, transform 0.1s ease-in-out;
+}
+
+.disable-box {
+    pointer-events: none;
+    cursor: not-allowed;
+    opacity: 0.4;
+    /*    background-color: #e7e7e7;*/
+}
+
+.disable-click {
+    pointer-events: none;
+    cursor: not-allowed;
+}
+
+.input-disabled {
+    background-color: #e9ecef!important; /* Color de fondo para parecer deshabilitado */
+    cursor: not-allowed; /* Cambia el cursor para indicar que está deshabilitado */
+    pointer-events: none; /* Prevenir interacción con el campo */
+    opacity: 0.6; /* Reducir opacidad para dar aspecto deshabilitado */
+}
+
+/*-------------- Preloader ------------*/
+/***************************************/
+.contenido {
+    width: 300px; /* Ancho deseado del div */
+    height: 300px; /* Altura deseada del div */
+    text-align: center; /* Alinea el contenido del div al centro */
+    padding: 20px; /* Espacio interno del div */
+    border-radius: 50%; /* Bordes redondeados */
+    justify-content: center; /* Centra horizontalmente */
+    align-items: center; /* Centra verticalmente */
+    display: flex;
+}
+
+.preloader {
+    background-color: #fff;
+    z-index:10;
+}
+    .preloader .lds-ripple {
+        width: 200px;
+    }
+.preloader svg {
+    transform: rotate(90deg);
+    overflow: visible;
+    width: 200px;
+    height: 150px;
+}
+
+.preloader svg path {
+    stroke-width: 48px;
+    stroke-linecap: round;
+    fill: none;
+    stroke-dasharray: 0 157px;
+    stroke-dashoffset: 0;
+    animation: escalade 5s cubic-bezier(0.8, 0, 0.2, 1) infinite;
+}
+
+.contenido .title {
+    color: #00438c;
+    font-family: sans-serif;
+    font-size: 60px;
+    position: relative;
+    top: 0;
+    left: -65%;
+    animation: aparecerDesdeElCostado 5s cubic-bezier(0.8, 0, 0.2, 1) infinite;
+}
+
+@keyframes escalade {
+    0% {
+        transform: translateY(50px) scale(0.50);
+        stroke-dasharray: 0 157px;
+        stroke-dashoffset: 0;
+    }
+    25% {
+        transform: translateY(50px) scale(0.7); /* Corregido */
+        stroke-dasharray: 157px 157px;
+        stroke-dashoffset: 0;
+    }
+    50% {
+        transform: translateY(50px) scale(0.7); /* Corregido */
+        stroke-dasharray: 157px 157px;
+        stroke-dashoffset: 0;
+    }
+    75% {
+        transform: translateY(50px) scale(0.7); /* Corregido */
+        stroke-dasharray: 157px 157px;
+        stroke-dashoffset: 0;
+    }
+    100% {
+        transform: translateY(100px) scale(0.50); /* Corregido */
+        stroke-dasharray: 157px 157px;
+        stroke-dashoffset: -156px;
+    }
+}
+
+@keyframes aparecerDesdeElCostado {
+    0% {
+        left: -65%; /* Posición final dentro del div */
+    }
+    25% {
+        left: 0%; /* Posición final dentro del div */
+    }
+    50% {
+        left: 0%; /* Posición final dentro del div */
+    }
+    75% {
+        left: 0%; /* Posición final dentro del div */
+    }
+    100% {
+        left: -65%; /* Posición final dentro del div */
+    }
+}
+
+/*-------------- Container Card heat ------------*/
+/***************************************/
+
+.container-fluid > .card {
+    animation: caidaAnimacion 1s ease-in;
+}
+
+@keyframes caidaAnimacion {
+    0% {
+        transform: translateY(-100%);
+    }
+
+    100% {
+        transform: translateY(0);
+    }
+}
+
+#main-wrapper > div > div.body-wrapper > div > div.card.bg-info-subtle.shadow-none.position-relative.overflow-hidden.mb-4 > div > div > div.col-3 > div > img
+{
+    padding: 10px;
+    position: relative;
+    top: -15px;
+    width: 162px;
+    height: auto;
+}
+
+.hand-wave {
+    animation: wave 4s infinite;
+    transform-origin: bottom center; /* Punto de origen de la rotación */
+}
+
+@keyframes wave {
+    0% {
+        transform: rotate(0deg);
+    }
+
+    25% {
+        transform: rotate(15deg);
+    }
+
+    50% {
+        transform: rotate(0deg);
+    }
+
+    75% {
+        transform: rotate(-15deg);
+    }
+
+    100% {
+        transform: rotate(0deg);
+    }
+}
+
+.translucent-2 {
+    opacity: 0.2;
+}
+
+.translucent-4 {
+    opacity: 0.4;
+}
+
+.translucent-6 {
+    opacity: 0.6;
+}
+
+.translucent-8 {
+    opacity: 0.8;
+}
+
+.not-allowed {
+    cursor: not-allowed;
+}
+
+.pointer {
+    cursor: pointer;
+}
+
+#culqi-js {
+    z-index: 999!important;
+}
+
+.disabled-button {
+    pointer-events: none;
+    opacity: 0.5;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    position: relative;
+}
+
+.loading-icon {
+    top: 25%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    position: absolute;
+    display: inline-block;
+    width: 20px;
+    height: 20px;
+    border: 3px solid #a7a7a7;
+    border-top: 3px solid #FFA323;
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+}
+.rounded-circle > .loading-icon{
+    position: initial!important;
+}
+@keyframes spin {
+    0% {
+        transform: rotate(0deg);
+    }
+
+    100% {
+        transform: rotate(360deg);
+    }
+}
+
+.ph-eye-bold {
+    display: inline-block;
+    width: 1em;
+    height: 1em;
+    --svg: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 256 256'%3E%3Cpath fill='%23000' d='M251 123.13c-.37-.81-9.13-20.26-28.48-39.61C196.63 57.67 164 44 128 44S59.37 57.67 33.51 83.52C14.16 102.87 5.4 122.32 5 123.13a12.08 12.08 0 0 0 0 9.75c.37.82 9.13 20.26 28.49 39.61C59.37 198.34 92 212 128 212s68.63-13.66 94.48-39.51c19.36-19.35 28.12-38.79 28.49-39.61a12.08 12.08 0 0 0 .03-9.75m-46.06 33C183.47 177.27 157.59 188 128 188s-55.47-10.73-76.91-31.88A130.4 130.4 0 0 1 29.52 128a130.5 130.5 0 0 1 21.57-28.11C72.54 78.73 98.41 68 128 68s55.46 10.73 76.91 31.89A130.4 130.4 0 0 1 226.48 128a130.5 130.5 0 0 1-21.57 28.12ZM128 84a44 44 0 1 0 44 44a44.05 44.05 0 0 0-44-44m0 64a20 20 0 1 1 20-20a20 20 0 0 1-20 20'/%3E%3C/svg%3E");
+    background-color: currentColor;
+    -webkit-mask-image: var(--svg);
+    mask-image: var(--svg);
+    -webkit-mask-repeat: no-repeat;
+    mask-repeat: no-repeat;
+    -webkit-mask-size: 100% 100%;
+    mask-size: 100% 100%;
+}
+
+#calendar > div.fc-view-harness.fc-view-harness-active {
+    min-height: 300px;
+}
+#v-pills-tab > a:hover {
+    background: var(--bs-primary-bg-subtle);
+    color: var(--bs-primary);
+}
+#v-pills-tab > a.active:hover {
+    background: var(--bs-primary);
+    color: white;
+}
+.upperCase {
+    text-transform: uppercase;
+}
+.slider-container {
+    position: relative;
+    display: inline-block;
+}
+    .slider-container::before {
+        content: "";
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 50%; /* Ajusta esta altura según sea necesario */
+        background: linear-gradient(to bottom, #00438c, rgba(255, 255, 255, 0));
+        /* Puedes ajustar los colores y la transparencia */
+    }
+
+/* indicador de dificultad de contraseña*/
+#passwordStrengthIndicator {
+    width: 100%;
+    height: 15px;
+    background-color: #e0e0e0;
+    border-radius: 5px;
+    overflow: hidden;
+    margin-top: 5px;
+}
+
+.strength-bar {
+    color: white;
+    font-weight: 600;
+    text-align:center;
+    height: 100%;
+    font-size: 11px;
+    transition: width 0.3s;
+}
+
+.easy {
+    background-color: #ff6f5a;
+}
+
+.medium {
+    background-color: #ffbc41;
+}
+
+.hard {
+    background-color: #13de9a;
+}
+
+.tab-hover {
+    opacity: 0.4;
+}
+
+.tab-hover:hover {
+    opacity: 1;
+    color: var(--bs-primary);
+}
+.tab-text {
+    font-size: 1.25rem
+}
+
+@media (max-width: 576px) {
+    .tab-text {
+        font-size: 0.85rem
+    }
+    .rotate-270 {
+        text-transform: uppercase;
+        transform: rotate(270deg);
+    }
+}
+
+
+
+/* Estilo del scrollbar */
+::-webkit-scrollbar {
+    width: 10px;
+}
+
+/* Fondo del scrollbar */
+::-webkit-scrollbar-track {
+    background: linear-gradient(180deg, #e0e0e0, #f0f0f0); /* Gradiente */
+    border-radius: 8px;
+}
+
+/* El pulgar (thumb) con sombra y gradiente */
+::-webkit-scrollbar-thumb {
+    background: linear-gradient(180deg, #7c8fac, #5a6a85);
+    border-radius: 8px;
+    box-shadow: inset 2px 2px 5px rgba(0,0,0,0.3); /* Sombras */
+}
+
+    /* Cambiar color al hacer hover */
+    ::-webkit-scrollbar-thumb:hover {
+        background: linear-gradient(180deg, #5a6a85, #2a3547);
+    }

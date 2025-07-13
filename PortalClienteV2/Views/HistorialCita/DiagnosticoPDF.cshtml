@@ -1,0 +1,261 @@
+﻿@using PortalClienteV2.Utilities.Helpers
+@model HistorialCitaViewModel;
+@{
+    Layout = null;
+}
+
+
+<!DOCTYPE html>
+
+<html>
+<head>
+    <meta name="viewport" content="width=device-width" />
+    <title>Historial de citas</title>
+    <style>
+        .contenedor {
+            width: 900px !important;
+            height: 842px !important;
+            margin: auto;
+        }
+
+        body {
+            font-family: Arial, Helvetica, sans-serif
+        }
+
+        h2.title {
+            text-align: center;
+        }
+
+        p.title {
+            font-weight: bold;
+            color: #2a3547;
+        }
+
+        p.title2 {
+            font-weight: bold;
+            color: #00438c;
+            font-size: 20px;
+        }
+
+        span.text {
+            font-size: 16px;
+            color: #495057;
+        }
+        /* Estilo general para la tabla */
+        .table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 1rem;
+            background-color: #fff;
+            font-size: 12px;
+            line-height: 1.5;
+        }
+
+            /* Estilo para las celdas de encabezado */
+
+            /* Estilo para las celdas del cuerpo */
+            .table tbody td {
+                text-align: center;
+                padding: 8px;
+            }
+
+            /* Estilo para filas alternativas */
+            .table tbody tr:nth-child(odd) {
+                background-color: #fff;
+            }
+
+            /* Estilo para tablas anidadas */
+            .table .table {
+                margin-bottom: 30px;
+            }
+
+            /* Estilo para filas anidadas */
+            .table tbody tr td .table tbody tr {
+                background-color: #ffffff;
+            }
+
+            /* Estilo para filas de terapia */
+            .table tbody tr.bg-light td {
+                background-color: #e9ecef;
+                color: #495057;
+                border-top: 1.5px solid #c1c1c1;
+            }
+
+            /* Estilo para las tablas anidadas */
+            .table tbody tr td .table tbody tr td {
+                padding: 6px;
+                font-size: 12px;
+            }
+
+            /* Estilo para celdas que contienen títulos de grupo (Terapias) */
+            .table tbody tr.bg-light td table tr td {
+                padding: 4px;
+            }
+
+
+
+
+        /* Mejorando la apariencia de la tabla */
+        .table-bordered {
+            border: 1px solid #dee2e6;
+            border-collapse: collapse;
+        }
+
+            /* Ajuste del color y bordes para tablas anidadas */
+            .table-bordered .table tbody tr td {
+                border: none;
+            }
+
+
+        /* Estilo para celdas de estado */
+        .table tbody tr td h6,
+        .table tbody tr td .text-center {
+            font-size: 12px;
+            color: #677078;
+            text-align: center;
+            border-bottom: 1.5px solid #ebebed;
+        }
+    </style>
+</head>
+<body>
+    <div class="contenedor">
+        <table style="width:100%">
+            <tr>
+                <td>
+                    <img src="~/assets/images/logos/logoCpalDyT.png" style="width: auto;height:65px; margin:10px" />
+                </td>
+            </tr>
+        </table>
+        <br />
+        <table style="width:100%">
+            <tr>
+                <td>
+                    <h2 style="text-align:center; border-bottom: 1px solid #696d71;padding-bottom:20px; color:#303030;margin:0px">Historial de citas - DIAGNOSTICO</h2>
+                </td>
+            </tr>
+            @{
+                if (Model.paciente != null)
+                {
+                    <tr>
+                        <td>
+                            <table width="100%">
+                                <tr>
+                                    <td style="padding:3px;">
+                                        <span class="text"><b>HC:</b> @Model?.paciente?.NumeroHistoriaClinica</span>
+                                    </td>
+                                    <td style="padding:3px;">
+                                        <span class="text"><b>Ingreso:</b> @(Model!.paciente.FechaIngresoTratamiento.HasValue ? Model.paciente.FechaIngresoTratamiento.Value.ToString("dd/mm/yyyy"): "")</span>
+                                        <span class="text" style="margin-left:20px;"><b>Reingreso:</b> @( Model!.paciente.FechaUltimoReingreso.HasValue? Model.paciente.FechaUltimoReingreso.Value.ToString("dd/mm/yyyy"): "")</span>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td style="padding:3px;"><span class="text"><b>Nombres:</b> @Model?.paciente?.Nombres @Model?.paciente?.ApellidoPaterno @Model?.paciente?.ApellidoMaterno</span></td>
+                                    <td style="padding:3px;"><span class="text"><b>sexo:</b> @(Model?.paciente?.Sexo == 1? "Masculino": "Femenino")</span></td>
+                                </tr>
+                                <tr>
+                                    <td style="padding:3px;">
+                                        <span class="text"><b>DNI:</b> @Model?.paciente?.PacienteDni</span>
+                                    </td>
+                                    <td style="padding:3px;">
+                                        <span class="text"><b>Fecha nacimiento:</b> @Model?.paciente?.FechaNacimiento.ToString("dd/mm/yyyy")</span>
+                                    </td>
+                                </tr>
+                            </table>
+                        </td>
+                    </tr>                    
+                }
+            }
+            
+        </table>
+        <br />
+
+        <div>
+                    <!-- historial Tratamiento-->
+                @if (Model.ListaHistorialDiagnostico != null && Model.ListaHistorialDiagnostico.Count > 0)
+                    {
+                    var tratamientoAgrupadoPorHistorial = Model.ListaHistorialDiagnostico
+                        .Where(h => h.esCitaPago == 1)
+                        .GroupBy(h => h.historialPacienteID)
+                        .Select(g => new
+                        {
+                            HistorialPacienteID = g.Key,
+                            EvaluacionNombre = g.FirstOrDefault().evaluacionNombre,
+                            NroRegistro = g.FirstOrDefault().numeroRegistro,
+                            Especialista = g.FirstOrDefault().fullName,
+                            FechaInicio = g.FirstOrDefault().fechaInicio,
+                            FechaFin = g.FirstOrDefault().fechaFin,
+                            HistorialEstado = g.FirstOrDefault().nombreEstado,
+                            Citas = g.ToList()
+                        })
+                        .OrderBy(grupo => grupo.NroRegistro)
+                        .ToList();
+
+                        <table class="table table-bordered">
+                            <tbody>
+                                <tr>
+                                    <td width="3"  style="padding:3px;background-color:#696d71; font-weight:800; color: #fff;">Nro.</td>
+                                    <td width="30" style="padding:3px;background-color:#696d71; font-weight:800; color: #fff;">Evaluacion</td>
+                                    <td width="30" style="padding:3px;background-color:#696d71; font-weight:800; color: #fff;">Especialista</td>
+                                    <td width="10" style="padding:3px;background-color:#696d71; font-weight:800; color: #fff;">Fecha Inicio</td>
+                                    <td width="10" style="padding:3px;background-color:#696d71; font-weight:800; color: #fff;">Fecha Fin</td>
+                                    <td width="17" style="padding:3px;background-color:#696d71; font-weight:800; color: #fff;">Estado</td>
+                                </tr>
+                                @foreach (var grupo in tratamientoAgrupadoPorHistorial)
+                                {
+                                    <tr class="bg-light">
+                                        <td style="font-weight:700; text-transform: uppercase;font-size:13px">@grupo.NroRegistro</td>
+                                        <td style="font-weight:700; text-transform: uppercase;font-size:13px">@grupo.EvaluacionNombre</td>
+                                        <td style="font-weight:700; text-transform: uppercase;font-size:13px">@grupo.Especialista</td>
+                                        <td style="font-weight:700; text-transform: uppercase;font-size:13px">@grupo.FechaInicio?.ToString("dd/MM/yyyy")</td>
+                                        <td style="font-weight:700; text-transform: uppercase;font-size:13px">@grupo.FechaFin?.ToString("dd/MM/yyyy")</td>
+                                        <td style="font-weight:700; text-transform: uppercase;font-size:13px">@grupo.HistorialEstado</td>
+                                    </tr>
+                                    <tr>
+                                        <td></td>
+                                        <td colspan="4">
+                                            <table class="table table-striped mb-0">
+                                                <tbody>
+                                                    <tr>
+                                                        <th class="text-center" style="background-color: #f6f6f7;color: #495057;font-weight:600;">Cita</th>
+                                                        <th class="text-center" style="background-color: #f6f6f7;color: #495057;font-weight:600;">Fecha</th>
+                                                        <th class="text-center" style="background-color: #f6f6f7;color: #495057;font-weight:600;">Hora Inicio</th>
+                                                        <th class="text-center" style="background-color: #f6f6f7;color: #495057;font-weight:600;">Hora Fin</th>
+                                                        <th class="text-center" style="background-color: #f6f6f7;color: #495057;font-weight:600;">Asistió</th>
+                                                        <th class="text-center" style="background-color: #f6f6f7;color: #495057;font-weight:600;">Estado</th>
+                                                        <th class="text-center" style="background-color: #f6f6f7;color: #495057;font-weight:600;">Recibo</th>
+                                                    </tr>
+                                                    @foreach (var cita in grupo.Citas)
+                                                    {
+                                                        <tr>
+                                                            <td class="text-center">@cita.numeroCita</td>
+                                                            <td class="text-center">@cita.fechaCita?.ToString("dd/MM/yyyy")</td>
+                                                            <td class="text-center">@Helper.ConvertirHora(cita.horaCitaDesde)</td>
+                                                            <td class="text-center">@Helper.ConvertirHora(cita.horaCitaHasta)</td>
+                                                            <td class="text-center">@((cita.asistioCita == true) ? "SI" : "NO")</td>
+                                                            <td class="text-center">@cita.citaEstadoNombre</td>
+                                                            <td class="text-center">@cita.numeroRecibo</td>
+                                                        </tr>
+                                                    }
+                                                </tbody>
+                                            </table>
+                                        </td>
+                                        <td></td>
+                                    </tr>
+                                }
+                            </tbody>
+                        </table>
+                    }
+                    else
+                    {
+                        <div class="p-2 ps-4 bg-light">
+                            <H5>No hay terapias para mostrar</H5>
+                        </div>
+                    }
+                    <!-- Final historial Tratamiento-->
+                </div>
+
+    </div>
+
+</body>
+</html>
+

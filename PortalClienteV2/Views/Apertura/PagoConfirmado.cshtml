@@ -1,0 +1,37 @@
+﻿@{
+    ViewData["title"] = "Pago Confirmado";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div class="position-relative overflow-hidden min-vh-100 w-100 align-items-center justify-content-center mt-5">
+    <div class="row justify-content-center w-100 text-center">
+        <h1 class="fw-semibold mb-3 text-primary">
+            Gracias por confiar en nosotros.
+        </h1>
+        <h3 class="fw-semibold mb-0 text-primary">
+            El pago se realizó con éxito.
+        </h3>
+    </div>
+    <div class="d-flex align-items-center justify-content-center w-100">
+        <div class="row justify-content-center w-100">
+            <div class="col-lg-5">
+                <div class="text-center mt-md-5">
+                    <img src="~/assets/images/grafics/check.png" class=" w-40" />
+                </div>
+            </div>
+            <div class="col-lg-5 mt-5" style="text-align:justify;">
+                <h5 class="mb-7 text-primary">
+                    La constancia del pago se enviará a su correo electrónico.
+                </h5>
+                <h5 class="mb-7 text-primary">
+                    Una asesora se contactará con usted vía correo electrónico, para definir
+                    la fecha y hora de la sesión.
+                </h5>
+                <h5 class="mb-7 text-primary">En caso de no visualizar el correo, revise el spam o el item de promociones.</h5>
+                <div class="text-center">
+                    <a class="btn btn-warning" href="@Url.Action("Index", "Home")" role="button"><i class="fas fa-home"></i> Volver a inicio</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

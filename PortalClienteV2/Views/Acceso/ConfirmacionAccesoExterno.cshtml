@@ -1,0 +1,82 @@
+﻿@model AccesoExternoViewModel
+@{
+    ViewData["title"] = "cceso Externo";
+    Layout = "~/Views/Shared/_LayoutAcceso.cshtml";
+}
+
+<div class="authentication-login min-vh-100 bg-body row justify-content-center align-items-center p-4 d-none">
+    <div class="auth-max-width col-sm-8 col-md-6 col-xl-7 px-4">
+        <h2 class="mb-1 fs-7 fw-bolder text-primary"><small>Bienvenido al</small><br /> Portal del usuario</h2>
+        @* <h7 class="mb-1 fw-bolder text-primary">Del Instituto de Diagnóstico y Tratamiento CPAL</h7> *@
+        <div class="subtitle-warning mb-2"></div>
+        <h2 class="mb-1 fs-7 fw-bolder text-primary">
+            <small>Asociar su cuenta de : @ViewData["NombreAMostrarProveedor"]</small><br />
+        </h2>
+        <p>
+            Usted ha ingresado correctamente con <strong>@ViewData["NombreAMostrarProveedor"]</strong>.
+            Verifique el nombre de usuario  y a continuación haga clic en el botón Registrarse para inicar sesión.
+        </p>
+        <form asp-controller="Acceso" asp-action="ConfirmacionAccesoExterno" asp-route-returnurl="@ViewData["ReturnUrl"]" method="post">
+            @{
+                if (ViewBag.Error != null)
+                {
+                    <div class="alert customize-alert alert-dismissible alert-light-danger bg-danger-subtle text-danger fade show remove-close-icon" role="alert">
+                        <a class="btn-close" data-bs-dismiss="alert" aria-label="Close"></a>
+                        <div class="d-flex align-items-center  me-3 me-md-0">
+                            <i class="ti ti-info-circle fs-5 me-2 text-danger"></i>
+                            @Html.Raw(ViewBag.Error) !
+                        </div>
+                    </div>
+                }
+
+            }
+            <div class="form-floating mb-3">
+                <input asp-for="Email" type="email" class="form-control" id="exampleInputEmail1" aria-describedby="emailHelp" placeholder="Correo" readonly>
+                <label asp-for="Email" class="form-label">Correo</label>
+                <span asp-validation-for="Email" class="text-danger"></span>
+            </div>
+            <div class="form-floating mb-4">
+                <input asp-for="Name" type="text" id="txtPassword" class="form-control" placeholder="Clave" readonly>
+                <label asp-for="Name" class="form-label">Nombre de usuario</label>
+                <span asp-validation-for="Name" class="text-danger"></span>
+            </div>
+            <div class="mb-2">
+                <small class="justify-content-justify">
+                    <span>Al crear mi cuenta acepto todas Ias condiciones de uso de</span>
+                    <a class="text-primary">Portal de Clientes</a> y las
+                    <a class="text-warning" href="#" data-bs-toggle="modal" data-bs-target="#modal-politicas"><b> Politicas de Privacidad del CPAL.</b></a>
+                </small>
+            </div>
+            <button type="submit" id="btnConfirmar" class="btn btn-primary w-100 py-8 mb-4 rounded-2">Registrarse</button>
+
+
+        </form>
+    </div>
+</div>
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+    <script>
+        function toggleShowPassword(id) {
+            var passwordField = document.getElementById("txt" + id);
+            var eye = document.getElementById("i" + id);
+            console.log(eye)
+            //Mostrar u ocultar el password
+            if (passwordField.type === "password") {
+                passwordField.type = "text";
+                eye.classList.remove("ti-eye-off");
+                eye.classList.add("ti-eye");
+            } else {
+                passwordField.type = "password";
+                eye.classList.remove("ti-eye");
+                eye.classList.add("ti-eye-off");
+            }
+        }
+        window.onload = function () {
+            var btn = document.getElementById("btnConfirmar");
+            btn.click();
+        };
+
+    </script>
+}

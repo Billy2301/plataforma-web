@@ -1,0 +1,317 @@
+﻿@model InformeTratamientoViewModel
+@{
+    ViewData["title"] = "Informe de tratamiento";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div class="card bg-info-subtle shadow-none position-relative overflow-hidden mb-4">
+    <div class="card-body px-4 py-3">
+        <div class="row align-items-center">
+            <div class="col-9">
+                <h4 class="fw-semibold mb-8 text-primary">
+                    Reserve su cita para tratamiento
+                </h4>
+            </div>
+            <div class="col-3">
+                <div class="text-center">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="2.5em" height="2.5em" viewBox="0 0 24 24" class="cc BTC text-primary fs-7">
+                        <g fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2">
+                            <path d="M9 5H7a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V7a2 2 0 0 0-2-2h-2"
+                                  stroke-dasharray="120" stroke-dashoffset="120">
+                                <animate fill="freeze" attributeName="stroke-dashoffset" begin="0.5s" dur="1s" values="120;0" />
+                            </path>
+                            <path d="M9 5a2 2 0 0 1 2-2h2a2 2 0 0 1 2 2v0a2 2 0 0 1-2 2h-2a2 2 0 0 1-2-2"
+                                  stroke-dasharray="50" stroke-dashoffset="50">
+                                <animate fill="freeze" attributeName="stroke-dashoffset" begin="0.6s" dur="0.7s" values="50;0" />
+                            </path>
+                            <path d="M9 12v-1h6v1"
+                                  stroke-dasharray="30" stroke-dashoffset="30">
+                                <animate fill="freeze" attributeName="stroke-dashoffset" begin="0.7s" dur="0.5s" values="30;0" />
+                            </path>
+                            <path d="M12 11v6"
+                                  stroke-dasharray="20" stroke-dashoffset="20">
+                                <animate fill="freeze" attributeName="stroke-dashoffset" begin="0.8s" dur="0.5s" values="20;0" />
+                            </path>
+                            <path d="M11 17h2"
+                                  stroke-dasharray="10" stroke-dashoffset="10">
+                                <animate fill="freeze" attributeName="stroke-dashoffset" begin="0.9s" dur="0.3s" values="10;0" />
+                            </path>
+                        </g>
+                    </svg>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-12">
+        <!--  start Step wizard with validation -->
+        <div class="card">
+            <div class="card-body wizard-content">
+                @if (ViewBag.Error != null)
+                {
+                    <script>
+                        document.addEventListener("DOMContentLoaded", function (event) {
+                            Swal.fire({
+                                title: "Error !",
+                                text: "@(System.Net.WebUtility.HtmlDecode(ViewBag.Error))",
+                                icon: "error"
+                            });
+                        });
+                    </script>
+                }
+
+                @if (ViewBag.Exito != null)
+                {
+                    <script>
+                        document.addEventListener("DOMContentLoaded", function (event) {
+                            showAlertWithConfirmed(
+                                    "",
+                                    "Datos guardados",
+                                    "Su información fue enviada. Una asesora se contactará con usted.",
+                                    '@Url.Action("Index", "Home")',
+                                    '<i class="fas fa-home me-2"></i> Ir a inicio'
+                                );
+                        });
+                    </script>
+                }
+
+                @if (ViewBag.Info != null)
+                {
+                    <script>
+                        document.addEventListener("DOMContentLoaded", function (event) {
+                            showAlertWithConfirmed(
+                                    "info",
+                                    "Importante",
+                                    "@ViewBag.Info",
+                                    '@Url.Action("Index", "Home")',
+                                    '<i class="fas fa-home me-2"></i> Ir a inicio'
+                                );
+                        });
+                    </script>
+                }
+                <form asp-controller="ReservarTratamiento" asp-action="InformeTratamiento" method="post" id="formReservaTx" onsubmit="return subminLoagin(this)">
+                    <div class="text-danger d-none" asp-validation-summary="All" role="alert">
+                    </div>
+                    <div class="row">
+                        <h5 class="text-primary mb-3">
+                            <strong>
+                                Ingrese el número de documento de la persona que recibirá el tratamiento.
+                            </strong>
+                        </h5>
+                        <div class="col-md-4">
+                            <div class="input-group mb-3">
+                                <input asp-for="NroDocumento" type="text" class="form-control" id="txtNroDocumento">
+                                <a class="btn bg-primary-subtle text-primary rounded-end " onclick="loadInformeTx(this)">
+                                    Buscar
+                                </a>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <input id="txtNombres" asp-for="Nombres" class="form-control upperCase fw-bolder text-primary disable-box d-none" style="background-color: whitesmoke;opacity: 1" placeholder="">
+                            <input id="txtHc" asp-for="Hc" type="hidden">
+
+                        </div>
+                    </div>
+                    <hr /><br />
+                    <div id="divLoading"></div>
+@*                     <div class="row d-none text-center fs-5" id="divInformesNo">
+                        <span>No se han encontrado evaluaciones realizadas en los últimos 12 meses</span>
+                        <span class="fs-4 ps-md-5 ms-md-2">
+                            Para reservar una cita hacer<a class="text-warning" asp-controller="ReservarCita" asp-action="InicioDeReserva"><b> clic aquí.</b></a>
+                        </span>
+                    </div> *@
+                    <div class="row d-none" id="divInformes">
+                        <h5 class="text-primary mb-1">
+                            <strong>
+                                Seleccione el <small>(los)</small> tratamiento <small>(s)</small>.
+                            </strong>
+                        </h5>
+                        <div class="table-responsive mb-3">
+                            <table id="tablaListaInformes" class="table table-striped table-bordered ">
+                                <thead>
+                                    <tr>
+                                        <th class="bg-muted text-white text-center p-1">tratamiento</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                </tbody>
+                            </table>
+                        </div>
+                        <div class="row d-flex">
+                            <h5 class="text-primary mb-1">
+                                <strong>
+                                    Seleccione la sede de atención.
+                                </strong>
+                            </h5>
+                            <div class="col-1"></div>
+                            <div class="col-11">
+                                <div class="mb-3 mt-4 fs-5">
+                                    <div class="form-check form-check-inline col-md-2 col-12">
+                                        <input asp-for="SedeId" class="form-check-input warning check-outline outline-warning rdo-comprobante" type="radio" id="rdSurco" value="1" required title="El campo 'Sede' es obligatorio.">
+                                        <label class="form-check-label" for="rdSurco"><b>Surco</b></label>
+                                    </div>
+                                    <a class="fs-3 fst-italic" target="_blank" href="http://bit.ly/41Io0OQ">
+                                        <i class="ti ti-map-pin fs-6 text-danger me-2"></i>
+                                        <span class="fst-italic text-decoration-underline">
+                                            Mi dirección - Perú
+                                        </span>
+                                    </a>
+                                </div>
+                                <div class="mb-3 mt-4 fs-5">
+                                    <div class="form-check form-check-inline col-md-2 col-12">
+                                        <input asp-for="SedeId"  class="form-check-input warning check-outline outline-warning rdo-comprobante" type="radio" id="rdMagdalena" value="2" required title="El campo 'Sede' es obligatorio.">
+                                        <label class="form-check-label" for="rdMagdalena"><b>Magdalena</b></label>
+                                    </div>
+                                    <a class="fs-3 fst-italic" target="_blank" href="https://bit.ly/41NTH9t">
+                                        <i class="ti ti-map-pin fs-6 text-danger me-2"></i>
+                                        <span class="fst-italic text-decoration-underline">Av. Pershing 910, Magdalena, Lima 17 - Perú</span>
+                                    </a>
+                                </div>
+                            </div>
+
+                        </div>
+                        <div class="col-md-2 ms-auto text-end">
+                            <a class="btn btn-primary w-100" onclick="sendFormData()">Enviar datos</a>
+                        </div>
+                    </div>
+                </form>
+                
+                <div class="row d-none fs-5" id="divInformesNo">
+                    <h4 class="text-center mb-3">
+                        No se han encontrado evaluaciones realizadas en los últimos 12 meses
+                    </h4>
+                    <span>
+                        Para orientarlo, indíquenos por qué medio prefiere que una especialista se
+                        comunique con usted:
+                    </span>
+                    <form method="post" id="formReservaTx" action="@Url.Action("NoInformeTratamiento", "ReservarTratamiento")" novalidate="novalidate">
+                        <div class="text-danger validation-summary-valid" role="alert" data-valmsg-summary="true">
+                            <ul>
+                                <li style="display:none"></li>
+                            </ul>
+                        </div>
+                        <input type="hidden" id="flag" data-val="true" data-val-required="The flag field is required." name="flag" value="True">
+                        <div class="row">
+                            <div class="my-4 ps-md-5 ms-md-2 col-md-5">
+                                <div class="text-start fs-4 ms-3 mb-2">
+                                    <div class="form-check form-check-inline">
+                                        <input class="form-check-input warning check-outline outline-warning" type="radio" id="rdOrientacion_0" value="1" data-input="whatsappInput" data-val="true" data-val-required="Debe marcar una opción" name="OrientacionSeleccionada">
+                                        <label class="form-check-label" for="rdOrientacion_0">
+                                            <b>Por WhatsApp</b>
+                                        </label>
+                                    </div>
+                                </div>
+                                <div class="text-start fs-4 ms-3 mb-2">
+                                    <div class="form-check form-check-inline">
+                                        <input class="form-check-input warning check-outline outline-warning" type="radio" id="rdOrientacion_1" value="2" data-input="llamadaInput" name="OrientacionSeleccionada">
+                                        <label class="form-check-label" for="rdOrientacion_1">
+                                            <b>Por llamada telefónica</b>
+                                        </label>
+                                    </div>
+                                </div>
+                                <div class="text-start fs-4 ms-3 mb-2">
+                                    <div class="form-check form-check-inline">
+                                        <input class="form-check-input warning check-outline outline-warning" type="radio" id="rdOrientacion_2" value="3" data-input="emailInput" name="OrientacionSeleccionada">
+                                        <label class="form-check-label" for="rdOrientacion_2">
+                                            <b>Por correo electrónico</b>
+                                        </label>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="my-4 ps-md-5 ms-md-2 col-md-4">
+                                <div class="input-group mb-3" id="whatsappInput" style="display: none;">
+                                    <span class="input-group-text text-success" id="basic-addon1"><i class="ti ti-brand-whatsapp fs-7 ms-3"></i></span>
+                                    <input type="text" class="form-control" placeholder="Número de WhatsApp" data-val="true" data-val-maxlength="El campo 'Número de WhatsApp' debe tener 9 caracteres" data-val-maxlength-max="9" data-val-minlength="El campo 'Número de WhatsApp' debe tener 9 caracteres" data-val-minlength-min="9" data-val-regex="El campo 'Número de WhatsApp' debe contener solo números." data-val-regex-pattern="^\d+$" id="ContactoWhatsApp" maxlength="9" name="ContactoWhatsApp" value="">
+                                </div>
+                                <div class="input-group mb-3" id="llamadaInput" style="display:none;">
+                                    <span class="input-group-text text-indigo" id="basic-addon1"><i class="ti ti-phone-call fs-7 ms-3"></i></span>
+                                    <input type="text" class="form-control" placeholder="Número de Teléfono" data-val="true" data-val-maxlength="El campo 'Teléfono de contacto' debe tener 9 caracteres" data-val-maxlength-max="9" data-val-minlength="El campo 'Teléfono de contacto' debe tener 9 caracteres" data-val-minlength-min="9" data-val-regex="El campo 'Teléfono de contacto' debe contener solo números." data-val-regex-pattern="^\d+$" id="ContactoTelefono" maxlength="9" name="ContactoTelefono" value="">
+                                </div>
+                                <div class="input-group mb-3" id="emailInput" style="display:none;">
+                                    <span class="input-group-text text-info" id="basic-addon1"><i class="ti ti-mail fs-7 ms-3"></i></span>
+                                    <input type="text" class="form-control" placeholder="Correo de contacto" data-val="true" data-val-email="Ingrese el 'Correo de contacto' con el formato correcto." id="ContactoCorreo" name="ContactoCorreo" value="">
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-2 ms-auto text-end">
+                                <button type="submit" class="btn btn-primary w-100">Enviar datos</button>
+                            </div>
+                        </div>
+                        <input name="__RequestVerificationToken" type="hidden" value="CfDJ8E0KM9XP9URJtCfUdhHqeiFXn5kS0L04n6uLiH2qxJQVb_oTfZhZKYfQUMAE-XhbQrwcQyM_46hdTHFkstxv8Oq1dhccN3zvjQEhq6RhtZGgyJXDe7gR5Os3t3Rs_GUqD3_o1uKeE8edBBhxKMZLF3fqZxURzmSLhRWcNnlGb1OI00dPvZ-mt6CW-daSzIqvnw">
+                    </form>
+                </div>
+            </div>
+        </div>
+        <!--  end Step wizard with validation -->
+    </div>
+</div>
+
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+    <script>
+        const urlInforme = '@Url.Action("GetListInformeTratamiento", "ReservarTratamiento")';
+
+    </script>
+    <script src="~/assets/libs/Toasty/toasty.js" asp-append-version="true"></script>
+    <script src="~/assets/js/alertSound/alertSound.js" asp-append-version="true"></script>
+    <script src="~/js/reservaTratamiento.js" asp-append-version="true"></script>
+    <script>
+        document.addEventListener("DOMContentLoaded", function() {
+            const inputs = {
+                whatsappCheck: document.getElementById("whatsappInput"),
+                llamadaCheck: document.getElementById("llamadaInput"),
+                emailCheck: document.getElementById("emailInput")
+            };
+
+            document.querySelectorAll('input[type="radio"]').forEach(radio => {
+                radio.addEventListener("change", function() {
+                    // Ocultar todos los inputs
+                    Object.values(inputs).forEach(input => input.style.display = "none");
+
+                    // Mostrar el input correspondiente al checkbox seleccionado
+                    if (this.checked) {
+                        const inputId = this.dataset.input;
+                        document.getElementById(inputId).style.display = "flex";
+                        // inputs[this.id].style.display = "block";
+                    }
+                });
+            });
+
+            document.getElementById("formReservaTx").addEventListener("submit", function(event) {
+                const selectedRadio = document.querySelector('input[name="OrientacionSeleccionada"]:checked');
+
+                if (!selectedRadio) {
+                    toasty.error("Seleccione un medio de contacto.", 2500);
+                    event.preventDefault();
+                    return;
+                }
+
+                const inputId = selectedRadio.dataset.input;
+                const inputField = document.querySelector(`#${inputId} input`);
+
+                if (!inputField || !inputField.value.trim()) {
+                    toasty.error("Ingrese los datos requeridos", 2500);
+                    event.preventDefault(); // Evita el envío si el campo está vacío
+                    return;
+                }
+
+            });
+
+            // 🔹 Verificar qué radio está seleccionado al cargar la página
+            const checkedRadio = document.querySelector('input[type="radio"]:checked');
+            if (checkedRadio) {
+                const inputId = checkedRadio.dataset.input;
+                if(inputId){
+                    document.getElementById(inputId).style.display = "flex";
+                }
+            }
+
+        });
+    </script>
+}

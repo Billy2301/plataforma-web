@@ -1,0 +1,1580 @@
+﻿@using Entity.ClinicaModels
+@model DiagnosticoViewModel;
+@{
+    ViewData["title"] = "Mis Evaluaciones";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    var HcPaciente = TempData["HcPaciente"];
+    TempData.Keep("HcPaciente"); // Mantener Hc en TempData
+    string? culqiPublicKey = ViewData["publicKey"] as string;
+}
+
+
+
+<div class="card bg-info-subtle shadow-none position-relative overflow-hidden mb-4">
+    <div class="card-body px-4 py-3">
+        <div class="row align-items-center">
+            <div class="col-9">
+                <h4 class="fw-semibold mb-8 text-primary">
+                    Pagos pendientes
+                </h4>
+                <nav aria-label="breadcrumb">
+                    <ol class="breadcrumb">
+                        <li class="breadcrumb-item">
+                            <a class="text-muted text-decoration-none" asp-action="Index" asp-controller="Home">Inicio</a>
+                        </li>
+                        <li class="breadcrumb-item" aria-current="page">Mis evaluaciones</li>
+                    </ol>
+                </nav>
+            </div>
+            <div class="col-3">
+                <div class="text-center">
+@*                     <svg xmlns="http://www.w3.org/2000/svg" width="2.5em" height="2.5em" viewBox="0 0 64 64" class="cc BTC text-primary fs-7">
+                        <path fill="currentColor" d="M55.295.403H8.51C3.925.403.196 4.133.196 8.719v46.78c0 4.586 3.729 8.317 8.314 8.317h46.785c4.584 0 8.314-3.731 8.314-8.317V8.719c0-4.586-3.73-8.316-8.314-8.316M44.666 8.832a3.893 3.893 0 0 1 3.893 3.891c0 2.149-1.375 3.893-3.893 3.893a3.893 3.893 0 1 1 0-7.784m-8.421 12.227c.361-1.259 1.952-3.49 4.708-3.49h7.423c2.757 0 4.35 2.231 4.708 3.49l2.711 9.119h-3.373l-1.985-6.873h-1.306l1.914 6.873H38.284l1.913-6.873h-1.305l-1.982 6.873h-3.373zM18.751 8.796a3.895 3.895 0 1 1 0 7.79a3.895 3.895 0 0 1 0-7.79m.06 19.176c-.122-.215-.494-1.111-.795-1.846l-2.575 10.872l.004 16.843c.005 1.675-1.14 3.04-2.814 3.045c-1.675.007-2.886-1.345-2.899-3.022l-.016-19.882c0-.936.37-3.157.585-3.977l2.415-10.179c.422-1.776 2.206-2.892 3.976-2.455a3.725 3.725 0 0 1 2.618 2.238c.363.905 1.98 4.997 2.358 5.844c.133.292.413.447.47.473c.32.143 1.116.421 2.561 1.072l.815.367l-.707-1.352l-1.137-2.169s-.151-.378.184-.54c.373-.181.575.124.575.124l3.427 6.389s.284.623.122 1.138c-.568-.031-.951-.707-.951-.707l-.062-.119l-.18.373a1.87 1.87 0 0 1-2.136.592c-1.304-.595-4.675-1.99-4.675-1.99c-.585-.275-.871-.624-1.162-1.131zM31 29.976l.986 1.058l-7.586 7.061l-.986-1.057zm24.945 5.055h-21.48c-.733 0-1.129.413-1.362.63c-.946.879-7.244 6.692-7.244 6.692l-1.892-1.866s7.089-6.878 7.973-7.701c.513-.473 1.129-.728 1.779-.728h22.227z" />
+                    </svg> *@
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<ul class="nav nav-pills p-1 p-md-3 mb-0 rounded align-items-center card flex-row">
+    <li class="nav-item">
+        <a href="javascript:void(0)" class="nav-link gap-6 note-link d-flex align-items-center justify-content-center px-3 px-md-3 me-0 me-md-2 text-body-color active" id="all-category">
+            <svg xmlns="http://www.w3.org/2000/svg" width="1.7em" height="1.7em" viewBox="0 0 24 24" class="text-info">
+                <path fill="currentColor" d="M9.34 2a2 2 0 0 0 0 4h2V4a2 2 0 0 0-2-2m0 5.33H4a2 2 0 1 0 0 4h5.34a2 2 0 0 0 0-4" opacity="0.25"></path>
+                <path fill="currentColor" d="M22 9.33a2 2 0 1 0-4 0v2h2a2 2 0 0 0 2-2m-5.32 0V4a2 2 0 1 0-4 0v5.33a2 2 0 1 0 4 0" opacity="0.5"></path>
+                <path fill="currentColor" d="M14.66 22a2 2 0 0 0 0-4h-2v2a2 2 0 0 0 2 2m0-5.33H20a2 2 0 0 0 0-4h-5.34a2 2 0 0 0 0 4" opacity="0.7"></path>
+                <path fill="currentColor" d="M2 14.67a2 2 0 1 0 4 0v-2H4a2 2 0 0 0-2 2m5.32 0V20a2 2 0 1 0 4 0v-5.33a2 2 0 1 0-4 0"></path>
+            </svg>
+            <span class="font-weight-medium tab-text">Mis evaluaciones</span>
+        </a>
+    </li>
+    <li class="nav-item">
+        <a asp-action="Terapias" asp-controller="Tratamiento" class="nav-link gap-6 note-link d-flex align-items-center justify-content-center px-3 px-md-3 me-0 me-md-2 text-body-color" id="note-business" onclick="actionLoagin(this)">
+            <svg xmlns="http://www.w3.org/2000/svg" width="1.7em" height="1.7em" viewBox="0 0 24 24" class="text-warning">
+                <path fill="currentColor" d="M9.34 2a2 2 0 0 0 0 4h2V4a2 2 0 0 0-2-2m0 5.33H4a2 2 0 1 0 0 4h5.34a2 2 0 0 0 0-4" opacity="0.25"></path>
+                <path fill="currentColor" d="M22 9.33a2 2 0 1 0-4 0v2h2a2 2 0 0 0 2-2m-5.32 0V4a2 2 0 1 0-4 0v5.33a2 2 0 1 0 4 0" opacity="0.5"></path>
+                <path fill="currentColor" d="M14.66 22a2 2 0 0 0 0-4h-2v2a2 2 0 0 0 2 2m0-5.33H20a2 2 0 0 0 0-4h-5.34a2 2 0 0 0 0 4" opacity="0.7"></path>
+                <path fill="currentColor" d="M2 14.67a2 2 0 1 0 4 0v-2H4a2 2 0 0 0-2 2m5.32 0V20a2 2 0 1 0 4 0v-5.33a2 2 0 1 0-4 0"></path>
+            </svg>
+            <span class="font-weight-medium tab-hover tab-text">Mis tratamientos</span>
+        </a>
+    </li>
+</ul>
+
+<form id="diagnosticoForm" method="post" asp-controller="Diagnostico" asp-action="Pagos">
+    @if (ViewBag.Exito != null)
+    {
+        <script>
+            document.addEventListener("DOMContentLoaded", function (event) {
+                Swal.fire({
+                    title: "Genial !",
+                    text: "@(System.Net.WebUtility.HtmlDecode(ViewBag.Exito))",
+                    icon: "success",
+                    allowOutsideClick: false,
+                    allowEscapeKey: false,
+                    allowEnterKey: false,
+                    confirmButtonText: '<i class="fas fa-home"></i> Volver a Inicio!'
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        window.location.href = '@Url.Action("Index", "Home")';
+                    } else if (result.isDenied) {
+                        window.location.href = '@Url.Action("Index", "Home")';
+                    }
+                });
+            });
+        </script>
+    }
+    @if (ViewBag.Error != null)
+    {
+        <script>
+            document.addEventListener("DOMContentLoaded", function (event) {
+                Swal.fire({
+                    title: "Error !",
+                    text: "@(System.Net.WebUtility.HtmlDecode(ViewBag.Error))",
+                    icon: "error"
+                });
+            });
+        </script>
+    }
+
+    <input type="hidden" id="txtImagenInternal" />
+    <input type="hidden" id="txtImagenExternal" />
+    <input type="hidden" id="txtImagenExtension" />
+    <input type="hidden" id="txtUrlImagen" />
+
+    <div class="row">
+        <div class="col-12">
+            <div class="card">
+                <div class="card-body wizard-content">
+                    <div class="row">
+                        <div class="col-sm-6">
+                            <!-- text input -->
+                            <div class="form-group">
+                                <label for="txtHistoriaClinica">Historia clínica</label>
+                                <input type="text" class="form-control form-control-border border-width-2" id="txtHistoriaClinica" placeholder="Historia clinica" asp-for="NroHc" disabled>
+                            </div>
+                        </div>
+                        <div class="col-sm-6">
+                            <div class="form-group">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-sm-4">
+                            <!-- text input -->
+                            <div class="form-group">
+                                <label for="txtApePaterno">Apellido paterno</label>
+                                <input type="text" class="form-control form-control-border border-width-2" id="txtApePaterno" placeholder="Apellido Paterno" asp-for="ApePaterno" disabled>
+                            </div>
+                        </div>
+                        <div class="col-sm-4">
+                            <div class="form-group">
+                                <label for="txtApeMaterno">Apellido materno</label>
+                                <input type="text" class="form-control form-control-border border-width-2" id="txtApeMaterno" placeholder="Apellido Materno" asp-for="ApeMaterno" disabled>
+                            </div>
+                        </div>
+                        <div class="col-sm-4">
+                            <div class="form-group">
+                                <label for="txtNombre">Nombres</label>
+                                <input type="text" class="form-control form-control-border border-width-2" id="txtNombre" placeholder="Nombres" asp-for="Nombres" disabled>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-sm-6">
+                            <!-- text input -->
+                            <div class="form-group">
+                                <label for="txtNroDocumento">Nro. documento</label>
+                                <input type="text" class="form-control form-control-border border-width-2" id="txtNroDocumento" placeholder="Nro. Documento" asp-for="PacienteDni" disabled>
+                            </div>
+                        </div>
+                        <div class="col-sm-6">
+                            <div class="form-group">
+                                <label for="txtEmailContacto">Email de contacto</label>
+                                <input type="text" class="form-control form-control-border border-width-2" id="txtEmailContacto" placeholder="Email de Contacto" asp-for="EmailContacto" disabled>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row mt-3">
+                        <div class="table-responsive">
+                            <table class="table table-striped table-bordered " id="TblDiagnostico" style="min-width:700px">
+                                <thead>
+                                    <tr>
+                                        <th class="bg-muted text-white text-center p-1" style='width: 5%'>Nro.</th>
+                                        <th class="bg-muted text-white text-center p-1" style='width: 35%'>Evaluación</th>
+                                        <th class="bg-muted text-white text-center p-1" style='width: 35%'>Especialista</th>
+                                        <th class="bg-muted text-white text-center p-1" style='width: 25%'>Estado</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="tBodyDiagnostico">
+                                    @if (Model.ListaDiagnostico != null && Model.ListaDiagnostico.Count > 0)
+                                    {
+                                        string mReturn = "";
+                                        int historialPacienteIDPre = 0;
+                                        bool openTablePago = false;
+
+                                        @foreach (var diagnostico in Model.ListaDiagnostico)
+                                        {
+                                            int historialPacienteID = Convert.ToInt32(diagnostico.historialPacienteID.ToString());
+                                            string fechaFin = "", fechaInicio = "", FechaPago = "", costoTotal = "", creadoFecha = "", docuTipo = "";
+                                            string numeroRegistro = diagnostico.numeroRegistro.ToString();
+                                            string pagoID = diagnostico.pagoID?.ToString();
+                                            string evaluacionNombre = diagnostico.evaluacionNombre?.ToString();
+                                            string personalApellidos = diagnostico.personalApellidos?.ToString();
+                                            if (!string.IsNullOrEmpty(diagnostico.fechaInicio.ToString())) fechaInicio = Convert.ToDateTime(diagnostico.fechaInicio).ToString("dd/MM/yyyy");
+                                            if (!string.IsNullOrEmpty(diagnostico.fechaFin.ToString())) fechaFin = Convert.ToDateTime(diagnostico.fechaFin).ToString("dd/MM/yyyy");
+                                            if (!string.IsNullOrEmpty(diagnostico.creadoFecha.ToString())) creadoFecha = Convert.ToDateTime(diagnostico.creadoFecha).ToString("dd/MM/yyyy HH:mm");
+                                            string nombreEstado = diagnostico.nombreEstado?.ToString();
+                                            string countCitas = diagnostico.countCitas.ToString();
+                                            if (!string.IsNullOrEmpty(diagnostico.costoTotal.ToString())) costoTotal = Convert.ToDecimal(diagnostico.costoTotal.ToString()).ToString("F");
+                                            string pagoExternoEstado = diagnostico.pagoExternoEstado?.ToString();
+                                            string pagoCitaDesc = diagnostico.pagoDescripcion?.ToString();
+
+                                            string pagoDesc = evaluacionNombre + ", " + countCitas + " Cita(s)";
+
+                                            string pagoVoucherEstado = diagnostico.pagoExternoVoucherEstado?.ToString();
+                                            if (pagoVoucherEstado == "PAGADO" || pagoVoucherEstado == "PENDIENTE")
+                                            {
+                                                if (pagoVoucherEstado.Length > 0) pagoExternoEstado = pagoVoucherEstado;
+                                                if (!string.IsNullOrEmpty(diagnostico.creadoFechaPagoVoucher.ToString())) creadoFecha = Convert.ToDateTime(diagnostico.creadoFechaPagoVoucher).ToString("dd/MM/yyyy HH:mm");
+                                                if (!string.IsNullOrEmpty(diagnostico.docuTipoPagoVoucher.ToString())) docuTipo = diagnostico.docuTipoPagoVoucher.ToString();
+                                            }
+
+                                            pagoDesc = pagoDesc.Replace("'", "");
+                                            pagoDesc = pagoDesc.Trim();
+                                            string costoTotal2 = costoTotal.Replace(".", "");
+
+                                            if (historialPacienteID != historialPacienteIDPre)
+                                            {
+                                                if (openTablePago)
+                                                {
+                                                    @Html.Raw("</table>")
+                                                    @Html.Raw("</td>")
+                                                    @Html.Raw("</tr>")
+                                                    openTablePago = false;
+                                                }
+                                                @Html.Raw("<tr>")
+                                                @Html.Raw("<td class='bg-light'><strong>" + numeroRegistro + "</strong></td>")
+                                                @Html.Raw("<td class='bg-light'><strong>" + evaluacionNombre + "</strong><br/>(Inicio :" + fechaInicio + ((fechaFin == "") ? "" : (" - " + fechaFin)) + ")</td>")
+                                                @Html.Raw("<td class='bg-light'><strong>" + personalApellidos + "</strong></td>")
+                                                @Html.Raw("<td class='bg-light'><strong>" + nombreEstado + "</strong></td>")
+                                                @Html.Raw("</tr>")
+                                            }
+                                            else
+                                            {
+                                                string bgPago = "bg-muted text-white py-1 translucent-6";
+                                                string allowed = "";
+                                                if (pagoExternoEstado == "PAGADO" || pagoExternoEstado == "PENDIENTE")
+                                                {
+                                                    //bgPago = "text-bg-light text-muted py-1";
+                                                    allowed = "not-allowed translucent-8";
+                                                }
+
+                                                if (!openTablePago)
+                                                {
+                                                    openTablePago = true;
+                                                    @Html.Raw("<tr>")
+                                                    @Html.Raw("<td></td>")
+                                                    @Html.Raw("<td colspan='3'>")
+                                                    @Html.Raw("<table class='table  table-bordered '>")
+                                                    @Html.Raw("<tr>")
+                                                    @Html.Raw("<td class='" + bgPago + "' style='width:20%'><b>Citas a Pagar</b></td>")
+                                                    @Html.Raw("<td class='" + bgPago + "' style='width:20%'><b>Total a pagar</b></td>")
+                                                    @Html.Raw("<td class='" + bgPago + "' style='width:25%'><b>Estado de pago</b></td>")
+                                                    @Html.Raw("<td class='" + bgPago + "' style='width:30%'><b>Comprobante</b></td>")
+                                                    @Html.Raw("</tr>")
+                                                }
+
+                                                @Html.Raw("<tr>")
+                                                @Html.Raw("<td class='text-muted " + allowed + "'><strong>" + pagoCitaDesc + "</strong></td>")
+                                                @Html.Raw("<td class='text-muted " + allowed + "'><strong>" + costoTotal + "</strong></td>")
+                                                @Html.Raw("<td class='text-muted " + allowed + "'>" + pagoExternoEstado + "</td>")
+                                                if (pagoExternoEstado == "PAGADO" || pagoExternoEstado == "PENDIENTE")
+                                                {
+                                                    @Html.Raw("<td class='text-muted " + allowed + "'><div style='height: 50px'><b>" + creadoFecha + " - " + docuTipo + "</b></div></td>")
+                                                }
+                                                else
+                                                {
+                                                    @Html.Raw("<td class='text-primary'><input id='check_" + pagoID + "' type='checkbox' class='d-none' /><button id='btnPagar_" + pagoID + "' class='my-1 btn btn-warning btn-sm' type='button' onclick='openModal1(" + pagoID + ",&#39;" + pagoDesc + "&#39;," + costoTotal2 + "," + costoTotal + ")'><i class='fa fa-credit-card'> </i> Pagar en línea </button> <button id='btnModalVoucher_" + pagoID + "' class='my-1 btn btn-primary color-palette btn-sm float-right' type='button' onclick='openModal2(" + pagoID + ",&#39;" + pagoDesc + "&#39;," + costoTotal2 + "," + costoTotal + ")'><i class='fa fa-ticket'> </i> Subir Voucher </button> <br><a class='text-primary' href='javascript:openModalTerminos()'><small>🛈 términos y condiciones</small></a><div></td>")
+                                                }
+                                                @Html.Raw("</tr>")
+                                            }
+                                            historialPacienteIDPre = historialPacienteID;
+                                        }
+
+                                        if (openTablePago)
+                                        {
+                                            @Html.Raw("</table>")
+                                            @Html.Raw("</td>")
+                                            @Html.Raw("</tr>")
+                                        }
+                                    }
+                                    else
+                                    {
+                                        <tr><td colspan="4">No se encontraron evaluaciones para mostrar.</td></tr>
+                                    }
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+                <!-- /.card-body -->
+                <div class="card-footer">
+                    <div class="m-2">
+                        @*                         <span class="text-muted mr-1">Estado: </span>
+                        <small class="badge bg-gray translucent-6 mx-2"><i class="fas fa-check mr-2"></i>Pagado</small>
+                        <small class="badge bg-primary translucent-6 mx-2"><i class="far fa-clock mr-1"></i>Deuda</small> *@
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal 1 : Pagos Culqi -->
+    <div class="modal fade" id="modalCulqi" aria-hidden="true" tabindex="-1" data-bs-backdrop="static" data-bs-keyboard="false">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header sidebar-cpal">
+                    <h4 class="modal-title">Comprobante de pago</h4>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+
+                    <div class="row">
+                        <div class="col-md-12">
+                            <p class="mb-2">
+                                Por favor seleccionar el tipo de documento de pago que desea:
+                            </p>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-12">
+                            <!-- Añadimos 'text-center' para centrar horizontalmente -->
+                            <div class="d-flex form-group">
+                                <div class="col-6  text-center">
+                                    <div class="custom-control custom-radio">
+                                        <input class="custom-control-input" type="radio" id="rd1" name="tipoDocPago" checked="true" value="BOLETA">
+                                        <label for="rd1" class="custom-control-label pointer">BOLETA</label>
+                                    </div>
+                                </div> <!-- Usamos 'd-inline-block' para mantener los elementos en línea -->
+                                <div class="col-6">
+                                    <div class="custom-control custom-radio">
+                                        <input class="custom-control-input" type="radio" id="rd2" name="tipoDocPago" checked="" value="FACTURA">
+                                        <label for="rd2" class="custom-control-label pointer">FACTURA</label>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <hr />
+                    <div class="row" id="divPagoConDNI" style="display: block">
+                        <!-- Inicializar en display: none-->
+                        <div class="form-group ml-3 mb-3">
+                            <div class="custom-control custom-switch">
+                                <input type="checkbox" class="custom-control-input" id="cbxPagoConDNI">
+                                <label class="custom-control-label pointer" for="cbxPagoConDNI">
+                                    <span style="margin-left: 15px">Con DNI?</span>
+                                    <span style="margin-left: 15px;"><small class="text-primary" id="msjDni"></small></span>
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row" id="divFacturaInfo1">
+                        <div class="col-md-12 mb-2">
+                            <div class="form-group">
+                                <label class="text-muted">Nombre / Razón social <span class="text-danger">*</span></label>
+                                <input id="txtRazonSocial" type="text" asp-for="RazonSocial" class="form-control form-control-border border-width-2" placeholder="Razon Social" MaxLength="80">
+                                <span id="validationMessageRazonSocial" class="text-danger" style="display:none">Este campo es obligatorio</span>
+                            </div>
+                        </div>
+                        <div class="col-md-6 mb-2">
+                            <div class="form-group">
+                                <label class="text-muted">DNI / RUC <span class="text-danger">*</span></label>
+                                <input id="txtNroDocumentoPago" type="text" asp-for="NroDocumentoPago" class="form-control form-control-border border-width-2" placeholder="DNI / RUC" MaxLength="11">
+                                <span id="validationMessageNroDocumentoPago" class="text-danger"></span>
+                            </div>
+                        </div>
+                        <div class="col-md-6 mb-2">
+                            <div class="form-group">
+                                <label class="text-muted">Dirección <span class="text-danger">*</span></label>
+                                <input id="txtDireccionPago" type="text" asp-for="Direccion" class="form-control form-control-border border-width-2" placeholder="Dirección" MaxLength="100">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer ">
+                    <button type="button" class="btn btn-muted" data-bs-dismiss="modal">Salir<i class="fas fa-sign-out-alt ms-2"></i></button>
+                    <button type="button" class="btn btn-primary" onclick="SaveFormModalCulqi()" id="btnPagar">Guardar<i class="fas fa-save ms-2"></i></button>
+                </div>
+            </div>
+            <!-- /.modal-content -->
+        </div>
+        <!-- /.modal-dialog -->
+    </div>
+
+    <!-- Modal 2 : Pagos Voucher -->
+    <div id="modalVoucher" class="modal fade show" style="display: none;" aria-hidden="true" data-bs-backdrop="static" data-bs-keyboard="false">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header sidebar-cpal">
+                    <h4 class="modal-title">Datos del Voucher</h4>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="row">
+                        <div class="col-md-6 mb-3 ">
+                            <div class="border-2 border p-2 h-100 rounded-2">
+                                <div action="#" class="dropzone border-0 bg-transparent" id="miDropzone">
+                                    <div class="fallback">
+                                        <input id="imgVoucher" type="file" />
+                                    </div>
+                                </div>
+                                <div class="d-flex">
+                                    <a class="btn bg-primary-subtle text-primary w-100 mt-2 m-1" id="btnUploadImg" onclick="ClicDropzone()">Subir</a>
+                                    <a class="btn bg-danger-subtle text-danger w-100 mt-2 m-1" id="btnClearImg" onclick="deleteImagen()" style="display:none;">Quitar</a>
+                                </div>
+                            </div>
+                            <span id="validationMessageImgVoucher" class="text-danger" style="display:none">Este campo es obligatorio</span>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-group  mb-3">
+                                <label class="text-muted">Banco</label>
+                                <select class="form-select" id="ddlVoucherBanco">
+                                    <option value="" selected>--Seleccionar--</option>
+                                    <option value="BCP">BCP</option>
+                                    <option value="Scotiabank">Scotiabank</option>
+                                    <option value="Interbank">Interbank</option>
+                                    <option value="Continental">Continental</option>
+                                    <option value="BcoNacion">Banco de la Nación</option>
+                                    <option value="Otro">Otro</option>
+                                </select>
+                                <span id="validationMessageVoucherBanco" class="text-danger" style="display:none">Este campo es obligatorio</span>
+
+
+                            </div>
+                            <div class="form-group  mb-3">
+                                <!-- text input -->
+                                <div class="form-group">
+                                    <label class="text-muted">Fecha de pago</label>
+                                    <input type="text" id="txtVoucherFecPago" class="form-control" placeholder="dd/mm/yyyy" required="" pattern="^(0[1-9]|[1-2][0-9]|3[0-1])/(0[1-9]|1[0-2])/[0-9]{4}$" autocomplete="off">
+                                    <span id="validationMessageVoucherFecPago" class="text-danger" style="display:none">Ingrese fecha en formato valido</span>
+                                </div>
+                            </div>
+                            <div class="form-group  mb-3">
+                                <div class="form-group">
+                                    <label class="text-muted">Nro. de operación</label>
+                                    <input type="text" id="txtVoucherNroOperacion" class="form-control" placeholder="Nro. de operación">
+                                    <span id="validationMessageVoucherNroOperacion" class="text-danger" style="display:none">Este campo es obligatorio</span>
+                                </div>
+                            </div>
+                        </div>
+
+
+                    </div>
+                    <div class="row">
+                        <div class="col-sm-6 mb-3">
+                            <!-- text input -->
+                            <div class="form-group">
+                                <label class="text-muted">Agencia</label>
+                                <input type="text" id="txtVoucherAgencia" class="form-control form-control-border border-width-2" placeholder="Agencia">
+                            </div>
+                        </div>
+                        <div class="col-sm-6 mb-3">
+                            <div class="form-group">
+                                <label class="text-muted">Moneda</label>
+                                <select class="form-select" id="ddlMoneda">
+                                    <option value="PEN">Soles</option>
+                                    <option value="USD">Dolares</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                    <br />
+                    <div class="row">
+                        <div class="col-md-12">
+                            <p class="mb-2">
+                                Por favor seleccionar el tipo de documento de pago que desea:
+                            </p>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-12">
+                            <!-- Añadimos 'text-center' para centrar horizontalmente -->
+                            <div class="d-flex form-group">
+                                <div class="col-6 text-center mb-3">
+                                    <div class="custom-control custom-radio">
+                                        <input class="custom-control-input" type="radio" id="rdV_1" name="TipoDoc" checked="true" value="BOLETA">
+                                        <label for="rdV_1" class="custom-control-label pointer">BOLETA</label>
+                                    </div>
+                                </div> <!-- Usamos 'd-inline-block' para mantener los elementos en línea -->
+                                <div class="col-6 mb-3">
+                                    <div class="custom-control custom-radio">
+                                        <input class="custom-control-input" type="radio" id="rdV_2" name="TipoDoc" checked="" value="FACTURA">
+                                        <label for="rdV_2" class="custom-control-label pointer">FACTURA</label>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <hr />
+                    <div class="row" id="divConDNI" style="display: block">
+                        <!-- Inicializar en display: none-->
+                        <div class="form-group ml-3 mb-3">
+                            <div class="custom-control custom-switch">
+                                <input type="checkbox" class="custom-control-input" id="cbxConDNI">
+                                <label class="custom-control-label pointer" for="cbxConDNI">
+                                    <span style="margin-left: 15px">Con DNI?</span>
+                                    <span style="margin-left: 15px;"><small class="text-primary" id="msjDni">Obligatorio para pagos mayor a 700</small></span>
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row" id="divFactura1">
+                        <div class="col-md-12 mb-3">
+                            <div class="form-group">
+                                <label class="text-muted">Nombre / Razón social <span class="text-danger">*</span></label>
+                                <input id="txtVoucherRazonSolial" type="text" class="form-control form-control-border border-width-2" placeholder="Nombre / Razon Social" MaxLength="80">
+                                <span id="validationMessageVoucherRazonSolial" class="text-danger" style="display:none">Este campo es obligatorio</span>
+                            </div>
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <div class="form-group">
+                                <label class="text-muted">DNI / RUC <span class="text-danger">*</span></label>
+                                <input id="txtVoucherRuc" type="text" class="form-control form-control-border border-width-2" placeholder="DNI / RUC" MaxLength="11">
+                                <span id="validationMessageVoucherRuc" class="text-danger" style="display:none">Este campo es obligatorio</span>
+                            </div>
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <div class="form-group">
+                                <label class="text-muted">Dirección <span class="text-danger">*</span></label>
+                                <input id="txtVoucherDireccion" type="text" class="form-control form-control-border border-width-2" placeholder="Dirección" MaxLength="100">
+                            </div>
+                        </div>
+                    </div>
+
+
+                </div>
+                <div class="modal-footer ">
+                    <button type="button" class="btn btn-muted" data-bs-dismiss="modal">Salir <i class="fas fa-sign-out-alt ms-2"></i></button>
+                    <button type="button" class="btn btn-primary" onclick="SaveFormModal2()" id="btnVoucher">Guardar <i class="fas fa-save ms-2"></i></button>
+                </div>
+            </div>
+            <!-- /.modal-content -->
+        </div>
+        <!-- /.modal-dialog -->
+    </div>
+
+</form>
+
+
+
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+    <script src="https://checkout.culqi.com/js/v4" type="text/javascript" asp-append-version="true"></script>
+    <script src="~/js/site.js" type="text/javascript" asp-append-version="true"></script>
+    <script type="text/javascript">
+
+        var publicKey_ = "@culqiPublicKey";
+        var id_;
+        var desc_;
+        var totalPagar_;
+        var totalPagarReal_;
+        var area_;
+        var hc_;
+        var tipoDoc_;
+        var razonSocial_;
+        var ruc_;
+        var direccionPago_;
+        var Email_;
+        var conDni_;
+
+        var banco_;
+        var fechaPago_;
+        var nroOperacion_;
+        var agencia_;
+        var moneda_;
+        var nombreImagen_;
+        var fileInternal_;
+        var fileExternal_;
+        var fileExtension_;
+
+        $(document).ready(function () {
+            // culqi
+            $('#rd1').on('change', function (event) { rd1_onclick(); });
+            $('#rd2').on('change', function (event) { rd2_onclick(); });
+            $('#cbxPagoConDNI').on('click', function (event) { checkPagoConDNI(); });
+            const checkboxDni = $('#cbxPagoConDNI');
+            const radioButtons = $('input[name="tipoDocPago"]');
+            checkboxDni.on('change', addPatternNroDocumento);
+            radioButtons.on('change', addPatternNroDocumento);
+
+
+            // voucher
+            $('#rdV_1').on('change', function (event) { rd1_1_onclick(); });
+            $('#rdV_2').on('change', function (event) { rd2_2_onclick(); });
+            $('#cbxConDNI').on('click', function (event) { checkConDNI(); });
+            const checkboxVoucherDni = $('#cbxConDNI');
+            const radioButtonsVoucher = $('input[name="TipoDoc"]');
+            checkboxVoucherDni.on('change', addPatternNroDocumentoVoucher);
+            radioButtonsVoucher.on('change', addPatternNroDocumentoVoucher);
+            $('#txtVoucherFecPago').datepicker({
+                format: 'dd/mm/yyyy', // Formato de fecha deseado
+                autoclose: true // Para cerrar automáticamente el datepicker después de seleccionar una fecha
+            });
+
+        })
+        //^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+        Dropzone.options.miDropzone = {
+            url: "@Url.Action("CargarImagen", "PagoExterno")",
+            method: "POST",
+            paramName: "file", // The name that will be used to transfer the file
+            maxFilesize: 5, // MB
+            maxFiles: 1, // Máximo número de archivos permitidos
+            dictDefaultMessage: "Arrastra el archivos aquí para subirlo (max 5MB) formato: JPG,PNG,PDF",
+            init: function () {
+                this.on("sending", function (file, xhr, formData) {
+                    deleteImagen()
+                });
+                this.on("complete", function (file) {
+                    checkFiles()
+                });
+                this.on("success", function (file, response) {
+
+                    // Maneja la respuesta del servidor después de cargar el archivo
+                    if (response.estado) {
+                        Swal.fire({
+                            title: "Genial !",
+                            text: response.mensaje,
+                            icon: "success",
+                            showConfirmButton: false,
+                            timer: 1500
+                        });
+                        $("#txtImagenInternal").val(response.objeto.internal)
+                        $("#txtImagenExternal").val(response.objeto.external)
+                        $("#txtImagenExtension").val(response.objeto.extension)
+                        var urlCreated = $("#txtImagenInternal").val() + $("#txtImagenExtension").val();
+                        $("#txtUrlImagen").val(urlCreated);
+
+                    } else {
+                        Swal.fire({
+                            title: "Error !",
+                            text: response.mensaje,
+                            icon: "error"
+                        });
+                    }
+                });
+                this.on("error", function (file, errorMessage) {
+                    deleteImagen();
+                    Swal.fire({
+                        title: "Error !",
+                        text: 'Se ha producido un error al cargar el archivo: ' + errorMessage,
+                        icon: "error"
+                    });
+                });
+            }
+
+        };
+        //^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+        /** Selecciona el área del dropzone y simula un click */
+        function ClicDropzone() {
+            // Selecciona el área de Dropzone
+            var dropzoneArea = document.querySelector("#miDropzone");
+            // Simula un clic en el área de Dropzone
+            dropzoneArea.click();
+        }
+        //^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+        /** Elimina las imagenes cargadas en el DropZone */
+        function deleteImagen() {
+
+            if (typeof Dropzone !== 'undefined') {
+                // Verificar si ya hay una instancia de Dropzone asociada al elemento
+                if (Dropzone.forElement("#miDropzone")) {
+                    // Crear una instancia de Dropzone solo si no hay una ya asociada al elemento
+                    var miDropzone = Dropzone.forElement("#miDropzone")
+                    miDropzone.removeAllFiles();
+                    // Buscar el elemento de vista previa de la imagen manualmente agregada
+                    var previewElements = miDropzone.previewsContainer.querySelectorAll('.dz-image-preview');
+                    // Eliminar el elemento de vista previa
+                    previewElements.forEach(function (previewElement) {
+                        previewElement.remove();
+                    });
+                    $("#txtUrlImagen").val("");
+
+                } else {
+                    console.log("Ya está definido.");
+                }
+            }
+            else {
+                console.log("Dropzone no está definido.");
+            }
+            checkFiles();
+        }
+        //^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+        /** Oculta/muestra el boton de carga/eliminar imagen si existe en el dropzone */
+        function checkFiles() {
+            if (typeof Dropzone !== 'undefined') {
+                if (Dropzone.forElement("#miDropzone")) {
+                    var myDropzone = Dropzone.forElement("#miDropzone");
+                    if (myDropzone.files.length > 0) {
+                        document.getElementById("btnUploadImg").style.display = "none";
+                        document.getElementById("btnClearImg").style.display = "";
+                    } else {
+                        document.getElementById("btnUploadImg").style.display = "";
+                        document.getElementById("btnClearImg").style.display = "none";
+                    }
+                }
+            }
+        }
+
+        // Metodos para pagos con culqi
+        //^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+        function openModal1(id, desc, totalPagar, totalPagarReal) {
+            // if (!document.getElementById("check_" + id).checked) {
+            //     Swal.fire("", "! Debe Aceptar los Términos y Condiciones");
+            //     return;
+            // }
+            clearFormPago();
+
+            id_ = id;
+            desc_ = desc;
+            totalPagar_ = totalPagar;
+            totalPagarReal_ = totalPagarReal;
+            // console.log(id);
+            // console.log(desc);
+            // console.log(totalPagar);
+            // console.log(totalPagarReal);
+            if (Number(totalPagar_) > 69900) {
+                document.getElementById("cbxPagoConDNI").checked = true;
+                checkPagoConDNI();
+                $('#msjDni').html('* Obligatorio para pagos mayores a S/. 700.00');
+            }
+
+            addPatternNroDocumento();
+            $('#modalCulqi').modal('show');
+        }
+        //^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+        function checkPagoConDNI() {
+            const checkbox = document.getElementById('cbxPagoConDNI');
+            if (checkbox.checked) {
+                rd2_onclick()
+                document.getElementById('divPagoConDNI').style.display = "";
+            } else {
+                rd1_onclick()
+            }
+        }
+        //^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+        function clearFormPago() {
+            id_ = "";
+            desc_ = "";
+            totalPagar_ = "";
+            totalPagarReal_ = "";
+
+            $("#txtRazonSocial").val("");
+            $("#txtNroDocumento").val("");
+            $("#txtDireccionPago").val("");
+            $('#rd1').prop("checked", true);
+            $('#rd1').parent().addClass('checked');
+            $('#rd2').parent().removeClass('checked');
+            rd1_onclick();
+        }
+        //^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+        function rd1_onclick() {
+            document.getElementById("divFacturaInfo1").style.display = "none";
+            document.getElementById("divPagoConDNI").style.display = "";
+            document.getElementById('cbxPagoConDNI').checked = false;
+        }
+        //^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+        function rd2_onclick() {
+            document.getElementById("divFacturaInfo1").style.display = "";
+            document.getElementById("divPagoConDNI").style.display = "none";
+        }
+        //^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+        function addPatternNroDocumento() {
+            var checkConDni = document.getElementById("cbxPagoConDNI").checked;
+            var radioFactura = document.getElementById("rd2").checked;
+            var documento = document.getElementById("txtNroDocumentoPago");
+            var validationMessage = document.getElementById("validationMessageNroDocumentoPago");
+
+            if (radioFactura) {
+                // $('#textHtmlDocumento').text('RUC');
+                // $('#textHtmlRazonSocial').text(' Nombre de la Empresa ');
+                $('#txtNroDocumentoPago').val('')
+                documento.setAttribute("maxlength", "11");
+                documento.setAttribute("pattern", "\\d{11}");
+                documento.setAttribute("title", "Debe contener exactamente 11 dígitos");
+                validationMessage.textContent = "Debe contener exactamente 11 dígitos";
+                validationMessage.style.display = "none";
+            } else if (checkConDni) {
+                // $('#textHtmlDocumento').text('DNI');
+                // $('#textHtmlRazonSocial').text('Nombre y Apellido');
+                $('#txtNroDocumentoPago').val('')
+                documento.setAttribute("maxlength", "8");
+                documento.setAttribute("pattern", "\\d{8}");
+                documento.setAttribute("title", "Debe contener exactamente 8 dígitos");
+                validationMessage.textContent = "Debe contener exactamente 8 dígitos";
+                validationMessage.style.display = "none";
+            }
+            console.log("documento.getAttribute('pattern'):", documento.getAttribute("pattern"));
+        }
+        //^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+        function validateNroDocumento() {
+            const documento = document.getElementById("txtNroDocumentoPago");
+            const pattern = new RegExp(documento.getAttribute("pattern"));
+            console.log(pattern);
+            const validationMessage = document.getElementById("validationMessageNroDocumentoPago");
+            var flag = false
+            if (!pattern.test(documento.value)) {
+                documento.setCustomValidity("Invalid");
+                validationMessage.style.display = "block";
+                flag = false
+            } else {
+                documento.setCustomValidity("");
+                validationMessage.style.display = "none";
+                flag = true
+            }
+            return flag;
+        }
+        //^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+        function validateRazonSocial() {
+            const razonSocial = document.getElementById("txtRazonSocial");
+            const validationMessage = document.getElementById("validationMessageRazonSocial");
+            var flag = false
+            if (razonSocial.value == "") {
+                razonSocial.setCustomValidity("Invalid");
+                validationMessage.style.display = "block";
+                flag = false
+            } else {
+                razonSocial.setCustomValidity("");
+                validationMessage.style.display = "none";
+                flag = true
+            }
+            return flag;
+        }
+        //^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+        function SaveFormModalCulqi() {
+
+            if (Number(totalPagar_) > 69900 && !document.getElementById("rd2").checked) {
+                document.getElementById("cbxPagoConDNI").checked = true;
+                checkPagoConDNI();
+                $('#msjDni').html('* Obligatorio para pagos mayores a S/. 700.00');
+            }
+
+            actionLoagin(document.getElementById("btnPagar"));
+            var checkConDni = document.getElementById("cbxPagoConDNI").checked;
+            var radioFactura = document.getElementById("rd2").checked;
+            var isOK = false;
+
+            if (checkConDni || radioFactura) {
+                isOK = validateNroDocumento() && validateRazonSocial();
+            }
+            else {
+                isOK = true;
+            }
+
+            // Si los campos pasaron las validaciones IsOK  iniciar pago externo
+            if (isOK) {
+
+                area_ = "DIAGNOSTICO";
+                hc_ = $("#txtHistoriaClinica").val();
+                tipoDoc_ = $("input[name='tipoDocPago']:checked").val();
+                razonSocial_ = $("#txtRazonSocial").val();
+                ruc_ = $("#txtNroDocumentoPago").val();
+                direccionPago_ = $("#txtDireccionPago").val();
+                Email_ = $("#txtEmailContacto").val();
+                conDni_ = $("#cbxPagoConDNI").is(":checked");
+                $('#modalCulqi').modal('hide');
+
+                IniciarPagoExterno();
+            }
+        }
+        //^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+        function IniciarPagoExterno() {
+            const modelo = structuredClone(MODELO_ORDEN);
+            modelo["order"] = "123";
+            modelo["description"] = desc_;
+            modelo["amount"] = totalPagar_;
+            modelo["currency"] = "PEN";
+            modelo["customer.pagoid"] = id_;
+            modelo["customer.area"] = area_;
+            modelo["customer.amount"] = totalPagar_;
+            modelo["customer.currency"] = "PEN";
+            modelo["customer.description"] = desc_;
+            modelo["customer.hc"] = hc_;
+            modelo["customer.tipodocpago"] = tipoDoc_;
+            modelo["customer.razonsocial"] = razonSocial_;
+            modelo["customer.ruc"] = ruc_;
+            modelo["customer.direccionpago"] = direccionPago_;
+            modelo["customer.email"] = Email_;
+            modelo["customer.totalpagar"] = totalPagarReal_;
+            modelo["customer.conDni"] = conDni_;
+
+            generarOrderId(modelo).then(idOrder => {
+
+                // No se ejecutara hasta obtener el valor de idOrder
+                let jsonParams = {
+                    installments: true,
+                    orderId: idOrder,
+                    buttonTex: 'Realizar Pago',
+                    amount: totalPagar_,
+                    description: desc_,
+                    title: "Pasarela de pago",
+                    currency: "PEN",
+                    publicKey: publicKey_
+                }
+                // Inicializamos la configuracon de Culqi  y abrimos el Checkout
+                culqiConfig(jsonParams);
+                Culqi.open();
+
+            }).catch(error => {
+                console.error("Error:", error);
+            }).finally(() => {
+                $('#form-modal1').modal('hide');
+            });
+        }
+        //^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+        const culqiConfig = (jsonParams) => {
+
+            Culqi.publicKey = jsonParams.publicKey;
+
+            Culqi.options({
+                lang: "auto",
+                installments: jsonParams.installments,
+                paymentMethods: {
+                    tarjeta: true,
+                    bancaMovil: true,
+                    agente: true,
+                    billetera: true,
+                    cuotealo: false,
+                    yape: true,
+                },
+                style: {
+                    logo: 'https://intra.cpal.edu.pe/IntraCPALv2/img/logo_cpal_pay.png',
+                    bannerColor: '#00438c', // hexadecimal
+                    buttonBackground: '#FFA431', // hexadecimal
+                    menuColor: '#FFA431', // hexadecimal
+                    linksColor: '#FFA431', // hexadecimal
+                    buttonText: jsonParams.buttonTex, // texto que tomará el botón
+                    buttonTextColor: '#ffff', // hexadecimal
+                    priceColor: '#FFA431' // hexadecimal
+                },
+            });
+
+            Culqi.settings({
+                title: jsonParams.title,
+                currency: jsonParams.currency,
+                description: jsonParams.description,
+                amount: jsonParams.amount,
+                order: jsonParams.orderId,
+            });
+
+        }
+        //^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+        function generarOrderId(modelo) {
+
+            var idOrder = "";
+            var urlOrder = '@Url.Action("GenerarOrden", "PagoExterno")';
+            return fetch(urlOrder, {
+                method: "POST",
+                headers: { "Content-type": "application/json; charset=utf-8" },
+                body: JSON.stringify(modelo),
+            })
+                .then(response => {
+                    return response.ok ? response.json() : Promise.reject(response);
+                })
+                .then(responseJson => {
+                    if (responseJson.estado) {
+                        var objeto = JSON.parse(responseJson.objeto.body);
+                        if (objeto && objeto.id) {
+                            idOrder = objeto.id;
+                            return idOrder;
+                        } 
+                        return idOrder;
+                    } else {
+                        var mensaje = responseJson.mensaje
+                        Swal.fire({
+                            icon: "warning",
+                            title: "Error!",
+                            text: mensaje,
+                            confirmButtonColor: "#4e73df",
+                            iconColor: "#f6c23e",
+                            allowEscapeKey: false,
+                            allowEnterKey: false,
+                            allowOutsideClick: false
+                        }).then((result) => {
+                            //if (result.isConfirmed) {
+                            //    window.location.reload();
+                            //}
+                        });
+                        return null;
+                    }
+                });
+        }
+        //^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+        window.culqi = async () => {
+
+            if (Culqi.token) {
+
+                const modelo = structuredClone(MODELO_CHARGE);
+                modelo["tokenId"] = Culqi.token.id === null ? "" : Culqi.token.id;
+                modelo["email"] = Culqi.token.email === null ? "" : Culqi.token.email;
+                modelo["card"] = Culqi.token.card_number === null ? "" : Culqi.token.card_number;
+                modelo["ip"] = Culqi.token.client.ip === null ? "" : Culqi.token.client.ip;
+                modelo["browser"] = Culqi.token.client.browser === null ? "" : Culqi.token.client.browser;
+                modelo["devicetype"] = Culqi.token.client.device_type === null ? "" : Culqi.token.client.device_type;
+                modelo["installments"] = Number( Culqi?.token?.metadata?.installments ?? 0); // a prueba
+                modelo["cardbrand"] = Culqi.token.iin.card_brand === null ? "" : Culqi.token.iin.card_brand;
+                modelo["cardtype"] = Culqi.token.iin.card_type === null ? "" : Culqi.token.iin.card_type;
+                modelo["customer.pagoid"] = id_;
+                modelo["customer.area"] = area_;
+                modelo["customer.amount"] = totalPagar_;
+                modelo["customer.currency"] = "PEN";
+                modelo["customer.description"] = desc_;
+                modelo["customer.hc"] = hc_;
+                modelo["customer.tipodocpago"] = tipoDoc_;
+                modelo["customer.razonsocial"] = razonSocial_;
+                modelo["customer.ruc"] = ruc_;
+                modelo["customer.direccionpago"] = direccionPago_;
+                modelo["customer.email"] = Email_;
+                modelo["customer.totalpagar"] = totalPagarReal_;
+
+                console.log(Culqi.token);
+
+                generarCharge(modelo).then(objeto => {
+                    // No ejecutar hasta obtener el objeto "Charge"
+
+                    // pago realizado
+                    if (objeto.object == "charge") {
+                        Swal.fire({
+                            icon: "success",
+                            title: "Realizado!",
+                            text: objeto.outcome.merchant_message,
+                            confirmButtonColor: "#4e73df",
+                            iconColor: "#1cc88a",
+                            allowEscapeKey: false,
+                            allowEnterKey: false,
+                            allowOutsideClick: false
+                        }).then((result) => {
+                            if (result.isConfirmed) {
+                                window.location.reload();
+                            }
+                        });
+                    }
+                    // pago Rechazado
+                    else if (objeto.object == "error") {
+                        Swal.fire({
+                            icon: "error",
+                            title: "Oops...",
+                            text: objeto.merchant_message,
+                            iconColor: "#e74a3b",
+                            allowEscapeKey: false,
+                            allowEnterKey: false,
+                            allowOutsideClick: false,
+                            confirmButtonColor: "#4e73df",
+                        }).then((result) => {
+                            if (result.isConfirmed) {
+                                window.location.reload();
+                            }
+                        });
+
+                    }
+                    // pago error
+                    else {
+                        Swal.fire({
+                            icon: "error",
+                            title: "Oops...",
+                            text: "No se pudo realizar el pago, intentelo mas tarde",
+                            iconColor: "#e74a3b",
+                            allowEscapeKey: false,
+                            allowEnterKey: false,
+                            allowOutsideClick: false,
+                            confirmButtonColor: "#4e73df",
+                        }).then((result) => {
+                            if (result.isConfirmed) {
+                                window.location.reload();
+                            }
+                        });
+                    }
+
+                }).catch(error => {
+                    console.error("Error:", error);
+                    Swal.fire({
+                        icon: "error",
+                        title: "Oops...",
+                        text: error,
+                        iconColor: "#e74a3b",
+                        allowEscapeKey: false,
+                        allowEnterKey: false,
+                        allowOutsideClick: false,
+                        confirmButtonColor: "#4e73df",
+                    }).then((result) => {
+                        if (result.isConfirmed) {
+                            window.location.reload();
+                        }
+                    });
+                }).finally(() => {
+
+                });
+
+                Culqi.close();
+            }
+            else if (Culqi.order) {  // ¡Objeto Order creado exitosamente!
+
+                const modelo = structuredClone(MODELO_ORDER);
+                modelo["orderId"] = Culqi.order.id === null ? "" : Culqi.order.id;
+                modelo["orderNumber"] = Culqi.order.order_number === null ? "" : Culqi.order.order_number;
+                modelo["paymenCode"] = Culqi.order.payment_code === null ? "" : Culqi.order.payment_code;
+                modelo["description"] = Culqi.order.description === null ? "" : Culqi.order.description;
+                modelo["response"] = JSON.stringify(Culqi.order) === null ? "" : JSON.stringify(Culqi.order);
+                modelo["object"] = JSON.stringify(Culqi.order) === null ? "" : JSON.stringify(Culqi.order);
+                modelo["amount"] = totalPagar_;
+                modelo["customer.pagoid"] = id_;
+                modelo["customer.area"] = area_;
+                modelo["customer.amount"] = totalPagar_;
+                modelo["customer.currency"] = "PEN";
+                modelo["customer.description"] = desc_;
+                modelo["customer.hc"] = hc_;
+                modelo["customer.tipodocpago"] = tipoDoc_;
+                modelo["customer.razonsocial"] = razonSocial_;
+                modelo["customer.ruc"] = ruc_;
+                modelo["customer.direccionpago"] = direccionPago_;
+                modelo["customer.email"] = Email_;
+                modelo["customer.totalpagar"] = totalPagarReal_;
+
+                saveOrder(modelo).then(objeto => {
+                    // No ejecutar hasta obtener el objeto "Charge"
+
+                    // pago realizado
+                    if (objeto.estado) {
+                        //------
+                        Swal.fire({
+                            icon: "success",
+                            title: "La orden fue creada !",
+                            // text: objeto.mensaje,
+                            html: objeto.mensaje,
+                            confirmButtonColor: "#4e73df",
+                            iconColor: "#1cc88a",
+                            confirmButtonText: "Cerrar",
+                            allowEscapeKey: false,
+                            allowEnterKey: false,
+                            allowOutsideClick: false
+                        }).then((result) => {
+                            if (result.isConfirmed) {
+                                window.location.reload();
+                            }
+                        });
+                        //------
+                    }
+                    // pago Rechazado
+                    else if (objeto.estado) {
+                        Swal.fire({
+                            icon: "error",
+                            title: "Oops...",
+                            text: objeto.mensaje,
+                            iconColor: "#e74a3b",
+                            allowEscapeKey: false,
+                            allowEnterKey: false,
+                            allowOutsideClick: false,
+                            confirmButtonColor: "#4e73df",
+                        }).then((result) => {
+                            if (result.isConfirmed) {
+                                // window.location.reload();
+                            }
+                        });
+
+                    }
+                    // pago error
+                    else {
+                        Swal.fire({
+                            icon: "error",
+                            title: "Oops...",
+                            text: "No se pudo crear la orden, intentelo mas tarde",
+                            iconColor: "#e74a3b",
+                            allowEscapeKey: false,
+                            allowEnterKey: false,
+                            allowOutsideClick: false,
+                            confirmButtonColor: "#4e73df",
+                        }).then((result) => {
+                            if (result.isConfirmed) {
+                                window.location.reload();
+                            }
+                        });
+                    }
+
+                }).catch(error => {
+                    console.error("Error:", error);
+                    Swal.fire({
+                        icon: "error",
+                        title: "Oops...",
+                        text: error,
+                        iconColor: "#e74a3b",
+                        allowEscapeKey: false,
+                        allowEnterKey: false,
+                        allowOutsideClick: false,
+                        confirmButtonColor: "#4e73df",
+                    }).then((result) => {
+                        if (result.isConfirmed) {
+                            window.location.reload();
+                        }
+                    });
+                }).finally(() => {
+
+                });
+
+            } else {
+                console.log(Culqi.error);
+                Swal.fire({
+                    icon: "error",
+                    title: "Oops...",
+                    text: Culqi.error.user_message,
+                    iconColor: "#e74a3b",
+                    allowEscapeKey: false,
+                    allowEnterKey: false,
+                    allowOutsideClick: false,
+                    confirmButtonColor: "#4e73df",
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        window.location.reload();
+                    }
+                });
+            }
+        };
+        //^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+        function generarCharge(modelo) {
+
+            var idCharge = "";
+            var urlCharge = '@Url.Action("CrearCargo", "PagoExterno")';
+            return fetch(urlCharge, {
+                method: "POST",
+                headers: { "Content-type": "application/json; charset=utf-8" },
+                body: JSON.stringify(modelo),
+            })
+                .then(response => {
+                    return response.ok ? response.json() : Promise.reject(response);
+                })
+                .then(responseJson => {
+                    if (responseJson.estado) {
+                        var objeto = JSON.parse(responseJson.objeto.body);
+                        return objeto;
+                    } else {
+                        return null;
+                    }
+                });
+        }
+        //^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+        function saveOrder(modelo) {
+
+            var idCharge = "";
+            var urlOrder = '@Url.Action("GuardarOrden", "PagoExterno")';
+            return fetch(urlOrder, {
+                method: "POST",
+                headers: { "Content-type": "application/json; charset=utf-8" },
+                body: JSON.stringify(modelo),
+            })
+                .then(response => {
+                    return response.ok ? response.json() : Promise.reject(response);
+                })
+                .then(responseJson => {
+                    if (responseJson.estado) {
+                        var objeto = responseJson;
+                        return objeto;
+                    } else {
+                        return null;
+                    }
+                });
+        }
+        //
+        //
+        //
+        /*Modal Form2 */
+        //^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+        function openModal2(id, desc, totalPagar, totalPagarReal) {
+            clearFormVoucher();
+            id_ = id;
+            desc_ = desc;
+            totalPagar_ = totalPagar;
+            totalPagarReal_ = totalPagarReal;
+            $('#modalVoucher').modal('show');
+        }
+        //^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+        function clearFormVoucher() {
+            id_ = "";
+            desc_ = "";
+            totalPagar_ = "";
+            totalPagarReal_ = "";
+
+            // $("#__imgExternal").val("");
+            // $("#__imgInternal").val("");
+            // $("#__imgExtension").val("");
+            $("#ddlVoucherBanco").val("");
+            $("#txtVoucherFecPago").val("");
+            $("#txtVoucherNroOperacion").val("");
+            $("#txtVoucherAgencia").val("");
+            $("#ddlMoneda").val("PEN");
+            $("#txtVoucherRazonSolial").val("");
+            $("#txtVoucherRuc").val("");
+            $("#txtVoucherDireccion").val("");
+            $('#rdV_1').prop("checked", true);
+            $('#rdV_1').parent().addClass('checked');
+            $('#rdV_2').parent().removeClass('checked');
+            $("#linkVoucher").html("");
+            $('#clearImage').click();
+            rd1_1_onclick();
+        }
+        //^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+        function rd1_1_onclick() {
+            document.getElementById("divFactura1").style.display = "none";
+            document.getElementById("divConDNI").style.display = "";
+            document.getElementById('cbxConDNI').checked = false;
+        }
+        //^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+        function rd2_2_onclick() {
+            document.getElementById("divFactura1").style.display = "";
+            document.getElementById("divConDNI").style.display = "none";
+        }
+        //^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+        function checkConDNI() {
+            const checkbox = document.getElementById('cbxConDNI');
+            if (checkbox.checked) {
+                rd2_2_onclick()
+                document.getElementById("divConDNI").style.display = "";
+            } else {
+                rd1_1_onclick()
+            }
+        }
+        //^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+        function addPatternNroDocumentoVoucher() {
+            var checkConDni = document.getElementById("cbxConDNI").checked;
+            var radioFactura = document.getElementById("rdV_2").checked;
+            var documento = document.getElementById("txtVoucherRuc");
+            var validationMessage = document.getElementById("validationMessageVoucherRuc");
+
+            if (radioFactura) {
+                // $('#textHtmlDocumento').text('RUC');
+                // $('#textHtmlRazonSocial').text(' Nombre de la Empresa ');
+                $('#txtVoucherRuc').val('')
+                documento.setAttribute("maxlength", "11");
+                documento.setAttribute("pattern", "\\d{11}");
+                documento.setAttribute("title", "Debe contener exactamente 11 dígitos");
+                validationMessage.textContent = "Debe contener exactamente 11 dígitos";
+                validationMessage.style.display = "none";
+            }
+            else if (checkConDni) {
+                // $('#textHtmlDocumento').text('DNI');
+                // $('#textHtmlRazonSocial').text('Nombre y Apellido');
+                $('#txtVoucherRuc').val('')
+                documento.setAttribute("maxlength", "8");
+                documento.setAttribute("pattern", "\\d{8}");
+                documento.setAttribute("title", "Debe contener exactamente 8 dígitos");
+                validationMessage.textContent = "Debe contener exactamente 8 dígitos";
+                validationMessage.style.display = "none";
+            }
+            console.log("documento.getAttribute('pattern'):", documento.getAttribute("pattern"));
+        }
+        //^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+        function validateNroDocumentoVoucher() {
+            const documento = document.getElementById("txtVoucherRuc");
+            const pattern = new RegExp(documento.getAttribute("pattern"));
+            console.log(pattern);
+            const validationMessage = document.getElementById("validationMessageVoucherRuc");
+            var flag = false
+            if (!pattern.test(documento.value)) {
+                documento.setCustomValidity("Invalid");
+                validationMessage.style.display = "block";
+                flag = false
+            } else {
+                documento.setCustomValidity("");
+                validationMessage.style.display = "none";
+                flag = true
+            }
+            return flag;
+        }
+        //^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+        function validateRazonSocialVoucher() {
+            const razonSocial = document.getElementById("txtVoucherRazonSolial");
+            const validationMessage = document.getElementById("validationMessageVoucherRazonSolial");
+            var flag = false
+            if (razonSocial.value == "") {
+                razonSocial.setCustomValidity("Invalid");
+                validationMessage.style.display = "block";
+                flag = false
+            } else {
+                razonSocial.setCustomValidity("");
+                validationMessage.style.display = "none";
+                flag = true
+            }
+            return flag;
+        }
+        //^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+        function ValidateBancoVoucher() {
+            if ($('#ddlVoucherBanco').val() == "") {
+                document.getElementById("validationMessageVoucherBanco").style.display = "block";
+                return false;
+            } else {
+                document.getElementById("validationMessageVoucherBanco").style.display = "none";
+                return true;
+            }
+        }
+        //^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+        function ValidateFechPagoVoucher() {
+            const fechaPago = document.getElementById("txtVoucherFecPago");
+            const pattern = new RegExp(fechaPago.getAttribute("pattern"));
+            console.log(pattern);
+            const validationMessage = document.getElementById("validationMessageVoucherFecPago");
+            var flag = false
+            if (!pattern.test(fechaPago.value)) {
+                fechaPago.setCustomValidity("Invalid");
+                validationMessage.style.display = "block";
+                flag = false
+            } else {
+                fechaPago.setCustomValidity("");
+                validationMessage.style.display = "none";
+                flag = true
+            }
+            return flag;
+        }
+        //^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+        function ValidateNroOperacionVoucher() {
+            if ($('#txtVoucherNroOperacion').val() == "") {
+                document.getElementById("validationMessageVoucherNroOperacion").style.display = "block";
+                return false;
+            } else {
+                document.getElementById("validationMessageVoucherNroOperacion").style.display = "none";
+                return true;
+            }
+        }
+        //^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+        function ValideateImgVoucher() {
+            if (typeof Dropzone !== 'undefined') {
+                if (Dropzone.forElement("#miDropzone")) {
+                    var myDropzone = Dropzone.forElement("#miDropzone");
+                    if (myDropzone.files.length > 0) {
+                        document.getElementById("validationMessageImgVoucher").style.display = "none";
+                        return true
+                    } else {
+                        document.getElementById("validationMessageImgVoucher").style.display = "block";
+                        return false
+                    }
+                }
+            }
+        }
+        //^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+        function SaveFormModal2() {
+            actionLoagin(document.getElementById("btnVoucher"));
+            var checkConDni = document.getElementById("cbxConDNI").checked;
+            var radioFactura = document.getElementById("rdV_2").checked;
+            var isOK = false;
+
+            if (checkConDni || radioFactura) {
+                isOK = ValidateBancoVoucher() && ValidateFechPagoVoucher() && ValidateNroOperacionVoucher() && ValideateImgVoucher() && validateNroDocumentoVoucher() && validateRazonSocialVoucher();
+            }
+            else {
+                isOK = ValidateBancoVoucher() && ValidateFechPagoVoucher() && ValidateNroOperacionVoucher() && ValideateImgVoucher();
+            }
+
+            // Si los campos pasaron las validaciones IsOK  iniciar pago externo
+            if (isOK) {
+                area_ = "DIAGNOSTICO";
+                hc_ = $("#txtHistoriaClinica").val();
+                tipoDoc_ = $("input[name='TipoDoc']:checked").val();
+                razonSocial_ = $("#txtVoucherRazonSolial").val();
+                ruc_ = $("#txtVoucherRuc").val();
+                direccionPago_ = $("#txtVoucherDireccion").val();
+                Email_ = $("#txtEmailContacto").val();
+                conDni_ = $("#cbxConDNI").is(":checked");
+
+                banco_ = $("#ddlVoucherBanco").val();
+                fechaPago_ = $("#txtVoucherFecPago").val();
+                nroOperacion_ = $("#txtVoucherNroOperacion").val();
+                agencia_ = $("#txtVoucherAgencia").val();
+                moneda_ = $("#ddlMoneda").val();
+                nombreImagen_ = $("#txtImagenExternal").val() + $("#txtImagenExtension").val();
+                fileInternal_ = $("#txtImagenInternal").val();
+                fileExternal_ = $("#txtImagenExternal").val();
+                fileExtension_ = $("#txtImagenExtension").val();
+                IniciarPagoVoucher();
+            }
+        }
+        //^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+        function IniciarPagoVoucher() {
+
+            const modelo = structuredClone(MODELO_VOUCHER);
+
+            modelo["banco"] = banco_;
+            modelo["fechaPago"] = fechaPago_;
+            modelo["nroOperacion"] = nroOperacion_;
+            modelo["agencia"] = agencia_;
+            modelo["moneda"] = moneda_;
+            modelo["nombreImagen"] = nombreImagen_;
+            modelo["fileInternal"] = fileInternal_;
+            modelo["fileExternal"] = fileExternal_;
+            modelo["fileExtension"] = fileExtension_;
+            modelo["customer.pagoid"] = id_;
+            modelo["customer.area"] = area_;
+            modelo["customer.amount"] = totalPagar_;
+            modelo["customer.currency"] = "PEN";
+            modelo["customer.description"] = desc_;
+            modelo["customer.hc"] = hc_;
+            modelo["customer.tipodocpago"] = tipoDoc_;
+            modelo["customer.razonsocial"] = razonSocial_;
+            modelo["customer.ruc"] = ruc_;
+            modelo["customer.direccionpago"] = direccionPago_;
+            modelo["customer.email"] = Email_;
+            modelo["customer.totalpagar"] = totalPagarReal_;
+            modelo["customer.conDni"] = conDni_;
+
+            saveVoucher(modelo).then(objeto => {
+                // No ejecutar hasta obtener el objeto "response"
+                console.log(objeto);
+
+
+                // Voucher guardado
+                if (objeto.estado) {
+                    Swal.fire({
+                        icon: "success",
+                        title: "Realizado!",
+                        text: objeto.mensaje,
+                        confirmButtonColor: "#4e73df",
+                        iconColor: "#1cc88a",
+                        allowEscapeKey: false,
+                        allowEnterKey: false,
+                        allowOutsideClick: false
+                    }).then((result) => {
+                        if (result.isConfirmed) {
+                            window.location.reload();
+                        }
+                    });
+                }
+                // Voucher error
+                else {
+                    Swal.fire({
+                        icon: "error",
+                        title: "Oops...",
+                        text: "No se pudo realizar el pago, intentelo mas tarde",
+                        iconColor: "#e74a3b",
+                        allowEscapeKey: false,
+                        allowEnterKey: false,
+                        allowOutsideClick: false,
+                        confirmButtonColor: "#4e73df",
+                    }).then((result) => {
+                        if (result.isConfirmed) {
+                            /* window.location.reload();*/
+                        }
+                    });
+                }
+
+            }).catch(error => {
+                console.log(error);
+                Swal.fire({
+                    icon: "error",
+                    title: "Oops...",
+                    text: error,
+                    iconColor: "#e74a3b",
+                    allowEscapeKey: false,
+                    allowEnterKey: false,
+                    allowOutsideClick: false,
+                    confirmButtonColor: "#4e73df",
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        /* window.location.reload();*/
+                    }
+                });
+            }).finally(() => {
+
+            });
+
+
+        }
+        //^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+        /** Envia el modelo VOUCHER al servidor devolciendo una promesa */
+        function saveVoucher(modelo) {
+            var urlVoucher = '@Url.Action("GuardarVoucher", "PagoExterno")';
+
+            return fetch(urlVoucher, {
+                method: "POST",
+                headers: { "Content-type": "application/json; charset=utf-8" },
+                body: JSON.stringify(modelo),
+            })
+                .then(response => {
+                    return response.ok ? response.json() : Promise.reject(response);
+                })
+                .then(responseJson => {
+                    if (responseJson.estado) {
+                        console.log(responseJson);
+                        var objeto = responseJson;
+                        return objeto;
+                    } else {
+                        return null;
+                    }
+                });
+        }
+        //^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+        function openModalTerminos(){
+            $('#modal-terminos').modal('show')
+        }
+    </script>
+
+}

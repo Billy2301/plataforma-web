@@ -1,0 +1,1993 @@
+﻿@model SolicitudViewModel
+@{
+    ViewData["title"] = "Cambiar Contraseña";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+<style>
+    .tooltip {
+        --bs-tooltip-bg: #fff !important;
+        opacity: 100% !important;
+    }
+
+    .tooltip-inner {
+        box-shadow: rgba(0, 0, 0, 0.24) 0px 3px 8px;
+        max-width: 500px !important;
+        color: #224078;
+        text-align: justify;
+        background-color: #e8edf2 !important;
+        opacity: 100%;
+    }
+
+    .cpal-box > i {
+        opacity: 0.3;
+    }
+
+    .cpal-box:hover > i {
+        opacity: 1;
+    }
+
+    .wizard.vertical > .steps.clearfix {
+        margin-top: 2rem !important;
+    }
+</style>
+<div class="card bg-info-subtle shadow-none position-relative overflow-hidden mb-4">
+    <div class="card-body px-4 py-3">
+        <div class="row align-items-center">
+            <div class="col-9">
+                <h4 class="fw-semibold mb-8 text-primary">
+                    Reserve su cita
+                </h4>
+                <nav aria-label="breadcrumb">
+                    <ol class="breadcrumb">
+                        <li class="breadcrumb-item">
+                            <a class="text-muted text-decoration-none" asp-action="Index" asp-controller="Home">Inicio</a>
+                        </li>
+                        <li class="breadcrumb-item" aria-current="page">
+                            Reserve su cita
+                        </li>
+                    </ol>
+                </nav>
+            </div>
+            <div class="col-3">
+                <div class="text-center">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="2.5em" height="2.5em" viewBox="0 0 24 24" class="cc BTC text-primary fs-7">
+                        <g fill="none" stroke="currentColor" stroke-linecap="round" stroke-width="2">
+                            <!-- Primer trazo -->
+                            <path d="M9 5H7a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V7a2 2 0 0 0-2-2h-2" stroke-dasharray="62" stroke-dashoffset="62">
+                                <animate fill="freeze" attributeName="stroke-dashoffset" begin="0.7s" dur="0.5s" values="62;0"></animate>
+                            </path>
+                            <!-- Segundo trazo -->
+                            <path d="M9 5a2 2 0 0 1 2-2h2a2 2 0 0 1 2 2v0a2 2 0 0 1-2 2h-2a2 2 0 0 1-2-2" stroke-dasharray="44" stroke-dashoffset="44">
+                                <animate fill="freeze" attributeName="stroke-dashoffset" begin="0.7s" dur="0.5s" values="44;0"></animate>
+                            </path>
+                        </g>
+                    </svg>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Vertically centered modal -->
+<div class="modal fade" id="modalDatos" tabindex="-1" aria-labelledby="vertical-center-modal"
+     aria-hidden="true">
+    <div class="modal-dialog modal-sm modal-dialog-centered">
+        <div class="modal-content modal-filled bg-warning-subtle">
+            <div class="modal-body p-4">
+                <div class="text-center text-warning">
+                    <i class="ti ti-alert-octagon fs-10"></i>
+                    <h4 class="mt-2 text-warning">Verifique esta Información</h4>
+                    <div class="row text-start text-muted">
+                        <div class="col-12 mb-2">
+                            <b><small>Nombres :</small></b><span class="ms-3">@Model.Tab1.NombresPaciente?.ToUpper()</span>
+                        </div>
+                        <div class="col-12 mb-2">
+                            <b><small>Apellidos :</small></b><span class="ms-3">@Model.Tab1.ApellidoPaternoPaciente?.ToUpper() @Model.Tab1.ApellidoMaternoPaciente?.ToUpper()</span>
+                        </div>
+                        <div class="col-12 mb-2">
+                            <b><small>fecha nacimiento :</small></b><span class="ms-3">@(Model.Tab1.FechaNacimientoPaciente != null ? Convert.ToDateTime(Model.Tab1.FechaNacimientoPaciente).ToString("dd 'de' MMMM 'de' yyyy") : "")</span>
+                        </div>
+                        <div class="col-6 mb-2">
+                            <b>@Model.Tab1.TipoDocumento?.ToUpper() :</b><span class="ms-1">@Model.Tab1.PacienteDNI</span>
+                        </div>
+                        <div class="col-12 mb-2">
+                            <b><small>Colegio :</small></b><span class="ms-3">@Model.Tab1.Colegio?.ToUpper()</span>
+                        </div>
+                    </div>
+                    <button type="button" class="btn btn-muted btn-sm my-2" data-bs-dismiss="modal">
+                        Modificar <i class="ti ti-pencil-plus fs-4"></i>
+                    </button>
+                    <button type="button" class="btn btn-warning btn-sm my-2" data-bs-dismiss="modal" onclick="datosOK()">
+                        Es correcto <i class="ti ti-check fs-4"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+        <!-- /.modal-content -->
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-12">
+        <!--  start Step wizard with validation -->
+        <div class="card">
+            <div class="p-1 p-md-5 wizard-content">
+
+                @if (ViewBag.Exito != null)
+                {
+                    <script>
+                        document.addEventListener("DOMContentLoaded", function (event) {
+                            Swal.fire({
+                                title: "Genial !",
+                                text: "@(System.Net.WebUtility.HtmlDecode(ViewBag.Exito))",
+                                icon: "success",
+                                allowOutsideClick: false,
+                                allowEscapeKey: false,
+                                allowEnterKey: false,
+                                confirmButtonText: '<i class="fas fa-home"></i> Volver a Inicio!'
+                            }).then((result) => {
+                                if (result.isConfirmed) {
+                                    window.location.href = '@Url.Action("Index", "Home")';
+                                } else if (result.isDenied) {
+                                    window.location.href = '@Url.Action("Index", "Home")';
+                                }
+                            });
+                        });
+                    </script>
+                }
+                @if (ViewBag.Error != null)
+                {
+                    <script>
+                        document.addEventListener("DOMContentLoaded", function (event) {
+                            Swal.fire({
+                                title: "Error !",
+                                text: "@(System.Net.WebUtility.HtmlDecode(ViewBag.Error))",
+                                icon: "error"
+                            });
+                        });
+                    </script>
+                }
+                @if (ViewBag.datos != null)
+                {
+                    <script>
+                        document.addEventListener("DOMContentLoaded", function (event) {
+                            setTimeout(function () {
+                        @* $("#modalDatos").modal("show"); *@
+                                                    }, 1000);
+                        });
+                    </script>
+
+                }
+
+                <form asp-controller="SolicitudCita" asp-action="Solicitud" method="post" id="formTriaje" class="validation-wizard  tab-wizard vertical wizard-circle">
+                    @* validation-wizard *@
+                    <div class="text-danger" asp-validation-summary="All" role="alert"></div>
+                    <input type="hidden" asp-for="Tab1.UsuarioId">
+                    <input type="hidden" asp-for="Tab1.Hc">
+
+                    <!-- Step 1 -->
+                    <h6 class="d-none d-md-block">DATOS</h6>
+                    <section class="p-0">
+                        <div class="row text-primary fs-6">
+                            <b>
+                                Ingrese los datos de la persona que recibirá la atención.
+                            </b>
+                        </div>
+                        <hr />
+                        <div class="row p-0">
+                            <div class="col-lg-12">
+                                <div class="form-floating mb-3">
+                                    <input class="form-control upperCase border border-primary text-primary" id="txtNombrePaciente" asp-for="Tab1.NombresPaciente" placeholder="Nombres de la Persona en atenderse">
+                                    <label for="txtNombrePaciente"><i class="ti ti-mood-boy me-2 fs-4"></i>Nombre <b class="text-danger ms-1">*</b></label>
+                                    @* <span class="text-danger" asp-validation-for="Tab1.NombresPaciente"></span> *@ 
+                                </div>
+                            </div>
+
+                        </div>
+
+                        <div class="row p-0">
+                            <div class="col-lg-6">
+                                <div class="form-floating mb-3">
+                                    <input class="form-control upperCase border border-primary text-primary" id="txtApPaternoPaciente" asp-for="Tab1.ApellidoPaternoPaciente" placeholder="Apellido Paterno">
+                                    <label for="txtApPaternoPaciente"><i class="ti ti-man me-2 fs-4"></i>Apellido paterno<b class="text-danger ms-1">*</b></label>
+                                    @* <span class="text-danger" asp-validation-for="Tab1.ApellidoPaternoPaciente"></span> *@
+                                </div>
+                            </div>
+                            <div class="col-lg-6">
+                                <div class="form-floating mb-3">
+                                    <input class="form-control upperCase border border-primary text-primary" id="txtApMaternoPaciente" asp-for="Tab1.ApellidoMaternoPaciente" placeholder="Apellido Materno">
+                                    <label for="txtApMaternoPaciente"><i class="ti ti-woman me-2 fs-4"></i>Apellido materno<b class="text-danger ms-1">*</b></label>
+                                    @* <span class="text-danger" asp-validation-for="Tab1.ApellidoMaternoPaciente"></span> *@
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="row p-0">
+                            <div class="col-lg-6">
+                                <div class="form-floating mb-3">
+                                    <select class="form-select border border-primary text-primary" asp-for="Tab1.TipoDocumento" onchange="verifyTipoDoc()">
+                                        <option value="" disabled>--SELECCIONE TIPO DOC.--</option>
+                                        <option value="DNI">DNI</option>
+                                        <option value="PASAPORTE">PASAPORTE</option>
+                                        <option value="CARNET_EXT">CARNET DE EXTRANJERIA</option>
+                                    </select>
+                                    <label for="Tab1.TipoDocumento"><i class="ti ti-id me-2 fs-4"></i>Tipo de documento<b class="text-danger ms-1">*</b></label>
+                                    @* <span class="text-danger" asp-validation-for="Tab1.TipoDocumento"></span> *@
+                                </div>
+                            </div>
+                            <div class="col-lg-6">
+                                <div class="form-floating mb-3">
+                                    <input class="form-control upperCase border border-primary text-primary nroDoc" id="txtDniPaciente" asp-for="Tab1.PacienteDNI" placeholder="Nro Doc.">
+                                    <label for="txtDniPaciente"><i class="ti ti-id me-2 fs-4"></i>Nro. de documento<b class="text-danger ms-1">*</b></label>
+                                    @* <span class="text-danger" asp-validation-for="Tab1.PacienteDNI"></span> *@
+                                    @* <span id="nroDocValidationMessage" class="text-danger"></span> *@
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="row p-0">
+                            <div class="col-lg-6">
+                                <div class="form-floating mb-3">
+                                    <select class="form-select border border-primary text-primary" asp-for="Tab1.Procedencia">
+                                        <option selected disabled>--SELECCIONE PROCEDENCIA--</option>
+                                        <option value="LIMA">LIMA</option>
+                                        <option value="PROVINCIA">PROVINCIA</option>
+                                        <option value="EXTRANJERO">EXTRANJERO</option>
+                                    </select>
+                                    <label for="Tab1.Procedencia"><i class="ti ti-map-pin me-2 fs-4"></i>Procedencia<b class="text-danger ms-1">*</b></label>
+                                    @* <span class="text-danger" asp-validation-for="Tab1.Procedencia"></span> *@
+                                </div>
+                            </div>
+                            <div class="col-lg-6">
+                                <div class="form-floating mb-3">
+                                    <input type="text" class="form-control upperCase border border-primary text-primary" asp-for="Tab1.FechaNacimientoPaciente" id="txtFechaNacimientoPaciente" placeholder="Fecha de Nac. de la Persona en atenderse" required="" pattern="^(0[1-9]|[1-2][0-9]|3[0-1])/(0[1-9]|1[0-2])/[0-9]{4}$">
+                                    <label for="txtFechaNacimientoPaciente"><i class="ti ti-calendar me-2 fs-4"></i>Fecha de nacimiento<b class="text-danger ms-1">*</b></label>
+                                    @* <span class="text-danger" asp-validation-for="Tab1.FechaNacimientoPaciente"></span> *@
+                                    @* <span id="fechaNacValidationMessage" class="text-danger"></span> *@
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="row p-0 isDependiente">
+                            <div class="col-md-6 mb-3">
+                                <div class="form-floating mb-3">
+                                    <select class="form-select upperCase border border-primary text-primary" data-val="false" id="NivelEducacion" asp-for="Tab1.NivelEducacion" onchange="mustShowGrado(this)" title="El campo 'Nivel de educación' es obligatorio.">
+                                        <option value="" disabled>--SELECCIONE NIVEL DE EDUCACIÓN--</option>
+                                        <option value="INICIAL">INICIAL</option>
+                                        <option value="PRIMARIA">PRIMARIA</option>
+                                        <option value="SECUNDARIA">SECUNDARIA</option>
+                                        <option value="SUPERIOR">SUPERIOR</option>
+                                        <option value="OTROS">OTROS</option>
+                                    </select>
+                                    <label for="NivelEducacion"><i class="ti ti-certificate me-2 fs-4"></i>Nivel educativo<b class="text-danger ms-1">*</b></label>
+                                    @* <span asp-validation-for="Tab1.NivelEducacion" class="text-danger"></span> *@
+                                </div>
+                            </div>
+                            <div class="col-md-6 mb-3 d-flex hideColegioGrado">
+                                <div class="col-8 pe-2">
+                                    <div class="form-floating mb-3">
+                                        <input type="text" class="form-control upperCase border border-primary text-primary" id="Colegio" asp-for="Tab1.Colegio" placeholder="Centro educativo">
+                                        <label for="Colegio"><i class="ti ti-school me-2 fs-4"></i>Centro educativo<b class="text-danger ms-1">*</b></label>
+                                        @* <span asp-validation-for="Tab1.Colegio" class="text-danger"></span> *@
+                                    </div>
+                                </div>
+                                <div class="col-4">
+                                    <div class="form-floating mb-3">
+                                        <input type="text" class="form-control upperCase border border-primary text-primary" id="PacienteGrado" asp-for="Tab1.PacienteGrado" placeholder="Grado">
+                                        <label for="PacienteGrado"><i class="ti ti-stairs-up me-2 fs-4"></i>Grado<b class="text-danger ms-1">*</b></label>
+                                        @* <span asp-validation-for="Tab1.PacienteGrado" class="text-danger"></span> *@
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="row p-0 isDependiente">
+                            <div class="col-12 me-md-4 pt-3">
+                                <p class="text-primary fs-6">
+                                    <b>
+                                        Grado de parentesco:
+                                    </b>
+                                </p>
+                            </div>
+                            <div class="mb-3 fs-5">
+                                @* <span asp-validation-for="Tab1.ApoderadoRelacion" class="text-danger col-12"></span> *@
+                                <div class="form-check form-check-inline col-12 col-md-2">
+                                    <input class="form-check-input warning check-outline outline-warning rdo-comprobante" type="radio" asp-for="Tab1.ApoderadoRelacion" id="rdMama" value="MAMÁ" title="El campo 'Parentesco' es obligatorio.">
+                                    <label class="form-check-label" for="rdMama"><b>Mamá</b></label>
+                                </div>
+                                <div class="form-check form-check-inline col-12 col-md-2">
+                                    <input class="form-check-input warning check-outline outline-warning rdo-comprobante" type="radio" asp-for="Tab1.ApoderadoRelacion" id="rdPapa" value="PAPÁ" title="El campo 'Parentesco' es obligatorio.">
+                                    <label class="form-check-label" for="rdPapa"><b>Papá</b></label>
+                                </div>
+                                <div class="form-check form-check-inline col-12 col-md-2">
+                                    <input class="form-check-input warning check-outline outline-warning rdo-comprobante" type="radio" asp-for="Tab1.ApoderadoRelacion" id="rdApoderado" value="AODERADO" title="El campo 'Parentesco' es obligatorio.">
+                                    <label class="form-check-label" for="rdPapa"><b>Apoderado</b></label>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="row p-0 isDependiente">
+                            <div class="col-md-12 mb-3">
+                                <div class="form-floating mb-3">
+                                    <input type="text" id="txtApoderadoNombre" class="form-control upperCase border border-primary text-primary" asp-for="Tab1.ApoderadoNombre" placeholder="Nombres" title="El campo 'Nombre y apellidos' es obligatorio.">
+                                    <label for="txtApoderadoNombre"><i class="ti ti-user me-2 fs-4"></i>Nombre y apellidos<b class="text-danger ms-1">*</b></label>
+                                    @* <span asp-validation-for="Tab1.ApoderadoNombre" class="text-danger"></span> *@
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="row p-0 isDependiente">
+                            <div class="col-md-6 mb-3">
+                                <div class="form-floating mb-3">
+                                    <select id="sltContactoTipoDoc" class="form-select upperCase border border-primary text-primary" asp-for="Tab1.ContactoTipoDoc" onchange="verifyTipoDocCont()">
+                                        <option selected disabled>-- SELEC. TIPO DE DOCUMENTO --</option>
+                                        <option value="DNI">DNI</option>
+                                        <option value="PASAPORTE">PASAPORTE</option>
+                                        <option value="CARNET_EXT">CARNET DE EXTRANJERIA</option>
+                                    </select>
+                                    <label for="sltContactoTipoDoc"><i class="ti ti-id me-2 fs-4"></i>Tipo de documento<b class="text-danger ms-1">*</b></label>
+                                    @* <span asp-validation-for="Tab1.ContactoTipoDoc" class="text-danger"></span> *@
+                                </div>
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <div class="form-floating mb-3">
+                                    <input type="text" id="txtContactoNroDoc" class="form-control upperCase border border-primary text-primary nroDocAp" asp-for="Tab1.ContactoNroDoc" placeholder="Número de Documento">
+                                    <label for="txtContactoNroDoc"><i class="ti ti-id me-2 fs-4"></i>Número de documento<b class="text-danger ms-1">*</b></label>
+                                    @* <span asp-validation-for="Tab1.ContactoNroDoc" class="text-danger"></span> *@
+@*                                     <span id="nroDocContValidationMessage" class="text-danger"></span>
+ *@
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="row p-0">
+                            <div class="col-12 d-flex mt-3 @(Model.Tab1.GuardarEnPerfil ? "" : "d-none")">
+                                <label class="form-check-label" for="GuardarEnPerfil"><h5 class="text-primary">Guardar estos datos en la información de mi perfil</h5></label>
+                                <div class="form-check form-switch ms-5">
+                                    <input class="form-check-input" type="checkbox" asp-for="Tab1.GuardarEnPerfil" id="GuardarEnPerfil">
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="row p-0">
+                            <div class="col-md-6 mb-3">
+                                <div class="form-floating mb-3">
+                                    <input type="text" class="form-control upperCase border border-primary text-primary" id="txtContactoNroTel" asp-for="Tab1.ApoderadoTelCelular" placeholder="Nro Teléfono de contacto">
+                                    <label for="txtContactoNroTel"><i class="ti ti-phone me-2 fs-4"></i>Teléfono de contacto<b class="text-danger ms-1">*</b></label>
+                                    @* <span asp-validation-for="Tab1.ApoderadoTelCelular" id="nroDocContValidationMessage" class="text-danger"></span> *@
+                                </div>
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <div class="form-floating mb-3">
+                                    <input type="email" class="form-control upperCase border border-primary text-primary" id="EmailRegistro" asp-for="Tab1.EmailRegistro" placeholder="Email de contacto">
+                                    <label for="EmailRegistro"><i class="ti ti-mail me-2 fs-4"></i>Correo de contacto<b class="text-danger ms-1">*</b></label>
+                                    @* <span asp-validation-for="Tab1.EmailRegistro" class="text-danger"></span> *@
+                                </div>
+                            </div>
+                        </div>
+
+
+                        <div class="row p-0 d-none">
+                                <div>
+                                    <input type="radio" value="SI" asp-for="Tab1.Dependiente" data-val="false" id="cbxDependiente" onchange="isCheckedDependiente()">
+                                    <label for="cbxDependiente"><b>SI</b></label>
+                                </div>
+                                <div>
+                                <input type="radio" value="NO" asp-for="Tab1.Dependiente" data-val="false" id="cbxDependienteNo" onchange="isCheckedDependiente()">
+                                    <label for="cbxDependienteNo"><b>NO</b></label>
+                                </div>
+                                @* <span asp-validation-for="Tab1.Dependiente" class="text-danger"></span> *@
+                        </div>
+                    </section>
+                    <!-- Step 2 -->
+                    <h6 class="d-none d-md-block">MOTIVO DE CONSULTA</h6>
+                    <section class="p-0">
+                        <div class="row text-primary fs-6">
+                            <b>
+                                Detalle el motivo de su consulta.
+                            </b>
+                        </div>
+                        <hr />
+                        <div class="row">
+                            <div class="mb-3">
+                                <div class="form-floating mb-3">
+                                    <textarea class="form-control border border-primary text-primary " asp-for="Tab2.MotivoConsulta" required="" rows="5" placeholder="Detallar el motivo de consulta (No exceder los 1000 caracteres)" style="height: 162px;"></textarea>
+                                    <label for="MotivoConsulta"><i class="ti ti-clipboard-heart me-2 fs-4"></i>Motivo de consulta</label>
+                                    @* <span asp-validation-for="Tab2.MotivoConsulta" class="text-danger"></span> *@
+                                </div>
+                                
+                            </div>
+                        </div>
+                        <div class="row text-primary fs-6">
+                            <b>
+                                ¿En qué sede prefiere atenderse?
+                            </b>
+                        </div>
+                        <div class="row">
+                            
+                            <div class="col-md-6 mb-3 mt-4 text-center fs-5">
+                                @* <span asp-validation-for="Tab2.SedeID" class="text-danger"></span> *@
+                                <div class="form-check form-check-inline">
+                                    <input class="form-check-input warning check-outline outline-warning rdo-comprobante" type="radio" name="Tab2.SedeID" id="rdSurco" value="1" required title="El campo 'Sede' es obligatorio.">
+                                    <label class="form-check-label" for="rdSurco"><b>Surco</b></label>
+                                </div>
+                                <div class="form-check form-check-inline">
+                                    <input class="form-check-input warning check-outline outline-warning rdo-comprobante" type="radio" name="Tab2.SedeID" id="rdMagdalena" value="2" required title="El campo 'Sede' es obligatorio.">
+                                    <label class="form-check-label" for="rdMagdalena"><b>Magdalena</b></label>
+                                </div>
+                            </div>
+                        </div>
+                    </section>
+                    <!-- Step 3 -->
+                    <h6 class="d-none d-md-block">ESPECIALIDAD</h6>
+                    <section class="p-0">
+                        <div class="row text-primary fs-6">
+                            <b>
+                                Por favor, seleccione la especialidad o especialidades en las que desea obtener una cita. (Puede seleccionar más de una).
+                            </b>
+                        </div>
+                        <hr />
+                        <div class="row">
+                            <div class="col-md-4">
+                                <!-- box Lenguaje-->
+                                <div class="py-2">
+                                    <input type="checkbox" class="btn-check" id="cbx_Lenguaje" autocomplete="off" asp-for="Tab3.EvaluarLenguaje">
+                                    <label class="cpal-box btn btn-outline-primary d-flex align-items-center p-y4" id="box_Lenguaje" for="cbx_Lenguaje" onclick="evaluacionSelect('cbx_Lenguaje','Lenguaje')" >
+                                        <a href="JavaScript: void(0);">
+                                            <img src="~/assets/images/iconeval/Lenguaje.svg" alt="" width="50" height="50" />
+                                        </a>
+                                        <div class="ms-auto mt-2">
+                                            <h5>LENGUAJE</h5>
+                                        </div>
+                                        <i class="fa fa-info-circle ms-auto fs-7" data-bs-html="true" data-bs-toggle="tooltip" data-bs-placement="top" aria-label="Lenguaje" data-bs-original-title="<b>LENGUAJE</b><hr> Elija esta evaluación si su hijo (a) demoró en comenzar a hablar y/o usa gestos para hacerse entender, le cuesta comprender lo que se le dice, tiene poco vocabulario, no dice oraciones adecuadamente, presenta dificultad para organizar sus ideas y expresarse con claridad, aun cuando muestra interés por relacionarse con los demás.</div>"></i>
+                                    </label>
+                                </div>
+
+                                <!-- box Audiología-->
+                                <div class="py-2">
+                                    <input type="checkbox" class="btn-check" id="cbx_Audiologia" autocomplete="off" asp-for="Tab3.EvaluarAudiologia">
+                                    <label class="cpal-box btn btn-outline-primary d-flex align-items-center p-y4" id="box_Audiologia" onclick="evaluacionSelect('cbx_Audiologia','Audiologia')" for="cbx_Audiologia" >
+                                        <a href="JavaScript: void(0);">
+                                            <img src="~/assets/images/iconeval/Audiologia.svg" alt="" width="50" height="50" />
+                                        </a>
+                                        <div class="ms-auto mt-2">
+                                            <h5>AUDIOLOGÍA</h5>
+                                        </div>
+                                        <i class="fa fa-info-circle ms-auto fs-7" data-bs-html="true" data-bs-toggle="tooltip" data-bs-placement="top" aria-label="Audiología" data-bs-original-title="<b>AUDIOLOGÍA</b>:<hr> Atiende a bebes, niños, jóvenes y adultos que presentan dificultades a nivel periférica o central. Evaluación audiológica Periférica: Evalúa si existen dificultades en el oído externo, medio y/o interno que impidan un adecuado nivel de audición. La evaluación determina la presencia de pérdida auditiva, el tipo y grado de dificultad. Se realizan las siguientes pruebas: Otoscopía, Timpanometría, reflejos estapediales, emisiones otoacústicas, potenciales evocados auditivos de tallo cerebral y de estado estable: audiometría tonal, audiometría amplificada y logoaudiometría. Asimismo, se ofrecen los servicios de implementación, adaptación de audífonos y programación de implantes cocleares." aria-describedby="tooltip794267"></i>
+                                    </label>
+                                </div>
+
+                                <!-- box Cuerpo-->
+                                <div class="py-2">
+                                    <input type="checkbox" class="btn-check" id="cbx_Cuerpo" autocomplete="off" asp-for="Tab3.EvaluarCuerpoMovimiento">
+                                    <label class="cpal-box btn btn-outline-primary d-flex align-items-center p-y4" id="box_Cuerpo" onclick="evaluacionSelect('cbx_Cuerpo','Cuerpo')" for="cbx_Cuerpo" >
+                                        <a href="JavaScript: void(0);">
+                                            <img src="~/assets/images/iconeval/Cuerpo-y-movimiento-1.svg" alt="" width="50" height="50" />
+                                        </a>
+                                        <div class="ms-auto mt-2">
+                                            <h5>CUERPO Y MOVIMIENTO</h5>
+                                        </div>
+                                        <i class="fa fa-info-circle ms-auto fs-7" data-bs-html="true" data-bs-toggle="tooltip" data-bs-placement="top" aria-label="Cuerpo y Movimiento" data-bs-original-title="<b>CUERPO Y MOVIMIENTO</b><hr> <ul> <li><b>Evaluación psicomotriz:</b><br> analiza el desarrollo motor grueso y fino, la coordinación y su vínculo con las emociones, para sugerir intervenciones como terapia física, integración sensorial o psicomotricidad con el objetivo de favorecer el desarrollo integral.</li> <br><li><b>Evaluación Sensorial:</b><br> analiza los sentidos especiales para identificar desórdenes sensoriales y recomendar un enfoque de intervención específica a terapia ocupacionalanaliza los sentidos especiales para identificar desórdenes sensoriales y recomendar un enfoque de intervención específica a terapia ocupacional.</li> </ul>" aria-describedby="tooltip882738"></i>
+                                    </label>
+                                </div>
+
+                                <!-- box Habla-->
+                                <div class="py-2">
+                                    <input type="checkbox" class="btn-check" id="cbx_Habla" autocomplete="off" asp-for="Tab3.EvaluarHabla">
+                                    <label class="cpal-box btn btn-outline-primary d-flex align-items-center p-y4" id="box_Habla" onclick="evaluacionSelect('cbx_Habla','Habla')" for="cbx_Habla" >
+                                        <a href="JavaScript: void(0);">
+                                            <img src="~/assets/images/iconeval/Habla.svg" alt="" width="50" height="50" />
+                                        </a>
+                                        <div class="ms-auto mt-2">
+                                            <h5>HABLA</h5>
+                                        </div>
+                                        <i class="fa fa-info-circle ms-auto fs-7" data-bs-html="true" data-bs-toggle="tooltip" data-bs-placement="top" aria-label="Habla" data-bs-original-title="<b>HABLA</b><hr>La evaluación de la motricidad orofacial se realiza cuando se presentan dificultades para producir algunos sonidos. La fluencia aborda la tartamudez. La evaluación de voz permite conocer si utilizamos la voz de forma adecuada o si lo hacemos con esfuerzo." aria-describedby="tooltip839269"></i>
+                                    </label>
+                                </div>
+
+                                <!-- box Aprendizaje-->
+                                <div class="py-2">
+                                    <input type="checkbox" class="btn-check" id="cbx_Aprendizaje" autocomplete="off" asp-for="Tab3.EvaluaAprendizaje">
+                                    <label class="cpal-box btn btn-outline-primary d-flex align-items-center p-y4" id="box_Aprendizaje" onclick="evaluacionSelect('cbx_Aprendizaje','Aprendizaje')" for="cbx_Aprendizaje" >
+                                        <a href="JavaScript: void(0);">
+                                            <img src="~/assets/images/iconeval/Aprendizaje.svg" alt="" width="50" height="50" />
+                                        </a>
+                                        <div class="ms-auto mt-2">
+                                            <h5>APRENDIZAJE</h5>
+                                        </div>
+                                        <i class="fa fa-info-circle ms-auto fs-7" data-bs-html="true" data-bs-toggle="tooltip" data-bs-placement="top" aria-label="Aprendizaje" data-bs-original-title="<b>APRENDIZAJE</b><hr> Evalúa el desarrollo y los trastornos de la lectura, escritura y matemáticas, así como la memoria, atención, estrategias y hábitos para aprender desde el Nivel Inicial hasta la adultez. Orienta la intervención." aria-describedby="tooltip81625"></i>
+                                    </label>
+                                </div>
+
+                                <!-- box Udad-->
+                                <div class="py-2">
+                                    <input type="checkbox" class="btn-check" id="cbx_Udad" autocomplete="off" asp-for="Tab3.EvaluarUdad">
+                                    <label class="cpal-box btn btn-outline-primary d-flex align-items-center p-y4" id="box_Udad" onclick="evaluacionSelect('cbx_Udad','Udad')" for="cbx_Udad" >
+                                        <a href="JavaScript: void(0);">
+                                            <img src="~/assets/images/iconeval/UDAD.svg" alt="" width="50" height="50" />
+                                        </a>
+                                        <div class="ms-auto mt-2">
+                                            <h5>UDAD <br> ESPECTRO AUTISTA</h5>
+                                        </div>
+                                        <i class="fa fa-info-circle ms-auto fs-7" data-bs-html="true" data-bs-toggle="tooltip" data-bs-placement="top" aria-label="Unidad de alteraciones al desarrollo" data-bs-original-title="<b>UDAD O ALTERACIONES EN EL DESARROLLO</b><hr> Bajo un enfoque interdisciplinario ofrece un servicio de evaluación, diagnóstico y tratamiento a niños, jóvenes y adultos que evidencian dificultades en el ámbito social, comunicativo/lenguaje y conducta (intereses restringidos y estereotipados)." aria-describedby="tooltip651777"></i>
+                                    </label>
+                                </div>
+
+                                <!-- box Psiologia-->
+                                <div class="py-2">
+                                    <input type="checkbox" class="btn-check" id="cbx_Psicologia" autocomplete="off" asp-for="Tab3.EvaluarPsicologia">
+                                    <label class="cpal-box btn btn-outline-primary d-flex align-items-center p-y4" id="box_Psicologia" onclick="evaluacionSelect('cbx_Psicologia','Psicologia')" for="cbx_Psicologia" >
+                                        <a href="JavaScript: void(0);">
+                                            <img src="~/assets/images/iconeval/Psicologia.svg" alt="" width="50" height="50" />
+                                        </a>
+                                        <div class="ms-auto mt-2">
+                                            <h5>PSICOLOGÍA</h5>
+                                        </div>
+                                        <i class="fa fa-info-circle ms-auto fs-7" data-bs-html="true" data-bs-toggle="tooltip" data-bs-placement="top" aria-label="Psicología" data-bs-original-title="<b>PSICOLOGÍA</b><hr> <ul> <li><b>Evaluación Psicológica:</b> Ofrece información sobre el nivel intelectual y el desarrollo emocional de la persona.</li><br> <li><b>Evaluación Neuropsicológica:</b> Examina los procesos cognitivos, psicológicos, emocionales y del comportamiento de la persona. Se lleva a cabo a partir de los 7 años en adelante.</li><br> <li><b>Orientación vocacional:</b> Dirigida a conocer los intereses, habilidades y preferencias personales para orientar a una persona en la elección de una carrera o área profesional.</li></ul>" aria-describedby="tooltip111988"></i>
+                                    </label>
+                                </div>
+
+                                <!-- box Neurología-->
+                                <div class="py-2 d-none">
+                                    <input type="checkbox" class="btn-check" id="cbx_Neurologia" autocomplete="off" asp-for="Tab3.EvaluarNeurologia">
+                                    <label class="cpal-box btn btn-outline-primary d-flex align-items-center p-y4" id="box_Neurologia" onclick="evaluacionSelect('cbx_Neurologia','Neurologia')" for="cbx_Neurologia" >
+                                        <a href="JavaScript: void(0);">
+                                            <img src="~/assets/images/iconeval/Neurologia.svg" alt="" width="50" height="50" />
+                                        </a>
+                                        <div class="ms-auto mt-2">
+                                            <h5>NEUROLOGÍA</h5>
+                                        </div>
+                                    </label>
+                                </div>
+
+                                <!-- box Orientación-->
+                                <div class="py-2">
+                                    <input type="checkbox" class="btn-check" id="cbx_Orientacion" autocomplete="off" asp-for="Tab3.EvaluarOrientacion">
+                                    <label class="cpal-box btn btn-outline-primary d-flex align-items-center p-y4" id="box_Orientacion" onclick="evaluacionSelect('cbx_Orientacion','Orientacion')" for="cbx_Orientacion">
+                                        <a href="JavaScript: void(0);">
+                                            <img src="~/assets/images/iconeval/Orientacion.svg" alt="" width="50" height="50" />
+                                        </a>
+                                        <div class="m-auto mt-2">
+                                            <h5>SOLICITAR ORIENTACIÓN</h5>
+                                        </div>
+                                    </label>
+                                </div>
+                            </div>
+                            <div class="col-md-8">
+                                <!--Cotejo de Lenguaje-->
+                                <div class="row mt-5 d-none" id="Lenguaje">
+                                    <h4 class="tezt-primary d-flex">
+                                        <b>LENGUAJE</b>
+                                        <a class="ms-auto  my-auto text-bg-danger d-flex align-items-center justify-content-center p-2 fs-4 rounded-circle" data-bs-toggle="tooltip" data-bs-placement="top" data-bs-title="Quitar Evaluación" href="javascript:void(0)" onclick="unmarkEvaluacion('cbx_Lenguaje','Lenguaje')" id="delete_Lenguaje">
+                                            <i class="ti ti-x"></i>
+                                        </a>
+                                    </h4>
+                                    <div class="col-md-8 ms-3 mt-3 text-center fs-5">
+                                        @* <span asp-validation-for="Tab2.SedeID" class="text-danger"></span> *@
+                                        <div class="text-start">
+                                            <div class="form-check form-check-inline">
+                                                <input class="form-check-input warning check-outline outline-warning" type="radio" name="rdLenguaje" id="rdLenguaje1" value="1">
+                                                <label class="form-check-label" for="rdLenguaje1">
+                                                    <b>
+                                                        Menor de 5 años
+                                                    </b>
+                                                </label>
+                                            </div>
+                                        </div>
+                                        <div class="text-start">
+                                            <div class="form-check form-check-inline">
+                                                <input class="form-check-input warning check-outline outline-warning" type="radio" name="rdLenguaje" id="rdLenguaje2" value="2">
+                                                <label class="form-check-label" for="rdLenguaje2">
+                                                    <b>
+                                                        De 5 años a más
+                                                    </b>
+                                                </label>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!--Cotejo de Audiologia-->
+                                <div class="row mt-5 d-none" id="Audiologia">
+                                    <h4 class="text-primary d-flex">
+                                        <b>AUDIOLOGÍA</b>
+                                        <a class="ms-auto my-auto text-bg-danger d-flex align-items-center justify-content-center p-2 fs-4 rounded-circle" data-bs-toggle="tooltip" data-bs-placement="top" data-bs-title="Quitar Evaluación" href="javascript:void(0)" onclick="unmarkEvaluacion('cbx_Audiologia','Audiologia')" id="delete_Audiologia">
+                                            <i class="ti ti-x"></i>
+                                        </a>
+                                    </h4>
+                                    <div class="col-md-8 ms-3 mt-3 text-center fs-5">
+                                        @* <span asp-validation-for="Tab2.SedeID" class="text-danger"></span> *@
+                                        <div class="text-start">
+                                            <div class="form-check form-check-inline">
+                                                <input class="form-check-input primary check-outline outline-primary" type="checkbox" id="cbxAudiologia" onchange="showHidenDivAugiologia()">
+                                                <label class="form-check-label" for="cbxAudiologia">
+                                                    <b>
+                                                        Seleccione la evaluación requerida
+                                                    </b>
+                                                </label>
+                                            </div>
+                                        </div>
+                                        <div class="ps-5 d-none" id="divAudiologia">
+                                            <div class="text-start">
+                                                <div class="form-check form-check-inline">
+                                                    <input class="form-check-input warning check-outline outline-warning" type="radio" name="rdAudiologia" id="rdAudiologia1" value="1">
+                                                    <label class="form-check-label" for="rdAudiologia1">
+                                                        <b>
+                                                            Tamizaje auditivo
+                                                        </b>
+                                                    </label>
+                                                </div>
+                                            </div>
+                                            <div class="text-start">
+                                                <div class="form-check form-check-inline">
+                                                    <input class="form-check-input warning check-outline outline-warning" type="radio" name="rdAudiologia" id="rdAudiologia2" value="2">
+                                                    <label class="form-check-label" for="rdAudiologia2">
+                                                        <b>
+                                                            Audiometría tonal
+                                                        </b>
+                                                    </label>
+                                                </div>
+                                            </div>
+                                            <div class="text-start">
+                                                <div class="form-check form-check-inline">
+                                                    <input class="form-check-input warning check-outline outline-warning" type="radio" name="rdAudiologia" id="rdAudiologia3" value="2">
+                                                    <label class="form-check-label" for="rdAudiologia3">
+                                                        <b>
+                                                            Audiometría amplificada
+                                                        </b>
+                                                    </label>
+                                                </div>
+                                            </div>
+                                            <div class="text-start">
+                                                <div class="form-check form-check-inline">
+                                                    <input class="form-check-input warning check-outline outline-warning" type="radio" name="rdAudiologia" id="rdAudiologia4" value="2">
+                                                    <label class="form-check-label" for="rdAudiologia4">
+                                                        <b>
+                                                            Potenciales evocados auditivos (PEA)
+                                                        </b>
+                                                    </label>
+                                                </div>
+                                            </div>
+                                            <div class="text-start">
+                                                <div class="form-check form-check-inline">
+                                                    <input class="form-check-input warning check-outline outline-warning" type="radio" name="rdAudiologia" id="rdAudiologia5" value="2">
+                                                    <label class="form-check-label" for="rdAudiologia5">
+                                                        <b>
+                                                            Potenciales evocados auditivos de estado estable (PEAee)
+                                                        </b>
+                                                    </label>
+                                                </div>
+                                            </div>
+                                            <div class="text-start">
+                                                <div class="form-check form-check-inline">
+                                                    <input class="form-check-input warning check-outline outline-warning" type="radio" name="rdAudiologia" id="rdAudiologia6" value="2">
+                                                    <label class="form-check-label" for="rdAudiologia6">
+                                                        <b>
+                                                            Mantenimiento de auxiliares auditivos
+                                                        </b>
+                                                    </label>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="text-start">
+                                            <div class="form-check form-check-inline">
+                                                <input class="form-check-input primary check-outline outline-primary" type="radio" name="rdAudiologia" id="rdAudiologia7" value="1" style="border-radius: 5px;" onchange="unchekedAudiologia()">
+                                                <label class="form-check-label" for="rdAudiologia7">
+                                                    <b>
+                                                        Evaluación del nivel de audición
+                                                    </b>
+                                                </label>
+                                            </div>
+                                        </div>
+                                        <div class="text-start">
+                                            <div class="form-check form-check-inline">
+                                                <input class="form-check-input primary check-outline outline-primaryg" type="radio" name="rdAudiologia" id="rdAudiologia8" value="1" style="border-radius: 5px;" onchange="unchekedAudiologia()">
+                                                <label class="form-check-label" for="rdAudiologia8">
+                                                    <b>
+                                                        Evaluación de Procesamiento auditivo
+                                                    </b>
+                                                </label>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!--Cotejo de Cuerpo y mov-->
+                                <div class="row mt-5 d-none" id="Cuerpo">
+                                    <h4 class="tezt-primary d-flex">
+                                        <b>CUERPO Y MOVIMIENTO</b>
+                                        <a class="ms-auto  my-auto text-bg-danger d-flex align-items-center justify-content-center p-2 fs-4 rounded-circle" data-bs-toggle="tooltip" data-bs-placement="top" data-bs-title="Quitar Evaluación" href="javascript:void(0)" onclick="unmarkEvaluacion('cbx_Cuerpo','Cuerpo')" id="delete_Cuerpo">
+                                            <i class="ti ti-x"></i>
+                                        </a>
+                                    </h4>
+                                    <div class="col-md-8 ms-3 mt-3 text-center fs-5">
+                                        @* <span asp-validation-for="Tab2.SedeID" class="text-danger"></span> *@
+                                        <div class="text-start">
+                                            <div class="form-check form-check-inline">
+                                                <input class="form-check-input warning check-outline outline-warning" type="radio" name="rdCuerpo" id="rdCuerpo1" value="1">
+                                                <label class="form-check-label" for="rdCuerpo1">
+                                                    <b>
+                                                        Psicomotricidad
+                                                    </b>
+                                                </label>
+                                            </div>
+                                        </div>
+                                        <div class="text-start">
+                                            <div class="form-check form-check-inline">
+                                                <input class="form-check-input warning check-outline outline-warning" type="radio" name="rdCuerpo" id="rdCuerpo2" value="2">
+                                                <label class="form-check-label" for="rdCuerpo2">
+                                                    <b>
+                                                        Ocupacional / Sensorial
+                                                    </b>
+                                                </label>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!--Cotejo de Habla-->
+                                <div class="row mt-5 d-none" id="Habla">
+                                    <h4 class="tezt-primary d-flex">
+                                        <b>HABLA</b>
+                                        <a class="ms-auto  my-auto text-bg-danger d-flex align-items-center justify-content-center p-2 fs-4 rounded-circle" data-bs-toggle="tooltip" data-bs-placement="top" data-bs-title="Quitar Evaluación" href="javascript:void(0)" onclick="unmarkEvaluacion('cbx_Habla','Habla')" id="delete_Habla">
+                                            <i class="ti ti-x"></i>
+                                        </a>
+                                    </h4>
+                                    <div class="col-md-8 ms-3 mt-3 text-center fs-5">
+                                        @* <span asp-validation-for="Tab2.SedeID" class="text-danger"></span> *@
+                                        <div class="text-start">
+                                            <div class="form-check form-check-inline">
+                                                <input class="form-check-input warning check-outline outline-warning" type="radio" name="rdHabla" id="rdHabla1" value="1">
+                                                <label class="form-check-label" for="rdHabla1">
+                                                    <b>
+                                                        Motricidad oral
+                                                    </b>
+                                                </label>
+                                            </div>
+                                        </div>
+                                        <div class="text-start">
+                                            <div class="form-check form-check-inline">
+                                                <input class="form-check-input warning check-outline outline-warning" type="radio" name="rdHabla" id="rdHabla2" value="2">
+                                                <label class="form-check-label" for="rdHabla2">
+                                                    <b>
+                                                        Tartamudez
+                                                    </b>
+                                                </label>
+                                            </div>
+                                        </div>
+                                        <div class="text-start">
+                                            <div class="form-check form-check-inline">
+                                                <input class="form-check-input warning check-outline outline-warning" type="radio" name="rdHabla" id="rdHabla3" value="2">
+                                                <label class="form-check-label" for="rdHabla3">
+                                                    <b>
+                                                        Voz
+                                                    </b>
+                                                </label>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!--Cotejo de Apremdisaje-->
+                                <div class="row mt-5 d-none" id="Aprendizaje">
+                                    <h4 class="tezt-primary d-flex">
+                                        <b>APRENDIZAJE</b>
+                                        <a class="ms-auto  my-auto text-bg-danger d-flex align-items-center justify-content-center p-2 fs-4 rounded-circle" data-bs-toggle="tooltip" data-bs-placement="top" data-bs-title="Quitar Evaluación" href="javascript:void(0)" onclick="unmarkEvaluacion('cbx_Aprendizaje','Aprendizaje')" id="delete_Aprendizaje">
+                                            <i class="ti ti-x"></i>
+                                        </a>
+                                    </h4>
+                                    <div class="col-md-8 ms-3 mt-3 text-center fs-5">
+                                        @* <span asp-validation-for="Tab2.SedeID" class="text-danger"></span> *@
+                                        <div class="text-start">
+                                            <div class="form-check form-check-inline">
+                                                <input class="form-check-input warning check-outline outline-warning" type="radio" name="rdAprendizaje" id="rdAprendizaje1" value="1">
+                                                <label class="form-check-label" for="rdAprendizaje1">
+                                                    <b>
+                                                        Inicial (3, 4 y 5 años)
+                                                    </b>
+                                                </label>
+                                            </div>
+                                        </div>
+                                        <div class="text-start">
+                                            <div class="form-check form-check-inline">
+                                                <input class="form-check-input warning check-outline outline-warning" type="radio" name="rdAprendizaje" id="rdAprendizaje2" value="2">
+                                                <label class="form-check-label" for="rdAprendizaje2">
+                                                    <b>
+                                                        Primaria (1° a 6° grado)
+                                                    </b>
+                                                </label>
+                                            </div>
+                                        </div>
+                                        <div class="text-start">
+                                            <div class="form-check form-check-inline">
+                                                <input class="form-check-input warning check-outline outline-warning" type="radio" name="rdAprendizaje" id="rdAprendizaje3" value="3">
+                                                <label class="form-check-label" for="rdAprendizaje3">
+                                                    <b>
+                                                        Secundaria (1° a 5° grado)
+                                                    </b>
+                                                </label>
+                                            </div>
+                                        </div>
+                                        <div class="text-start">
+                                            <div class="form-check form-check-inline">
+                                                <input class="form-check-input warning check-outline outline-warning" type="radio" name="rdAprendizaje" id="rdAprendizaje4" value="4">
+                                                <label class="form-check-label" for="rdAprendizaje4">
+                                                    <b>
+                                                        Universitarios
+                                                    </b>
+                                                </label>
+                                            </div>
+                                        </div>
+                                        <div class="text-start">
+                                            <div class="form-check form-check-inline">
+                                                <input class="form-check-input warning check-outline outline-warning" type="radio" name="rdAprendizaje" id="rdAprendizaje5" value="5">
+                                                <label class="form-check-label" for="rdAprendizaje5">
+                                                    <b>
+                                                        Adultos
+                                                    </b>
+                                                </label>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!--Cotejo de Udad-->
+                                <div class="row mt-5 d-none" id="Udad">
+                                    <h4 class="tezt-primary d-flex">
+                                        <b>UDAD - ESPECTRO AUTISTA</b>
+                                        <a class="ms-auto my-auto text-bg-danger d-flex align-items-center justify-content-center p-2 fs-4 rounded-circle" data-bs-toggle="tooltip" data-bs-placement="top" data-bs-title="Quitar Evaluación" href="javascript:void(0)" onclick="unmarkEvaluacion('cbx_Udad','Udad')" id="delete_Udad">
+                                            <i class="ti ti-x"></i>
+                                        </a>
+                                    </h4>
+                                    <div class="col-md-8 ms-3 mt-3 text-center fs-5">
+                                        @* <span asp-validation-for="Tab2.SedeID" class="text-danger"></span> *@
+                                        <div class="text-start">
+                                            <div class="form-check form-check-inline">
+                                                <input class="form-check-input warning check-outline outline-warning" type="radio" name="rdUdad" id="rdUdad1" value="1">
+                                                <label class="form-check-label" for="rdUdad1">
+                                                    <b>
+                                                        Niños sin o poco lenguaje
+                                                    </b>
+                                                </label>
+                                            </div>
+                                        </div>
+                                        <div class="text-start">
+                                            <div class="form-check form-check-inline">
+                                                <input class="form-check-input warning check-outline outline-warning" type="radio" name="rdUdad" id="rdUdad2" value="2">
+                                                <label class="form-check-label" for="rdUdad2">
+                                                    <b>
+                                                        Niños con lenguaje fluido
+                                                    </b>
+                                                </label>
+                                            </div>
+                                        </div>
+                                        <div class="text-start">
+                                            <div class="form-check form-check-inline">
+                                                <input class="form-check-input warning check-outline outline-warning" type="radio" name="rdUdad" id="rdUdad3" value="3">
+                                                <label class="form-check-label" for="rdUdad3">
+                                                    <b>
+                                                        Adolescentes
+                                                    </b>
+                                                </label>
+                                            </div>
+                                        </div>
+                                        <div class="text-start">
+                                            <div class="form-check form-check-inline">
+                                                <input class="form-check-input warning check-outline outline-warning" type="radio" name="rdUdad" id="rdUdad4" value="4">
+                                                <label class="form-check-label" for="rdUdad4">
+                                                    <b>
+                                                        Adultos
+                                                    </b>
+                                                </label>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!--Cotejo de Psicología-->
+                                <div class="row mt-5 d-none" id="Psicologia">
+                                    <h4 class="text-primary d-flex">
+                                        <b>PSICOLOGÍA</b>
+                                        <a class="ms-auto  my-auto text-bg-danger d-flex align-items-center justify-content-center p-2 fs-4 rounded-circle" data-bs-toggle="tooltip" data-bs-placement="top" data-bs-title="Quitar Evaluación" href="javascript:void(0)" onclick="unmarkEvaluacion('cbx_Psicologia','Psicologia')" id="delete_Psicologia">
+                                            <i class="ti ti-x"></i>
+                                        </a>
+                                    </h4>
+                                    <div class="col-md-8 ms-3 mt-3 text-center fs-5">
+                                        @* <span asp-validation-for="Tab2.SedeID" class="text-danger"></span> *@
+                                        <div class="text-start">
+                                            <div class="form-check form-check-inline">
+                                                <input class="form-check-input warning check-outline outline-warning" type="radio" name="rdPsicologia" id="rdPsicologia1" value="1">
+                                                <label class="form-check-label" for="rdPsicologia1">
+                                                    <b>
+                                                        Evaluación Psicológica
+                                                    </b>
+                                                </label>
+                                            </div>
+                                        </div>
+                                        <div class="text-start">
+                                            <div class="form-check form-check-inline">
+                                                <input class="form-check-input warning check-outline outline-warning" type="radio" name="rdPsicologia" id="rdPsicologia2" value="2">
+                                                <label class="form-check-label" for="rdPsicologia2">
+                                                    <b>
+                                                        Evaluación Neuropsicológica
+                                                    </b>
+                                                </label>
+                                            </div>
+                                        </div>
+                                        <div class="text-start">
+                                            <div class="form-check form-check-inline">
+                                                <input class="form-check-input warning check-outline outline-warning" type="radio" name="rdPsicologia" id="rdPsicologia3" value="2">
+                                                <label class="form-check-label" for="rdPsicologia3">
+                                                    <b>
+                                                        Orientación vocacional
+                                                    </b>
+                                                </label>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!--Cotejo de Psicología-->
+                                <div class="row mt-5 d-none" id="Orientacion">
+                                    <h4 class="text-primary d-flex">
+                                        <b>SOLICITAR ORIENTACIÓN</b>
+                                        <a class="ms-auto  my-auto text-bg-danger d-flex align-items-center justify-content-center p-2 fs-4 rounded-circle" data-bs-toggle="tooltip" data-bs-placement="top" data-bs-title="Quitar Evaluación" href="javascript:void(0)" onclick="unmarkEvaluacion('cbx_Orientacion','Orientacion')" id="delete_Orientacion">
+                                            <i class="ti ti-x"></i>
+                                        </a>
+                                    </h4>
+                                    <div class="col-md-8 ms-3 mt-3 text-center fs-5">
+                                        @* <span asp-validation-for="Tab2.SedeID" class="text-danger"></span> *@
+                                        <div class="text-start">
+                                            <div class="form-check form-check-inline">
+                                                <input class="form-check-input warning check-outline outline-warning" type="radio" name="rdOrientacion" id="rdOrientacion1" value="1">
+                                                <label class="form-check-label" for="rdOrientacion1">
+                                                    <b>
+                                                        Por WhatsApp
+                                                    </b>
+                                                    <i class="ti ti-brand-whatsapp fs-7 ms-3"></i>
+                                                </label>
+                                            </div>
+                                        </div>
+                                        <div class="text-start">
+                                            <div class="form-check form-check-inline">
+                                                <input class="form-check-input warning check-outline outline-warning" type="radio" name="rdOrientacion" id="rdOrientacion2" value="2">
+                                                <label class="form-check-label" for="rdOrientacion2">
+                                                    <b>
+                                                        Por llamada telefónica
+                                                    </b>
+                                                    <i class="ti ti-phone-call fs-7 ms-3"></i>
+                                                </label>
+                                            </div>
+                                        </div>
+                                        <div class="text-start">
+                                            <div class="form-check form-check-inline">
+                                                <input class="form-check-input warning check-outline outline-warning" type="radio" name="rdOrientacion" id="rdOrientacion3" value="2">
+                                                <label class="form-check-label" for="rdOrientacion3">
+                                                    <b>
+                                                        Por correo electrónico
+                                                    </b>
+                                                    <i class="ti ti-mail fs-7 ms-3"></i>
+                                                </label>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                        </div>
+                        <hr />
+                        <div class="col-12 text-md-start">
+                            <p class="text-primary">
+                                <i class="fa fa-warning me-2"></i> Al hacer clic en "Enviar información" está aceptando la política de privacidad del CPAL
+                                <a data-bs-toggle="modal" href="javascript:void(0)" data-bs-target="#modal-politicas"><b class="text-warning" style="cursor:pointer"> <b>Ver política de privacidad</b></b></a>
+                            </p>
+                        </div>
+                    </section>
+                    <button type="submit" class="d-none" id="btnGuardar">Guardar</button>
+                </form>
+            </div>
+        </div>
+        <!--  end Step wizard with validation -->
+    </div>
+</div>
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+
+    <script>
+
+        $(document).ready(function () {
+            $(".validation-wizard").validate({
+                ignore: "input[type=hidden]",
+                errorClass: "text-danger",
+                successClass: "text-success",
+                highlight: function (element, errorClass) {
+                    console.log(element);
+                    console.log(errorClass);
+                    $(element).removeClass(errorClass);
+                },
+                unhighlight: function (element, errorClass) {
+                    console.log(element);
+                    console.log(errorClass);
+                    $(element).removeClass(errorClass);
+                },
+                errorPlacement: function (error, element) {
+                    console.log(error);
+                    console.log(element);
+                    error.insertAfter(element);
+                },
+                rules: {
+                }
+            });
+
+            document.querySelectorAll('input.form-control').forEach(input => {
+                input.addEventListener('blur', function () {
+                    this.value = this.value.trim();
+                });
+            });
+
+            const btnEnviar = document.querySelector("#formTriaje > div.actions.clearfix > ul > li:nth-child(3) > a");
+            btnEnviar.setAttribute("onclick", "actionLoagin(this)");
+
+            checkEdad();
+            // isCheckedDependiente();
+            reloadCheckEval();
+            verifyTipoDoc();
+            verifyTipoDocCont();
+            mustShowGrado(document.getElementById('NivelEducacion'))
+        });
+        $.validator.addMethod("lettersonly", function (value, element) {
+            return false;
+        }, "Este campo debe contener solo letras.");
+
+        var form = $(".validation-wizard").show();
+        $(".validation-wizard").steps({
+            headerTag: "h6",
+            bodyTag: "section",
+            transitionEffect: "fade",
+            titleTemplate: '<span class="step">#index#</span> #title#',
+            labels: {
+                finish: "Enviar información",
+                next: "Siguiente", // Texto para el botón de siguiente
+                previous: "Anterior", // Texto para el botón de anterior
+                current: ''
+            },
+            onStepChanging: function (event, currentIndex, newIndex) {
+                $("div.content.clearfix > div > ul").find("li").remove();
+                if (currentIndex == 0) {
+                    return (
+                        currentIndex > newIndex ||
+                        (currentIndex < newIndex && (form.find(".body:eq(" + newIndex + ") label.error").remove(), form.find(".body:eq(" + newIndex + ") .error").removeClass("error")),
+                            (form.validate().settings.ignore = ":disabled,:hidden"), form.valid())
+                    ) && validateNroDocumento() && validateNroDocumentoCont() && validateFechaNacimiento(); // return = true , si el DNI y fecha es correcto
+                }
+                if (currentIndex == 1) {
+                    return (
+                        currentIndex > newIndex ||
+                        (currentIndex < newIndex && (form.find(".body:eq(" + newIndex + ") label.error").remove(), form.find(".body:eq(" + newIndex + ") .error").removeClass("error")), (form.validate().settings.ignore = ":disabled,:hidden"), form.valid())
+                    ); // return = true , si el DNI y fecha es correcto
+                }
+                if (currentIndex == 2) {
+                    return (
+                        currentIndex > newIndex || validarTab3()
+                    )
+                }
+                return (
+                    currentIndex > newIndex ||
+                    (currentIndex < newIndex && (form.find(".body:eq(" + newIndex + ") label.error").remove(), form.find(".body:eq(" + newIndex + ") .error").removeClass("error")),
+                        (form.validate().settings.ignore = ":disabled,:hidden"), form.valid())
+                );
+            },
+            onFinishing: function (event, currentIndex) {
+                return validarTab3() || (form.validate().settings.ignore = ":disabled"), form.valid();
+            },
+            onFinished: function (event, currentIndex) {
+                // $('#btnGuardar').click();
+            },
+        }),
+        $('#txtFechaNacimientoPaciente').datepicker({
+            format: 'dd/mm/yyyy', // Formato de fecha deseado
+            autoclose: true, // Para cerrar automáticamente el datepicker después de seleccionar una fecha
+            endDate: new Date(), // Esto establece la fecha máxima seleccionable a la fecha actual
+            startView: 2 // Muestra la vista de años al abrir
+        });
+        $('[data-toggle="switch"]').bootstrapSwitch();
+        $('#cbxDependiente').on('switchChange.bootstrapSwitch', function (event, state) {
+            if (state) {
+                $('.isDependiente').addClass('d-sm-flex');
+                $('.isDependiente').removeClass('d-none');
+                ifDependienteValidate();
+            } else {
+                $('.isDependiente').addClass('d-none');
+                $('.isDependiente').removeClass('d-sm-flex');
+                ifNotDependienteValidate();
+            }
+        });
+        $('#txtFechaNacimientoPaciente').off('change').on('change', function () {
+            checkEdad();
+        });
+        $('input.nroDoc').off('blur').on('blur', function () {
+            validateNroDocumento()
+        });
+        $('input.nroDocAp').off('blur').on('blur', function () {
+            validateNroDocumentoCont()
+        });
+
+        function checkEdad(){
+            // Calcula la edad a partir de la fecha ingresada en 'txtFechaNac'
+            let edad = getEdad("txtFechaNacimientoPaciente");
+            var checkbox = document.getElementById('cbxDependiente');
+            // Verifica si la edad es menor de 18 años
+
+            if (edad < 18 && edad  != null) {
+                $('.isDependiente').addClass('d-sm-flex');
+                $('.isDependiente').removeClass('d-none');
+                checkbox.checked = true;
+                ifDependienteValidate();
+            } else {
+                $('.isDependiente').addClass('d-none');
+                $('.isDependiente').removeClass('d-sm-flex');
+                checkbox.checked = false;
+                ifNotDependienteValidate()
+            }
+        }
+        //^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+        function getEdad(id) {
+            var edad;
+            const inputFechaNac = document.getElementById(id).value;
+            if (inputFechaNac.length <= 0) { return null }
+            const partesFecha = inputFechaNac.split('/');
+            const fechaReformateada = partesFecha[1] + '/' + partesFecha[0] + '/' + partesFecha[2];
+            const fechaNacimiento = new Date(fechaReformateada);
+
+            if (isNaN(fechaNacimiento.getTime())) {
+                // Si la fecha es inválida, asigna 0 a la variable edad
+                edad = 0;
+            }
+            else {
+                const fechaActual = new Date();
+                fechaActual.setHours(0, 0, 0, 0);
+                // Calcula la diferencia en milisegundos entre la fecha actual y la fecha de nacimiento
+                const diff = fechaActual - fechaNacimiento;
+                // Convierte la diferencia a años dividiendo entre el número de milisegundos en un año y redondeando
+                edad = Math.floor(diff / (1000 * 60 * 60 * 24 * 365.25));
+            }
+            return edad;
+        }
+        //^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+        function isCheckedDependiente() {
+            var checkbox = document.getElementById('cbxDependiente');
+            // Verificar si el checkbox está marcado
+            if (checkbox.checked) {
+                $('.isDependiente').addClass('d-sm-flex');
+                $('.isDependiente').removeClass('d-none');
+                ifDependienteValidate();
+            } else {
+                $('.isDependiente').addClass('d-none');
+                $('.isDependiente').removeClass('d-sm-flex');
+                ifNotDependienteValidate()
+            }
+        }
+        //^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+        function ifDependienteValidate() {
+
+            document.getElementById("txtApoderadoNombre").required = true;
+            document.getElementById("txtApoderadoNombre").setCustomValidity("Este campo 'Nombre y apellido' es Obligatorio");
+
+            document.getElementById("sltContactoTipoDoc").required = true;
+            document.getElementById("sltContactoTipoDoc").setCustomValidity("Este campo 'Tipo documento' es Obligatorio");
+
+            document.getElementById("txtContactoNroDoc").required = true;
+            document.getElementById("txtContactoNroDoc").setCustomValidity("Este campo 'Nro documento' es Obligatorio");
+
+            document.getElementById("NivelEducacion").required = true;
+            document.getElementById("NivelEducacion").setCustomValidity("Este campo 'Nivel de educación' es Obligatorio");
+            
+            const radios = document.getElementsByName("Tab1.ApoderadoRelacion");
+            for (const radio of radios) {
+                radio.required = true;
+                radio.setCustomValidity("Debe marcar almenos un parentesco");
+            }
+
+        }
+        function ifNotDependienteValidate() {
+            document.getElementById("txtApoderadoNombre").required = false;
+            document.getElementById("sltContactoTipoDoc").required = false;
+            document.getElementById("txtContactoNroDoc").required = false;
+            document.getElementById("NivelEducacion").required = false;
+            const radios = document.getElementsByName("Tab1.ApoderadoRelacion");
+            for (const radio of radios) {
+                radio.required = false;
+            }
+        }
+        
+        function validarTab3() {
+            const form = document.getElementById('formTriaje');
+            const checkboxes = form.querySelectorAll('input[type="checkbox"].btn-check');
+            var numControles = checkboxes.length;
+
+            var numCheched = 0
+            checkboxes.forEach(function (checkbox) {
+                if (checkbox.checked) {
+                    numCheched = numCheched + 1
+                }
+            });
+            // console.log(evaluaciones);
+            if (numCheched > 0) {
+                return true
+            } else {
+                showErrorString('Por favor seleccione una especialidad  para continuar');
+                return false
+            }
+        }
+        function showErrorString(message) {
+            var ul = document.querySelector("#formTriaje > div.content.clearfix > div > ul");
+            ul.innerHTML = "";
+            // Crea un nuevo elemento li
+            var nuevoElementoLi = document.createElement("li");
+            nuevoElementoLi.textContent = message;
+            // Agrega el nuevo elemento li al final de la lista ul
+            ul.appendChild(nuevoElementoLi);
+        }
+        function reloadCheckEval() {
+            const form1 = document.getElementById('formTriaje');
+            const checkboxes = form1.querySelectorAll('input[type="checkbox"].btn-check');
+            checkboxes.forEach(function (checkbox) {
+                if (checkbox.checked) {
+                    evaluacionSelect(checkbox.id, checkbox.id.substring(4))
+                }
+            });
+        }
+        function evaluacionSelect(id, eval) {
+            setTimeout(function () {
+                var checkbox = document.getElementById(id);
+                var checked = checkbox.checked;
+                if (checked) {
+                    $('#' + eval).removeClass('d-none')
+                } else {
+                    $('#' + eval).addClass('d-none')
+                }
+            }, 50)
+        }
+        //checkCompare  desfasado : ya no se usa
+        function checkCompare(id) {
+            const form1 = document.getElementById('formTriaje');
+            const checkboxes = form1.querySelectorAll('input[type="checkbox"].btn-check');
+            var numCheched = 0
+            checkboxes.forEach(function (checkbox) {
+                if (checkbox.checked) {
+                    numCheched = numCheched + 1
+                }
+            });
+
+            if (numCheched > 0) {
+                if (id == "cbx_Otro") {
+                    disabledEval();
+                    $("#coment-4").html("A continuación en el paso N° 5 por favor especifique su motivo de consulta. Si desea una evaluación de descarte o diagnóstico, regrese haciendo clic en 'Atrás' y elija el área correspondiente para entender mejor sus necesidades..");
+                } else if (id == "cbx_Neurologia") {
+                    disabledEval();
+                    $("#coment-4").html("A continuación en el paso N° 5 por favor especifique su motivo de consulta. Si desea una evaluación de descarte o diagnóstico, regrese haciendo clic en 'Atrás' y elija el área correspondiente para entender mejor sus necesidades.");
+                } else {
+                    enabledEval();
+                    $("#coment-4").html("Para que nuestros especialistas puedan brindarle el mejor servicio, le agradeceremos contestar a las siguientes preguntas del formulario.");
+                }
+            } else {
+                enabledEvalAll();
+            }
+
+            selectHabla(false);
+            selectUdad(false);
+            selectAudiologia(false);
+            selectCuerpo(false);
+        }
+        function enabledEval() {
+            const form2 = document.getElementById('formTriaje');
+            const labels = form2.querySelectorAll('label[id*="box"]');
+            labels.forEach(function (label) {
+                label.classList.remove("disable-box")
+                if (label.id == "box_Otro") {
+                    label.classList.add("disable-box")
+                }
+                if (label.id == "box_Neurologia") {
+                    label.classList.add("disable-box")
+                }
+            });
+        }
+        function disabledEval() {
+            const form3 = document.getElementById('formTriaje');
+            const labels = form3.querySelectorAll('label[id*="box"]');
+            labels.forEach(function (label) {
+                label.classList.add("disable-box")
+                if (label.id == "box_Otro") {
+                    label.classList.remove("disable-box")
+                }
+                if (label.id == "box_Neurologia") {
+                    label.classList.remove("disable-box")
+                }
+            });
+        }
+        function enabledEvalAll() {
+            const form4 = document.getElementById('formTriaje');
+            const labels = form4.querySelectorAll('label[id*="box"]');
+            labels.forEach(function (label) {
+                label.classList.remove("disable-box")
+            });
+        }
+
+        // Mostrar/Ocultar grupo de radios segun opciones de  cada especialidad
+        function selectHabla(clear = true) {
+            if (clear) { clearCheck('Habla') }
+            var valHabla = document.getElementById("sltHabla").value;
+            switch (valHabla) {
+                case "MO":
+                    $('#motricidad-orofacial').removeClass('d-none');
+                    $('#fluencia').addClass('d-none');
+                    $('#voz').addClass('d-none');
+                    break;
+                case "FL":
+                    $('#fluencia').removeClass('d-none')
+                    $('#motricidad-orofacial').addClass('d-none')
+                    $('#voz').addClass('d-none')
+                    break;
+                case "VO":
+                    $('#voz').removeClass('d-none')
+                    $('#fluencia').addClass('d-none')
+                    $('#motricidad-orofacial').addClass('d-none')
+                    break;
+                default:
+                    break;
+            }
+        }
+        function selectUdad(clear = true) {
+            if (clear) { clearCheck('Udad') }
+            var valUdad = document.getElementById("sltUdad").value;
+            switch (valUdad) {
+                case "PL":
+                    $('#udad-pocoLenguaje').removeClass('d-none');
+                    $('#udad-lenguajeFluido').addClass('d-none');
+                    break;
+                case "LF":
+                    $('#udad-lenguajeFluido').removeClass('d-none')
+                    $('#udad-pocoLenguaje').addClass('d-none')
+                    break;
+                default:
+                    break;
+            }
+        }
+        function selectAudiologia(clear = true) {
+            if (clear) { clearCheck('Audio') }
+            var valAudio = document.getElementById("sltAudiologia").value;
+            switch (valAudio) {
+                case "BB":
+                    $('#perdidaAud-bebeNiños').removeClass('d-none');
+                    $('#perdidaAud-adultos').addClass('d-none');
+                    $('#procesamientoAud').addClass('d-none');
+                    break;
+                case "AD":
+                    $('#perdidaAud-adultos').removeClass('d-none')
+                    $('#perdidaAud-bebeNiños').addClass('d-none')
+                    $('#procesamientoAud').addClass('d-none')
+                    break;
+                case "PA":
+                    $('#procesamientoAud').removeClass('d-none')
+                    $('#perdidaAud-adultos').addClass('d-none')
+                    $('#perdidaAud-bebeNiños').addClass('d-none')
+                    break;
+                default:
+                    break;
+            }
+        }
+        function selectCuerpo(clear = true) {
+            if (clear) { clearCheck('Cuerpo') }
+            var valCuerpo = document.getElementById("sltCuerpo").value;
+            switch (valCuerpo) {
+                case "PS":
+                    $('#psicomotricidad').removeClass('d-none');
+                    $('#ocupacional').addClass('d-none');
+                    break;
+                case "OC":
+                    $('#ocupacional').removeClass('d-none')
+                    $('#psicomotricidad').addClass('d-none')
+                    break;
+                default:
+                    break;
+            }
+        }
+        function selectAprendizaje(clear = true) {
+            if (clear) { clearCheck('Aprendizaje') }
+            var valUdad = document.getElementById("sltAprendizaje").value;
+            switch (valUdad) {
+                case "PRE":
+                    $('#preescolar').removeClass('d-none');
+                    $('#escolar').addClass('d-none');
+                    $('#universitario').addClass('d-none');
+                    $('#adulto').addClass('d-none');
+                    break;
+                case "ESC":
+                    $('#preescolar').addClass('d-none');
+                    $('#escolar').removeClass('d-none');
+                    $('#universitario').addClass('d-none');
+                    $('#adulto').addClass('d-none');
+                    break;
+                case "UNI":
+                    $('#preescolar').addClass('d-none');
+                    $('#escolar').addClass('d-none');
+                    $('#universitario').removeClass('d-none');
+                    $('#adulto').addClass('d-none');
+                    break;
+                case "ADU":
+                    $('#preescolar').addClass('d-none');
+                    $('#escolar').addClass('d-none');
+                    $('#universitario').addClass('d-none');
+                    $('#adulto').removeClass('d-none');
+                    break;
+                default:
+                    break;
+            }
+        }
+
+        //reiniciar checkBox a false
+        function clearCheck(eval_) {
+            const form_ = document.getElementById('formTriaje');
+            const checkboxes_ = form_.querySelectorAll('input[id*="check_' + eval_ + '"][type="checkbox"]');
+            checkboxes_.forEach(function (checkbox) {
+                if (checkbox.checked) {
+                    checkbox.checked = false;
+                    $(checkbox).bootstrapSwitch('state', false, true);
+                }
+            });
+            console.log("Clear-change: " + eval_);
+        }
+        function verifyTipoDoc() {
+            const tipoDoc = document.getElementById("Tab1_TipoDocumento").value
+            const nroDocumento = document.getElementById("txtDniPaciente");
+            // const validationMessage = document.getElementById("nroDocValidationMessage");
+            console.log(tipoDoc);
+            if (tipoDoc == "DNI") {
+                // $('#txtDniPaciente').val('')
+                nroDocumento.setAttribute("maxlength", "8");
+                nroDocumento.setAttribute("minlength", "8");
+                nroDocumento.setAttribute("pattern", "\\d{8}");
+                nroDocumento.setAttribute("title", "EL DNI debe contener exactamente 8 dígitos");
+                // validationMessage.textContent = "EL DNI debe contener exactamente 8 dígitos";
+                // validationMessage.style.display = "none";
+            }
+            else if (tipoDoc == "CARNET_EXT") {
+                // $('#txtDniPaciente').val('')
+                nroDocumento.setAttribute("maxlength", "9");
+                nroDocumento.setAttribute("minlength", "9");
+                nroDocumento.setAttribute("pattern", "^[a-zA-Z0-9]{9}$");
+                nroDocumento.setAttribute("title", "El Carnet de extranjeria debe contener exactamente 9 dígitos");
+                // validationMessage.textContent = "El Carnet de extranjeria debe contener exactamente 9 dígitos";
+                // validationMessage.style.display = "none";
+            }
+            else if (tipoDoc == "PASAPORTE") {
+                // $('#txtDniPaciente').val('')
+                nroDocumento.setAttribute("maxlength", "12");
+                nroDocumento.setAttribute("minlength", "9");
+                nroDocumento.setAttribute("pattern", "^[a-zA-Z0-9]{12}$");
+                nroDocumento.setAttribute("title", "El pasaporte debe contener exactamente 12 dígitos");
+                // validationMessage.textContent = "El pasaporte debe contener exactamente 12 dígitos";
+                // validationMessage.style.display = "none";
+            }
+            else {
+                $('#txtDniPaciente').val('')
+                nroDocumento.setAttribute("maxlength", "8");
+                nroDocumento.setAttribute("minlength", "8");
+                nroDocumento.setAttribute("pattern", "\\d{8}");
+                nroDocumento.setAttribute("title", "Debe seleccionar tipo de documento");
+                // validationMessage.textContent = "Debe seleccionar tipo de documento";
+                // validationMessage.style.display = "none";
+            }
+        }
+        function validateNroDocumento() {
+            const documento = document.getElementById("txtDniPaciente");
+            const pattern = new RegExp(documento.getAttribute("pattern"));
+            const validationMessage = document.getElementById("nroDocValidationMessage");
+            var flag = false
+            if (!pattern.test(documento.value)) {
+                // documento.classList.add("input-validation-error");
+                documento.setCustomValidity("Invalid");
+                // validationMessage.style.display = "block";
+                
+                flag = false
+            } else {
+                documento.setCustomValidity("");
+                // validationMessage.style.display = "none";
+                flag = true
+            }
+            return flag;
+        }
+        function validateFechaNacimiento() {
+            const fecha = document.getElementById("txtFechaNacimientoPaciente");
+            const pattern = new RegExp(fecha.getAttribute("pattern"));
+            // const validationMessage = document.getElementById("fechaNacValidationMessage");
+            // validationMessage.textContent = "Ingresar la fecha en formato correcto";
+            // validationMessage.style.display = "none";
+            var flag = false
+            if (!pattern.test(fecha.value)) {
+                fecha.setCustomValidity("Invalid");
+                // validationMessage.style.display = "block";
+                flag = false
+            } else {
+                fecha.setCustomValidity("");
+                // validationMessage.style.display = "none";
+                flag = true
+            }
+            return flag;
+        }
+        function verifyTipoDocCont() {
+            const tipoDoc = document.getElementById("sltContactoTipoDoc").value
+            const nroDocumento = document.getElementById("txtContactoNroDoc");
+            // const validationMessage = document.getElementById("nroDocContValidationMessage");
+            console.log(tipoDoc);
+            if (tipoDoc == "DNI") {
+                // $('#txtContactoNroDoc').val('')
+                nroDocumento.setAttribute("maxlength", "8");
+                nroDocumento.setAttribute("minlength", "8");
+                nroDocumento.setAttribute("pattern", "\\d{8}");
+                nroDocumento.setAttribute("title", "El DNI debe contener exactamente 8 dígitos");
+                // validationMessage.textContent = "El DNI debe contener exactamente 8 dígitos";
+                // validationMessage.style.display = "none";
+            }
+            else if (tipoDoc == "CARNET_EXT") {
+                // $('#txtContactoNroDoc').val('')
+                nroDocumento.setAttribute("maxlength", "9");
+                nroDocumento.setAttribute("minlength", "9");
+                nroDocumento.setAttribute("pattern", "^[a-zA-Z0-9]{12}$");
+                nroDocumento.setAttribute("title", "El carnet de extranjeria debe contener exactamente 9 dígitos");
+                // validationMessage.textContent = "El carnet de extranjeria debe contener exactamente 9 dígitos";
+                // validationMessage.style.display = "none";
+            }
+            else if (tipoDoc == "PASAPORTE") {
+                // $('#txtDniPaciente').val('')
+                nroDocumento.setAttribute("maxlength", "12");
+                nroDocumento.setAttribute("minlength", "12");
+                nroDocumento.setAttribute("pattern", "^[a-zA-Z0-9]{12}$");
+                nroDocumento.setAttribute("title", "El pasaporte debe contener exactamente 12 dígitos");
+                // validationMessage.textContent = "El pasaporte debe contener exactamente 12 dígitos";
+                // validationMessage.style.display = "none";
+            }
+            else {
+                $('#txtContactoNroDoc').val('')
+                nroDocumento.setAttribute("maxlength", "8");
+                nroDocumento.setAttribute("minlength", "8");
+                nroDocumento.setAttribute("pattern", "\\d{8}");
+                nroDocumento.setAttribute("title", "Debe seleccionar tipo de documento");
+                // validationMessage.textContent = "Debe seleccionar tipo de documento";
+                // validationMessage.style.display = "none";
+            }
+        }
+        function validateNroDocumentoCont() {
+            var checkbox = document.getElementById('cbxDependiente');
+            const documento = document.getElementById("txtContactoNroDoc");
+            const pattern = new RegExp(documento.getAttribute("pattern"));
+            // const validationMessage = document.getElementById("nroDocContValidationMessage");
+
+            var flag = false
+            if (checkbox.checked) {
+                if (!pattern.test(documento.value)) {
+                    documento.setCustomValidity("Invalid");
+                    // validationMessage.style.display = "block";
+                    flag = false
+                } else {
+                    documento.setCustomValidity("");
+                    // validationMessage.style.display = "none";
+                    flag = true
+                }
+            } else {
+                flag = true
+            }
+            return flag;
+        }
+        function validateFechaNacimientoCont() {
+            var checkbox = document.getElementById('cbxDependiente');
+            const fecha = document.getElementById("txtContactoFechaNac");
+            fecha.setAttribute("pattern", "^(0[1-9]|[1-2][0-9]|3[0-1])/(0[1-9]|1[0-2])/[0-9]{4}$");
+            const pattern = new RegExp(fecha.getAttribute("pattern"));
+            const validationMessage = document.getElementById("FechaNacContValidationMessage");
+            validationMessage.textContent = "Ingresar la fecha en formato correcto";
+            validationMessage.style.display = "none";
+            var flag = false
+            if (checkbox.checked) {
+                if (!pattern.test(fecha.value)) {
+                    fecha.setCustomValidity("Invalid");
+                    validationMessage.style.display = "block";
+                    flag = false
+                } else {
+                    fecha.setCustomValidity("");
+                    validationMessage.style.display = "none";
+                    flag = true
+                }
+            } else {
+                flag = true
+            }
+            return flag;
+        }
+        function validarTab4() {
+            const form = document.getElementById('formTriaje');
+            const checkboxes = form.querySelectorAll('input[type="checkbox"].btn-check');
+            let flag = true;
+            for (let checkbox of checkboxes) {
+                if (checkbox.checked) {
+                    switch (checkbox.id) {
+                        case "cbx_Audiologia":
+                            if ($('#sltAudiologia').val() === "" || $('#sltAudiologia').val() === null || typeof $('#sltAudiologia').val() === "undefined") {
+                                showErrorString('Por favor escoja una opción del menú desplegable a continuación');
+                                flag = false;
+                            } else {
+                                flag = flag && isMarkedNS_Audiologia();
+                            }
+                            break;
+                        case "cbx_Cuerpo":
+                            if ($('#sltCuerpo').val() === "" || $('#sltCuerpo').val() === null || typeof $('#sltCuerpo').val() === "undefined") {
+                                showErrorString('Por favor escoja una opción del menú desplegable a continuación');
+                                flag = false;
+                            } else {
+                                flag = flag && isMarkedNS_Cuerpo();
+                            }
+                            break;
+                        case "cbx_Habla":
+                            if ($('#sltHabla').val() === "" || $('#sltHabla').val() === null || typeof $('#sltHabla').val() === "undefined") {
+                                showErrorString('Por favor escoja una opción del menú desplegable a continuación');
+                                flag = false;
+                            }
+                            else {
+                                flag = flag && isMarkedNS_Habla();
+                            }
+                            break;
+                        case "cbx_Udad":
+                            if ($('#sltUdad').val() === "" || $('#sltUdad').val() === null || typeof $('#sltUdad').val() === "undefined") {
+                                showErrorString('Por favor escoja una opción del menú desplegable a continuación');
+                                flag = false;
+                            } else {
+                                flag = flag && isMarkedNS_Udad();
+                            }
+                            break;
+                        case "cbx_Psicologia":
+                            if ($('#sltPsicologia').val() === "" || $('#sltPsicologia').val() === null || typeof $('#sltPsicologia').val() === "undefined") {
+                                showErrorString('Por favor escoja una opción del menú desplegable a continuación');
+                                flag = false;
+                            }
+                            break;
+                        case "cbx_Aprendizaje":
+                            if ($('#sltAprendizaje').val() === "" || $('#sltAprendizaje').val() === null || typeof $('#sltAprendizaje').val() === "undefined") {
+                                showErrorString('Por favor escoja una opción del menú desplegable a continuación');
+                                flag = false;
+                            } else {
+                                flag = flag && isMarkedNS_Aprendizaje();
+                            }
+                            break;
+                        case "cbx_Lenguaje":
+                            flag = flag && isMarkedNS_Lenguaje();
+                            break;
+                        default:
+                            break;
+                    }
+                }
+            }
+            return flag;
+        }
+
+        function isMarkedNS_Udad() {
+            const slt = document.getElementById('sltUdad');
+
+            if (slt.value === "PL") {
+                const divContainer = document.getElementById('udad-pocoLenguaje');
+                const checks = divContainer.querySelectorAll('input[id*="_NS"]');
+                for (const check of checks) {
+                    if (check.checked) {
+                        showErrorString('Para continuar, por favor marque Sí/No en todas las preguntas del cuestionario de UDAD.');
+                        return false;
+                    }
+                }
+            } else if (slt.value === "LF") {
+                const divContainer = document.getElementById('udad-lenguajeFluido');
+                const checks = divContainer.querySelectorAll('input[id*="_NS"]');
+                for (const check of checks) {
+                    if (check.checked) {
+                        showErrorString('Para continuar, por favor marque Sí/No en todas las preguntas del cuestionario de UDAD.');
+                        return false;
+                    }
+                }
+            }
+
+            return true;
+        }
+
+        function isMarkedNS_Habla() {
+            const slt = document.getElementById('sltHabla');
+
+            if (slt.value === "MO") {
+                const divContainer = document.getElementById('motricidad-orofacial');
+                const checks = divContainer.querySelectorAll('input[id*="_NS"]');
+                for (const check of checks) {
+                    if (check.checked) {
+                        showErrorString('Para continuar, por favor marque Sí/No en todas las preguntas del cuestionario de HABLA.');
+                        return false;
+                    }
+                }
+            }
+            else if (slt.value === "FL") {
+                const divContainer = document.getElementById('fluencia');
+                const checks = divContainer.querySelectorAll('input[id*="_NS"]');
+                for (const check of checks) {
+                    if (check.checked) {
+                        showErrorString('Para continuar, por favor marque Sí/No en todas las preguntas del cuestionario de HABLA.');
+                        return false;
+                    }
+                }
+            }
+            else if (slt.value === "VO") {
+                const divContainer = document.getElementById('voz');
+                const checks = divContainer.querySelectorAll('input[id*="_NS"]');
+                for (const check of checks) {
+                    if (check.checked) {
+                        showErrorString('Para continuar, por favor marque Sí/No en todas las preguntas del cuestionario de HABLA.');
+                        return false;
+                    }
+                }
+            }
+
+            return true;
+        }
+
+        function isMarkedNS_Lenguaje() {
+            const divContainer = document.getElementById('Lenguaje');
+            const checks = divContainer.querySelectorAll('input[id*="_NS"]');
+            for (const check of checks) {
+                if (check.checked) {
+                    showErrorString('Para continuar, por favor marque Sí/No en todas las preguntas del cuestionario de LENGUAJE.');
+                    return false;
+                }
+            }
+            return true;
+        }
+
+        function isMarkedNS_Aprendizaje() {
+
+            const slt = document.getElementById('sltAprendizaje');
+
+            if (slt.value === "PRE") {
+                const divContainer = document.getElementById('preescolar');
+                const checks = divContainer.querySelectorAll('input[id*="_NS"]');
+                for (const check of checks) {
+                    if (check.checked) {
+                        showErrorString('Para continuar, por favor marque Sí/No en todas las preguntas del cuestionario de APRENDIZAJE.');
+                        return false;
+                    }
+                }
+            } else if (slt.value === "ESC") {
+                const divContainer = document.getElementById('escolar');
+                const checks = divContainer.querySelectorAll('input[id*="_NS"]');
+                for (const check of checks) {
+                    if (check.checked) {
+                        showErrorString('Para continuar, por favor marque Sí/No en todas las preguntas del cuestionario de APRENDIZAJE.');
+                        return false;
+                    }
+                }
+            } else if (slt.value === "UNI") {
+                const divContainer = document.getElementById('universitario');
+                const checks = divContainer.querySelectorAll('input[id*="_NS"]');
+                for (const check of checks) {
+                    if (check.checked) {
+                        showErrorString('Para continuar, por favor marque Sí/No en todas las preguntas del cuestionario de APRENDIZAJE.');
+                        return false;
+                    }
+                }
+            } else if (slt.value === "ADU") {
+                const divContainer = document.getElementById('adulto');
+                const checks = divContainer.querySelectorAll('input[id*="_NS"]');
+                for (const check of checks) {
+                    if (check.checked) {
+                        showErrorString('Para continuar, por favor marque Sí/No en todas las preguntas del cuestionario de APRENDIZAJE.');
+                        return false;
+                    }
+                }
+            }
+
+            return true;
+
+        }
+
+        function isMarkedNS_Cuerpo() {
+            const slt = document.getElementById('sltCuerpo');
+
+            if (slt.value === "PS") {
+                const divContainer = document.getElementById('psicomotricidad');
+                const checks = divContainer.querySelectorAll('input[id*="_NS"]');
+                for (const check of checks) {
+                    if (check.checked) {
+                        showErrorString('Para continuar, por favor marque Sí/No en todas las preguntas del cuestionario de CUERPO Y MOVIMIENTO.');
+                        return false;
+                    }
+                }
+            } else if (slt.value === "OC") {
+                const divContainer = document.getElementById('ocupacional');
+                const checks = divContainer.querySelectorAll('input[id*="_NS"]');
+                for (const check of checks) {
+                    if (check.checked) {
+                        showErrorString('Para continuar, por favor marque Sí/No en todas las preguntas del cuestionario de CUERPO Y MOVIMIENTO.');
+                        return false;
+                    }
+                }
+            }
+
+            return true;
+        }
+
+        function isMarkedNS_Audiologia() {
+            const slt = document.getElementById('sltAudiologia');
+
+            if (slt.value === "BB") {
+                const divContainer = document.getElementById('perdidaAud-bebeNiños');
+                const checks = divContainer.querySelectorAll('input[id*="_NS"]');
+                for (const check of checks) {
+                    if (check.checked) {
+                        showErrorString('Para continuar, por favor marque Sí/No en todas las preguntas del cuestionario de AUDIOLOGÍA.');
+                        return false;
+                    }
+                }
+            }
+            else if (slt.value === "PA") {
+                const divContainer = document.getElementById('procesamientoAud');
+                const checks = divContainer.querySelectorAll('input[id*="_NS"]');
+                for (const check of checks) {
+                    if (check.checked) {
+                        showErrorString('Para continuar, por favor marque Sí/No en todas las preguntas del cuestionario de AUDIOLOGÍA.');
+                        return false;
+                    }
+                }
+            }
+            else if (slt.value === "AD") {
+                const divContainer = document.getElementById('perdidaAud-adultos');
+                const checks = divContainer.querySelectorAll('input[id*="_NS"]');
+                for (const check of checks) {
+                    if (check.checked) {
+                        showErrorString('Para continuar, por favor marque Sí/No en todas las preguntas del cuestionario de AUDIOLOGÍA.');
+                        return false;
+                    }
+                }
+            }
+
+            return true;
+        }
+
+        function isDependienteValidate() {
+            const fechaNacimiento = document.getElementById('txtFechaNacimientoPaciente').value;
+            const dependienteNo = document.getElementById('cbxDependienteNo');
+            const dependienteSi = document.getElementById('cbxDependiente');
+            if (esMayorDe18(fechaNacimiento)) {
+                dependienteNo.removeAttribute("disabled");
+                dependienteNo.checked = true;
+                dependienteSi.checked = false;
+            } else {
+                dependienteNo.setAttribute("disabled", "true");
+                dependienteSi.checked = true;
+            }
+            isCheckedDependiente();
+        }
+
+        function esMayorDe18(fechaNacimiento) {
+            // Dividir la fecha en día, mes y año
+            const partes = fechaNacimiento.split('/');
+            const dia = parseInt(partes[0], 10);
+            const mes = parseInt(partes[1], 10) - 1; // Los meses en JavaScript son de 0-11
+            const año = parseInt(partes[2], 10);
+
+            // Crear un objeto Date con la fecha de nacimiento
+            const fechaNac = new Date(año, mes, dia);
+
+            // Obtener la fecha actual
+            const hoy = new Date();
+
+            // Calcular la diferencia de años
+            let edad = hoy.getFullYear() - fechaNac.getFullYear();
+            const mesActual = hoy.getMonth();
+            const diaActual = hoy.getDate();
+
+            // Ajustar la edad si la fecha de nacimiento no ha ocurrido todavía este año
+            if (mesActual < mes || (mesActual === mes && diaActual < dia)) {
+                edad--;
+            }
+
+            // Verificar si la persona es mayor de 18 años
+            return edad >= 18;
+        }
+
+        function datosOK() {
+            document.getElementById("txtNombrePaciente").classList.add('input-disabled');
+            document.getElementById("txtApPaternoPaciente").classList.add('input-disabled');
+            document.getElementById("txtApMaternoPaciente").classList.add('input-disabled');
+            document.getElementById("Tab1_SexoPaciente").classList.add('input-disabled');
+            document.getElementById("Tab1_TipoDocumento").classList.add('input-disabled');
+            document.getElementById("txtDniPaciente").classList.add('input-disabled');
+            document.getElementById("txtFechaNacimientoPaciente").classList.add('input-disabled');
+            // document.getElementById("Tab1_Colegio").classList.add('input-disabled');
+        }
+
+        function mustShowGrado(imput) {
+            const nivel = imput.value;
+            const inputGrado = document.getElementById('PacienteGrado');
+            const inputColegio = document.getElementById('Colegio');
+
+            //Mostrar u ocultar el campo grado segun la edad
+            if (nivel == "SUPERIOR" || nivel == "OTROS" || nivel == "") {
+                $(".hideColegioGrado").addClass("d-none")
+                // inputGrado.style.display = "none";
+                inputGrado.removeAttribute("required");
+
+                // inputColegio.style.display = "none";
+                inputColegio.removeAttribute("required");
+            } else {
+                $(".hideColegioGrado").removeClass("d-none")
+                // inputGrado.style.display = "block";
+                inputGrado.setAttribute("required", "required");
+                inputGrado.setAttribute("title", "El campo 'Grado' es obligatorio");
+
+                // inputColegio.style.display = "block";
+                inputColegio.setAttribute("required", "required");
+                inputColegio.setAttribute("title", "El campo 'Centro educativo' es obligatorio");
+            }
+
+            //si existe mensaje de error: eliminar
+            if (document.getElementById('Tab1_PacienteGrado-error')) {
+                document.getElementById('Tab1_PacienteGrado-error').style.display = "none"
+            }
+        }
+
+        function unmarkEvaluacion(cbx, eval) {
+            var a = document.getElementById("delete_" + eval);
+            a.firstElementChild.classList.add("d-none");
+            actionLoagin(a);
+            setTimeout(function () {
+                $("#" + cbx).click();
+                evaluacionSelect(cbx, eval);
+                // if (!validarTab3()) {
+                //     $(".validation-wizard").steps("previous");
+                // }
+                a.firstElementChild.classList.remove("d-none");
+            }, 400);
+
+        }
+
+        function clearEmptySpace() {
+            document.querySelectorAll('input.form-control').forEach(input => {
+                input.addEventListener('blur', function () {
+                    this.value = this.value.trim();
+                });
+            });
+        }
+
+        function showHidenDivAugiologia(){
+            var checkbox = document.getElementById('cbxAudiologia');
+            // Verificar si el checkbox está marcado
+            if (checkbox.checked) {
+                $('#divAudiologia').removeClass('d-none');
+                chekedAudiologia();
+            } else {
+                $('#divAudiologia').addClass('d-none');
+            }
+        }
+        function unchekedAudiologia(){
+            var radio7 = document.getElementById('rdAudiologia7');
+            var radio8 = document.getElementById('rdAudiologia8');
+            if (radio7.checked || radio8.checked) {
+                document.getElementById('cbxAudiologia').checked = false;
+                showHidenDivAugiologia()
+            }
+            
+        }
+        function chekedAudiologia() {
+            const divContainer = document.getElementById('Audiologia');
+            const checks = divContainer.querySelectorAll('input[type="radio"][name="rdAudiologia"]');
+            for (const check of checks) {
+                check.checked = false;
+            }
+
+        }
+    </script>
+
+}

@@ -1,0 +1,61 @@
+﻿@using BL.IServices
+@using DA.CentralContext
+@using Entity.CentralModels
+@using Microsoft.AspNetCore.Identity;
+@inject SignInManager<IdentityUser> SignInManager
+@inject UserManager<IdentityUser> UserManager
+@inject IUsuarioService usuarioService
+
+@if (SignInManager.IsSignedIn(User))
+{
+    var appUsuario = await UserManager.FindByNameAsync(User.Identity.Name);
+    UvAspnetUserRole? userRole = await usuarioService.ObtenerUserRoles(appUsuario.Id);
+
+    <div class="fixed-profile p-3 mx-4 mb-2 bg-secondary-subtle rounded mt-3">
+        <div class="hstack gap-3">
+            <div class="john-img">
+                @if (!string.IsNullOrEmpty(userRole.UrlImagen))
+                {
+                    if (userRole.UrlImagen != "user.png")
+                    {
+                        <img src="@Url.Action("VerImagen", "Usuario", new { img = userRole.UrlImagen, h = 35, w = 35 })" alt="Usuario" class="rounded-circle" />
+                    }
+                    else if (!string.IsNullOrEmpty(userRole.Nombres) && !string.IsNullOrEmpty(userRole.ApellidoPaterno))
+                    {
+                        <img src="@Url.Action("VerAvatar", "Usuario", new { initials = string.Concat(userRole.Nombres.First(),userRole.ApellidoPaterno.First()) })" alt="Avatar" width="35" height="35" class="rounded-circle" />
+                    }
+                    else
+                    {
+                        <img src="@Url.Action("VerImagen", "Usuario", new { img = userRole.UrlImagen, h = 35, w = 35 })" alt="Usuario" class="rounded-circle" />
+                    }
+                }
+                else
+                {
+                    if (!string.IsNullOrEmpty(userRole.Nombres) && !string.IsNullOrEmpty(userRole.ApellidoPaterno))
+                    {
+                        <img src="@Url.Action("VerAvatar", "Usuario", new { initials = string.Concat(userRole.Nombres.First(),userRole.ApellidoPaterno.First()) })" alt="Avatar" width="35" height="35" class="rounded-circle" />
+                    }
+                    else
+                    {
+                        <img src="~/assets/images/user/user.png" class="rounded-circle" width="35" height="35" alt="" />
+                    }
+                }
+            </div>
+            <div class="john-title">
+                <h6 class="mb-0 fs-4 text-info">@userRole.Nombres</h6>
+                @* <span class="fs-2 text-info">@userRole.Rol</span> *@
+            </div>
+            <form id="logoutFixedForm" method="post" asp-controller="Acceso" asp-action="CerrarSession">
+                <button class="border-0 p-0 px-1 btn rounded-circle btn-outline-warning ms-auto"
+                    tabindex="0"
+                    type="submit"
+                    aria-label="Cerrar Sesion"
+                    data-bs-toggle="tooltip"
+                    data-bs-placement="top"
+                        data-bs-title="Cerrar sesión">
+                <i class="ti ti-power fs-8"></i>
+            </button>
+            </form>
+        </div>
+    </div>
+}

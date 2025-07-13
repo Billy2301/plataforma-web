@@ -1,0 +1,101 @@
+﻿@{
+    ViewData["title"] = "Portal de Clientes";
+    Layout = null;
+
+    // Espera 2 segundos antes de redirigir
+    System.Threading.Thread.Sleep(2500);
+    // Genera la URL del método "IniciarSession" del controlador "Acceso"
+    var iniciarSessionUrl = Url.Action("IniciarSesion", "Acceso");
+}
+<!DOCTYPE html>
+<html lang="en" dir="ltr" data-bs-theme="cpal" data-color-theme="cpal_Theme" data-layout="vertical">
+
+    <head>
+        <meta charset="utf-8" />
+        <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <meta http-equiv="refresh" content="2;url=@iniciarSessionUrl">
+        <title>@ViewData["Title"] - PortalClienteV2</title>
+        <!-- Favicon icon-->
+        <link rel="shortcut icon" type="image/png" href="~/assets/images/logos/favicon.png" />
+         <link rel="stylesheet" href="../css/site.css" asp-append-version="true" async />
+    <style>
+        body {
+            display: flex;
+            justify-content: center; /* Centra horizontalmente */
+            align-items: center; /* Centra verticalmente */
+            height: 100vh; /* Altura completa de la ventana */
+            margin: 0; /* Elimina los márgenes predeterminados */
+        }
+
+        .contenido {
+            transform: scale(0.72);
+            width: 300px; /* Ancho deseado del div */
+            height: 300px; /* Altura deseada del div */
+            text-align: center; /* Alinea el contenido del div al centro */
+            padding: 20px; /* Espacio interno del div */
+            border-radius: 50%; /* Bordes redondeados */
+            justify-content: center; /* Centra horizontalmente */
+            align-items: center; /* Centra verticalmente */
+            display: flex;
+        }
+
+        .preloader {
+            background-color: #fff;
+            z-index: 10;
+        }
+
+        .preloader .lds-ripple {
+            width: 192px;
+        }
+
+        .preloader svg {
+            transform: rotate(90deg);
+            overflow: visible;
+            width: 100px;
+            height: 150px;
+        }
+
+        .preloader svg path {
+            stroke-width: 48px;
+            stroke-linecap: round;
+            fill: none;
+            transform: translateY(-50px) scale(0.7);
+            stroke-dasharray: 157px 157px;
+            stroke-dashoffset: 0;
+        }
+
+        .contenido .title {
+            color: #00438c;
+            font-family: sans-serif;
+            font-size: 60px;
+            position: relative;
+            top: 0;
+            left: -65%;
+            animation: aparecerDesdeElCostado 5s cubic-bezier(0.8, 0, 0.2, 1) infinite;
+        }
+
+    </style>
+</head>
+<body>
+    <div class="contenido" >
+        <!-- Preloader -->
+        <div class="preloader">
+            <div alt="loader" class="lds-ripple img-fluid">
+                <svg>
+                    <g>
+                        <path d="M 50,100 A 1,1 0 0 1 50,0" stroke="#00438c" />
+                    </g>
+                    <g>
+                        <path d="M 50,50 A 1,1 0 0 0 50,-50" stroke="#FFA323" />
+                    </g>
+                </svg>
+            </div>
+        </div>
+        <div class="title">
+            <h3>CPAL</h3>
+        </div>
+
+    </div>
+</body>
+</html>

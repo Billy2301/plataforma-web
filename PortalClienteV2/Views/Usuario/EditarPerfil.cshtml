@@ -1,0 +1,451 @@
+﻿@model EditarPerfilViewModel
+@{
+    ViewData["title"] = "Editar Perfil";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+<style>
+    #miDropzone > div.dz-preview.dz-processing.dz-success.dz-complete.dz-image-preview > div.dz-image > img{
+        border-radius: 50% !important;
+        max-width: 100%;
+        height: auto;
+    }
+
+    #miDropzone > div.dz-preview.dz-processing.dz-success.dz-complete.dz-image-preview {
+        background-color: transparent !important;
+    }
+</style>
+<div class="card bg-info-subtle shadow-none position-relative overflow-hidden mb-4">
+    <div class="card-body px-4 py-3">
+        <div class="row align-items-center">
+            <div class="col-9">
+                <h4 class="fw-semibold mb-8 text-primary">
+                    Mi perfil
+                </h4>
+                <nav aria-label="breadcrumb">
+                    <ol class="breadcrumb">
+                        <li class="breadcrumb-item">
+                            <a class="text-muted text-decoration-none" asp-action="Index" asp-controller="Home">Inicio</a>
+                        </li>
+                        <li class="breadcrumb-item" aria-current="page">Editar Perfil</li>
+                    </ol>
+                </nav>
+            </div>
+            <div class="col-3">
+                <div class="text-center">
+@*                     <svg xmlns="http://www.w3.org/2000/svg" width="2.5em" height="2.5em" viewBox="0 0 24 24" class="cc BTC text-primary fs-7">
+                        <g fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M17.796 20.706c-.342-1.063-1.096-2.003-2.143-2.673C14.605 17.363 13.32 17 12 17c-1.32 0-2.605.363-3.653 1.033c-1.047.67-1.8 1.61-2.143 2.673" />
+                            <circle cx="12" cy="10" r="3" stroke-linecap="round" />
+                            <rect width="18" height="18" x="3" y="3" rx="3" />
+                        </g>
+                    </svg> *@
+                    <svg xmlns="http://www.w3.org/2000/svg" width="2em" height="2em" viewBox="0 0 24 24" class="cc BTC text-primary fs-7">
+                        <g fill="none" stroke="currentColor" stroke-dasharray="28" stroke-dashoffset="28" stroke-linecap="round" stroke-width="2">
+                            <path d="M4 21V20C4 16.6863 6.68629 14 10 14H14C17.3137 14 20 16.6863 20 20V21">
+                                <animate fill="freeze" attributeName="stroke-dashoffset" begin="0.7s" dur="0.6s" values="28;0" />
+                            </path>
+                            <path d="M12 11C9.79086 11 8 9.20914 8 7C8 4.79086 9.79086 3 12 3C14.2091 3 16 4.79086 16 7C16 9.20914 14.2091 11 12 11Z">
+                                <animate fill="freeze" attributeName="stroke-dashoffset" begin="0.7s" dur="0.6s" values="28;0" />
+                            </path>
+                        </g>
+                    </svg>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="card">
+    <ul class="nav nav-pills user-profile-tab" id="pills-tab" role="tablist">
+        <li class="nav-item" role="presentation">
+            <button class="nav-link position-relative rounded-0 active d-flex align-items-center justify-content-center bg-transparent fs-3 py-4"
+                    id="pills-account-tab" data-bs-toggle="pill" data-bs-target="#pills-account" type="button" role="tab"
+                    aria-controls="pills-account" aria-selected="true">
+                <i class="ti ti-user-circle me-2 fs-6"></i>
+                <span class="d-none d-md-block">Perfil</span>
+            </button>
+        </li>
+
+    </ul>
+    <div class="card-body p-3 p-md-5">
+        <div class="tab-content" id="pills-tabContent">
+            <div class="tab-pane fade show active" id="pills-account" role="tabpanel"
+                 aria-labelledby="pills-account-tab" tabindex="0">
+                <div class="row">
+
+                    <h5 class="card-title fw-semibold">Detalles personales del usuario</h5>
+                    <p class="card-subtitle mb-4" style="text-align: justify;">
+                                    Para cambiar tus datos personales, edítalo y guárdalo desde aquí
+                                </p>
+                    @if (ViewBag.Exito != null)
+                                {
+                                    <script>
+                                        document.addEventListener("DOMContentLoaded", function (event) {
+                                            Swal.fire({
+                                                title: "Genial !",
+                                                text: "@(System.Net.WebUtility.HtmlDecode(ViewBag.Exito))",
+                                                icon: "success"
+                                            });
+                                        });
+                                    </script>
+                                } 
+                    @if (ViewBag.Error != null)
+                                {
+                                    <script>
+                                        document.addEventListener("DOMContentLoaded", function (event) {
+                                            Swal.fire({
+                                                title: "Error !",
+                                                text: "@(System.Net.WebUtility.HtmlDecode(ViewBag.Error))",
+                                                icon: "error"
+                                            });
+                                        });
+                                    </script>
+                                }
+
+                                <form asp-controller="Usuario" asp-action="EditarPerfil" method="post" id="formEditUsuario">
+                                    <input type="hidden" asp-for="ImagenInternal"  id="txtImagenInternal" />
+                                    <input type="hidden" asp-for="ImagenExternal"  id="txtImagenExternal" />
+                                    <input type="hidden" asp-for="ImagenExtension"  id="txtImagenExtension" />
+                                    <input type="hidden" asp-for="UrlImagen" id="txtUrlImagen" />
+                                    <input type="hidden" asp-for="FilePath" id="txtFilePath" />
+                                    <input type="hidden" asp-for="Id" />
+
+                                    <div class="row">
+                                        <div class="col-lg-3 mb-3 ">
+                                            <div class="border-2 border p-2 rounded-2">
+                                                <div action="#" class="dropzone border-0 bg-transparent" id="miDropzone">
+                                                    <div class="fallback">
+                                                        <input name="txtImage" type="file" />
+                                                    </div>
+
+                                                </div>
+                                                <div class="d-flex">
+                                                    <a class="btn bg-primary-subtle text-primary w-50 mt-2 m-1" onclick="ClicDropzone()">Subir</a>
+                                                    <a class="btn bg-danger-subtle text-danger w-50 mt-2 m-1" onclick="deleteImagen()">Quitar</a>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="row col-lg-9 p-0 m-0">
+                                            <div class="col-lg-6">
+                                                <div class="form-floating mb-3">
+                                                    <input asp-for="Nombres" class="form-control" id="Nombre" placeholder="@Html.DisplayNameFor(m => m.Nombres)">
+                                                    <label asp-for="Nombres"><i class="ti ti-user me-2 fs-4"></i>Nombres</label>
+                                                    <span asp-validation-for="Nombres" class="text-danger"></span>
+                                                </div>
+                                            </div>
+                                            <div class="col-lg-6">
+                                                <div class="form-floating mb-3">
+                                                    <input asp-for="ApellidoPaterno" class="form-control" id="ApellidoPaterno" placeholder="@Html.DisplayNameFor(m => m.ApellidoPaterno)">
+                                                    <label asp-for="ApellidoPaterno"><i class="ti ti-user me-2 fs-4"></i>@Html.DisplayNameFor(m => m.ApellidoPaterno)</label>
+                                                    <span asp-validation-for="ApellidoPaterno" class="text-danger"></span>
+                                                </div>
+                                            </div>
+                                            <div class="col-lg-6">
+                                                <div class="form-floating mb-3">
+                                                    <input asp-for="ApellidoMaterno" class="form-control" id="ApellidoMaterno" placeholder="@Html.DisplayNameFor(m => m.ApellidoMaterno)">
+                                                    <label asp-for="ApellidoMaterno"><i class="ti ti-user me-2 fs-4"></i>@Html.DisplayNameFor(m => m.ApellidoMaterno)</label>
+                                                    <span asp-validation-for="ApellidoMaterno" class="text-danger"></span>
+                                                </div>
+                                            </div>
+                                            <div class="col-lg-6 ">
+                                                <div class="form-floating mb-3">
+
+                                        <select asp-for="TipoDoc" id="TipoDoc" class="form-control" asp-items="@Model.listTipoDoc" onchange="verifyTipoDoc()">
+                                                        <option disabled selected>--Seleccionar --</option>
+                                                    </select>
+                                                    <label asp-for="TipoDoc"><i class="ti ti-user me-2 fs-4"></i>@Html.DisplayNameFor(m => m.TipoDoc)</label>
+                                                    <span asp-validation-for="TipoDoc" class="text-danger"></span>
+                                                </div>
+                                            </div>
+                                            <div class="col-lg-6 ">
+                                                <div class="form-floating mb-3">
+                                        <input asp-for="DNI" class="form-control" id="DNI" placeholder="@Html.DisplayNameFor(m => m.DNI)">
+                                                    <label asp-for="DNI"><i class="ti ti-user me-2 fs-4"></i> @Html.DisplayNameFor(m => m.DNI)</label>
+                                                    <span asp-validation-for="DNI" class="text-danger"></span>
+                                                </div>
+                                            </div>
+                                            <div class="col-lg-3 ">
+                                                <div class="form-floating mb-3">
+                                        <select asp-for="Pais" class="form-control" id="Pais" asp-items="@Model.listPaises">
+                                                        <option disabled selected>--Seleccionar --</option>
+                                                    </select>
+                                                    <label asp-for="Pais"><i class="ti ti-user me-2 fs-4"></i> @Html.DisplayNameFor(m => m.Pais)</label>
+                                                    <span asp-validation-for="Pais" class="text-danger"></span>
+                                                </div>
+                                            </div>
+                                            <div class="col-lg-6">
+                                                <div class="form-floating mb-3">
+                                        <input asp-for="Dirección" class="form-control" id="Dirección" placeholder="@Html.DisplayNameFor(m => m.Dirección)">
+                                                    <label asp-for="Dirección"><i class="ti ti-user me-2 fs-4"></i> @Html.DisplayNameFor(m => m.Dirección)</label>
+                                                    <span asp-validation-for="Dirección" class="text-danger"></span>
+                                                </div>
+                                            </div>
+                                            <div class="col-lg-3">
+                                                <div class="form-floating mb-3">
+                                        <input asp-for="Telefono" class="form-control" id="Telefono" placeholder="@Html.DisplayNameFor(m => m.Telefono)">
+                                                    <label asp-for="Telefono"><i class="ti ti-user me-2 fs-4"></i>@Html.DisplayNameFor(m => m.Telefono)</label>
+                                                    <span asp-validation-for="Telefono" class="text-danger"></span>
+                                                </div>
+                                            </div>
+                                            <div class="col-lg-4">
+                                                <div class="form-floating mb-3">
+                                        <input asp-for="FechaNacimiento" type="text" asp-format="{0:dd/MM/yyyy}" class="form-control" id="txtFechaNac" placeholder="Fecha nacimiento" autocomplete="off">
+                                                    <label asp-for="FechaNacimiento"><i class="ti ti-calendar me-2 fs-4"></i> @Html.DisplayNameFor(m => m.FechaNacimiento)</label>
+                                                    <span asp-validation-for="FechaNacimiento" class="text-danger"></span>
+                                                </div>
+                                            </div>
+                                            <div class="col-lg-4">
+                                                <div class="form-floating mb-3">
+                                        <select class="form-select" asp-for="Sexo" id="Sexo" required="" placeholder="Sexo" autocomplete="off">
+                                                        <option value="0" disabled>--Seleccionar sexo--</option>
+                                                        <option value="1">Masculino</option>
+                                                        <option value="2">Femenino</option>
+                                                    </select>
+                                                    <label asp-for="FechaNacimiento"> @Html.DisplayNameFor(m => m.Sexo)</label>
+                                                    <span asp-validation-for="Sexo" class="text-danger"></span>
+                                                </div>
+                                            </div>
+                                        
+                                        </div>
+
+                                        <div class="col-12">
+                                            <div class="d-flex ms-auto mt-4 col-md-4 gap-6">
+                                                <button type="submit" class="btn btn-primary w-100">Guardar</button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </form>
+
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+
+    <script>
+        $('#txtFechaNac').datepicker({
+            format: 'dd/mm/yyyy', // Formato de fecha deseado
+            autoclose: true // Para cerrar automáticamente el datepicker después de seleccionar una fecha
+        });
+
+        Dropzone.options.miDropzone = {
+            url: "@Url.Action("CargarImagen", "Usuario")",
+            method: "POST",
+            paramName: "file", // The name that will be used to transfer the file
+            maxFilesize: 1, // MB
+            maxFiles: 1, // Máximo número de archivos permitidos
+            acceptedFiles: "image/*", // Permitir solo archivos de imagen
+            dictInvalidFileType: "Solo se permiten imágenes.",
+            init: function () {
+                this.on("sending", function (file, xhr, formData) {
+                    deleteImagen()
+                });
+                this.on("complete", function (file) {
+                    
+                });
+                this.on("success", function (file, response) {
+                    
+                    // Maneja la respuesta del servidor después de cargar el archivo
+                    if (response.estado) {
+                        Swal.fire({
+                            title: "Genial !",
+                            text: response.mensaje,
+                            icon: "success",
+                            showConfirmButton: false,
+                            timer: 1500
+                        });
+                        $("#txtImagenInternal").val(response.objeto.internal)
+                        $("#txtImagenExternal").val(response.objeto.external)
+                        $("#txtImagenExtension").val(response.objeto.extension)
+                        var urlCreated = $("#txtImagenInternal").val() + $("#txtImagenExtension").val();
+                        $("#txtUrlImagen").val(urlCreated);
+
+                    }else{
+                        Swal.fire({
+                            title: "Error !",
+                            text: response.mensaje,
+                            icon: "error"
+                        });
+                    }
+                });
+                this.on("error", function (file, errorMessage) {
+                    Swal.fire({
+                        title: "Error !",
+                        text: 'Se ha producido un error al cargar el archivo: ' + errorMessage,
+                        icon: "error"
+                    });
+                });
+            }
+
+        };
+
+        $(document).ready(function () {
+            if ("@Model.ImagenInternal" != "") {
+                 // Verificar si Dropzone está definido
+                 if (typeof Dropzone !== 'undefined') {
+                    // Verificar si ya hay una instancia de Dropzone asociada al elemento
+                    if (Dropzone.forElement("#miDropzone")) {
+                        // Crear una instancia de Dropzone solo si no hay una ya asociada al elemento
+                        var miDropzone = Dropzone.forElement("#miDropzone")
+
+                        // Crear una vista previa de la imagen predeterminada
+                        var mockFile = { name: "@Model.ImagenExternal", size: 12345 };
+                        miDropzone.emit("addedfile", mockFile);
+                        miDropzone.emit("thumbnail", mockFile, "@Url.Action("VerImagen", "Usuario", new { img = Model.UrlImagen, h = 120, w = 120 })"); // Utiliza la ruta de la imagen del modelo
+
+                        // Obtener el elemento de imagen
+                        var thumbnailImage = miDropzone.previewsContainer.querySelector('.dz-image img');
+                        var progress = miDropzone.previewsContainer.querySelector('.dz-progress');
+                        var preview = miDropzone.previewsContainer.querySelector('.dz-preview');
+
+                        preview.classList.add("dz-processing", "dz-image-preview", "dz-success", "dz-complete");
+                        progress.style.display = "none";
+                        thumbnailImage.style.width = '120px'; // Ancho deseado
+                        thumbnailImage.style.height = '120px';
+                        
+                    }else{
+                        console.log("ya está definido.");
+                    }
+                    } else {
+                     console.log("Dropzone no está definido.");
+                 }
+            }
+
+            $(".dz-button").html('<h4><i class="ti ti-photo-plus fs-7 translucent-4 fw-semibold"></i><br><span class="translucent-4">Agregar imagen de perfil </span> </h4>');
+
+            document.querySelectorAll('input.form-control').forEach(input => {
+                // Evento "blur" (cuando el usuario sale del campo)
+                input.addEventListener('blur', function () {
+                    this.value = this.value.trim();  // Elimina espacios en blanco al inicio y final del valor del campo
+                });
+            });
+
+            document.getElementById("formEditUsuario").addEventListener("submit", function (e) {
+              if (!isValidNroDocumento()) {
+                e.preventDefault(); // Cancela el envío
+                Swal.fire({
+                    title: "Error !",
+                    text: "Número de documento inválido. Por favor verifícalo.",
+                    icon: "error"
+                });
+              }
+              // Si es válido, se envía normalmente
+            });
+
+            verifyTipoDoc();
+
+        });
+
+        function ClicDropzone() {
+            // Selecciona el área de Dropzone
+            var dropzoneArea = document.querySelector("#miDropzone");
+            // Simula un clic en el área de Dropzone
+            dropzoneArea.click();
+        }
+
+        function deleteImagen(){
+            
+            if (typeof Dropzone !== 'undefined') {
+                // Verificar si ya hay una instancia de Dropzone asociada al elemento
+                if (Dropzone.forElement("#miDropzone")) {
+                    // Crear una instancia de Dropzone solo si no hay una ya asociada al elemento
+                    var miDropzone = Dropzone.forElement("#miDropzone")
+                    miDropzone.removeAllFiles();
+                    // Buscar el elemento de vista previa de la imagen manualmente agregada
+                    var previewElements = miDropzone.previewsContainer.querySelectorAll('.dz-image-preview');
+                    // Eliminar el elemento de vista previa
+                    previewElements.forEach(function (previewElement) {
+                        previewElement.remove();
+                    });
+                    $("#txtUrlImagen").val("");
+
+                } else {
+                    console.log("Ya está definido.");
+                }
+            } else {
+                console.log("Dropzone no está definido.");
+            }
+
+        }
+        //^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+        function verifyTipoDoc() {
+            const tipoDoc = document.getElementById("TipoDoc").value
+            const nroDocumento = document.getElementById("DNI");
+            console.log(tipoDoc);
+            if (tipoDoc == "DNI") {
+                nroDocumento.setAttribute("maxlength", "8");
+                nroDocumento.setAttribute("minlength", "8");
+                nroDocumento.setAttribute("pattern", "\\d{8}");
+                nroDocumento.setAttribute("title", "EL DNI debe contener exactamente 8 dígitos");
+            }
+            else if (tipoDoc == "CARNET_EXT") {
+                nroDocumento.setAttribute("maxlength", "9");
+                nroDocumento.setAttribute("minlength", "9");
+                nroDocumento.setAttribute("pattern", "^[a-zA-Z0-9]{9}$");
+                nroDocumento.setAttribute("title", "El Carnet de extranjeria debe contener exactamente 9 dígitos");
+            }
+            else if (tipoDoc == "PASAPORTE") {
+                nroDocumento.setAttribute("maxlength", "12");
+                nroDocumento.setAttribute("minlength", "12");
+                nroDocumento.setAttribute("pattern", "^[a-zA-Z0-9]{12}$");
+                nroDocumento.setAttribute("title", "El pasaporte debe contener exactamente 12 dígitos");
+            }
+            else {
+                document.getElementById("DNI").value = "";
+                nroDocumento.removeAttribute("minlength");
+                nroDocumento.removeAttribute("maxlength");
+                nroDocumento.removeAttribute("pattern");
+                nroDocumento.removeAttribute("title");
+            }
+        }
+
+
+        function isValidNroDocumento2() {
+            const documento = document.getElementById("DNI");
+            const pattern = new RegExp(documento.getAttribute("pattern"));
+            var flag = false
+            alert(pattern);
+            if (!pattern.test(documento.value)) {
+                alert(" invalido");
+                documento.setCustomValidity("Invalid");
+                flag = false
+            } else {
+                alert(" valido");
+                documento.setCustomValidity("");
+                flag = true
+            }
+            return flag;
+        }
+
+        function isValidNroDocumento() {
+            const documento = document.getElementById("DNI");
+
+            // Asegúrate de que el atributo 'pattern' exista
+            const patternAttr = documento.getAttribute("pattern");
+            if (!patternAttr) {
+                console.warn("No se encontró el atributo 'pattern' en el campo DNI.");
+                return false;
+            }
+
+            const pattern = new RegExp("^" + patternAttr + "$"); // Ancla el patrón completo
+
+            if (!pattern.test(documento.value)) {
+                // documento.setCustomValidity("Número de documento inválido.");
+                // documento.reportValidity(); // Muestra el mensaje nativo del navegador
+                documento.setCustomValidity("Invalid");
+                return false;
+            } else {
+                documento.setCustomValidity(""); // Limpia el mensaje de error
+                return true;
+            }
+        }
+    </script>
+
+    
+}

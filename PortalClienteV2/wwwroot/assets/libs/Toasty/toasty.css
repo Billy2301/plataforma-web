@@ -1,0 +1,436 @@
+/*! toastyy.js - v1.5.0 - 2018-05-04
+* https://jakim.me/toastyy.js/
+* Copyright (c) 2015-2018 Jakim Hernández; Licensed MIT */
+.toasty-container {
+  position: fixed;
+  z-index: 999999;
+  pointer-events: none;
+  line-height: normal;
+  line-height: initial;
+  -webkit-transition: all 1s ease-in-out;
+  -o-transition: all 1s ease-in-out;
+  transition: all 1s ease-in-out;
+}
+/* the wrapper where the toasty messages appends: */
+.toasty-container .toasty-wrapper {
+  position: relative;
+  padding: 0.5em;
+}
+/* the class that is assigned to the sound player. */
+/* normally, this is a hidden wildcard: */
+.toasty-container .toasty-soundplayer {
+  display: none;
+  visibility: hidden;
+}
+
+/**
+ * toasty messages styles:
+ * -------------------------------------------------- */
+
+/* each toasty message gets this style: */
+.toasty {
+  position: relative;
+  /*padding: 16px;*/
+  border: 0px solid;
+  margin: 0.5em 0em;
+  border-left: 6px solid transparent;
+/*  border-radius: 2px;*/
+  pointer-events: none;
+  -webkit-transition: all 0.32s ease-in-out;
+  -o-transition: all 0.32s ease-in-out;
+  transition: all 0.32s ease-in-out;
+  -webkit-box-shadow: 0px 0px 9px rgba(0, 0, 0, .25);
+  box-shadow: 0px 0px 9px rgba(0, 0, 0, .25);
+  -webkit-transform: translate3d(0, 0, 0);
+  transform: translate3d(0, 0, 0);
+
+    pointer-events: auto;
+    margin: 0 0 6px;
+    padding: 15px 15px 15px 50px;
+    width: 300px;
+    /* border: 0; */
+    border-radius: 5px;
+    background-position: 15px center;
+    background-repeat: no-repeat;
+    /* box-shadow: 0 0 12px rgba(0, 0, 0, 0.08); */
+    color: #fff;
+}
+
+/* informational toasty class: */
+.toasty--info {
+    color: #fff;
+    background-color: #1475f6;
+    border-color: #236bcb;
+    background-image: url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABgAAAAYCAYAAADgdz34AAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8YQUAAAAJcEhZcwAADsMAAA7DAcdvqGQAAAGwSURBVEhLtZa9SgNBEMc9sUxxRcoUKSzSWIhXpFMhhYWFhaBg4yPYiWCXZxBLERsLRS3EQkEfwCKdjWJAwSKCgoKCcudv4O5YLrt7EzgXhiU3/4+b2ckmwVjJSpKkQ6wAi4gwhT+z3wRBcEz0yjSseUTrcRyfsHsXmD0AmbHOC9Ii8VImnuXBPglHpQ5wwSVM7sNnTG7Za4JwDdCjxyAiH3nyA2mtaTJufiDZ5dCaqlItILh1NHatfN5skvjx9Z38m69CgzuXmZgVrPIGE763Jx9qKsRozWYw6xOHdER+nn2KkO+Bb+UV5CBN6WC6QtBgbRVozrahAbmm6HtUsgtPC19tFdxXZYBOfkbmFJ1VaHA1VAHjd0pp70oTZzvR+EVrx2Ygfdsq6eu55BHYR8hlcki+n+kERUFG8BrA0BwjeAv2M8WLQBtcy+SD6fNsmnB3AlBLrgTtVW1c2QN4bVWLATaIS60J2Du5y1TiJgjSBvFVZgTmwCU+dAZFoPxGEEs8nyHC9Bwe2GvEJv2WXZb0vjdyFT4Cxk3e/kIqlOGoVLwwPevpYHT+00T+hWwXDf4AJAOUqWcDhbwAAAAASUVORK5CYII=) !important;
+}
+
+/* successful toasty class: */
+.toasty--success {
+    color: #fff;
+    background-color: #06d79c;
+    border-color: #11bd8c;
+    background-image: url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABgAAAAYCAYAAADgdz34AAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8YQUAAAAJcEhZcwAADsMAAA7DAcdvqGQAAADsSURBVEhLY2AYBfQMgf///3P8+/evAIgvA/FsIF+BavYDDWMBGroaSMMBiE8VC7AZDrIFaMFnii3AZTjUgsUUWUDA8OdAH6iQbQEhw4HyGsPEcKBXBIC4ARhex4G4BsjmweU1soIFaGg/WtoFZRIZdEvIMhxkCCjXIVsATV6gFGACs4Rsw0EGgIIH3QJYJgHSARQZDrWAB+jawzgs+Q2UO49D7jnRSRGoEFRILcdmEMWGI0cm0JJ2QpYA1RDvcmzJEWhABhD/pqrL0S0CWuABKgnRki9lLseS7g2AlqwHWQSKH4oKLrILpRGhEQCw2LiRUIa4lwAAAABJRU5ErkJggg==) !important;
+}
+
+/* warning toasty class: */
+.toasty--warning {
+    color: #fff;
+    background-color: #ffb22b;
+    border-color: #d7931c;
+    background-image: url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABgAAAAYCAYAAADgdz34AAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8YQUAAAAJcEhZcwAADsMAAA7DAcdvqGQAAAGYSURBVEhL5ZSvTsNQFMbXZGICMYGYmJhAQIJAICYQPAACiSDB8AiICQQJT4CqQEwgJvYASAQCiZiYmJhAIBATCARJy+9rTsldd8sKu1M0+dLb057v6/lbq/2rK0mS/TRNj9cWNAKPYIJII7gIxCcQ51cvqID+GIEX8ASG4B1bK5gIZFeQfoJdEXOfgX4QAQg7kH2A65yQ87lyxb27sggkAzAuFhbbg1K2kgCkB1bVwyIR9m2L7PRPIhDUIXgGtyKw575yz3lTNs6X4JXnjV+LKM/m3MydnTbtOKIjtz6VhCBq4vSm3ncdrD2lk0VgUXSVKjVDJXJzijW1RQdsU7F77He8u68koNZTz8Oz5yGa6J3H3lZ0xYgXBK2QymlWWA+RWnYhskLBv2vmE+hBMCtbA7KX5drWyRT/2JsqZ2IvfB9Y4bWDNMFbJRFmC9E74SoS0CqulwjkC0+5bpcV1CZ8NMej4pjy0U+doDQsGyo1hzVJttIjhQ7GnBtRFN1UarUlH8F3xict+HY07rEzoUGPlWcjRFRr4/gChZgc3ZL2d8oAAAAASUVORK5CYII=) !important;
+}
+
+/* error toasty class: */
+.toasty--error {
+    color: #fff;
+    background-color: #f64e60;
+    border-color: #d53445;
+    background-image: url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABgAAAAYCAYAAADgdz34AAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8YQUAAAAJcEhZcwAADsMAAA7DAcdvqGQAAAHOSURBVEhLrZa/SgNBEMZzh0WKCClSCKaIYOED+AAKeQQLG8HWztLCImBrYadgIdY+gIKNYkBFSwu7CAoqCgkkoGBI/E28PdbLZmeDLgzZzcx83/zZ2SSXC1j9fr+I1Hq93g2yxH4iwM1vkoBWAdxCmpzTxfkN2RcyZNaHFIkSo10+8kgxkXIURV5HGxTmFuc75B2RfQkpxHG8aAgaAFa0tAHqYFfQ7Iwe2yhODk8+J4C7yAoRTWI3w/4klGRgR4lO7Rpn9+gvMyWp+uxFh8+H+ARlgN1nJuJuQAYvNkEnwGFck18Er4q3egEc/oO+mhLdKgRyhdNFiacC0rlOCbhNVz4H9FnAYgDBvU3QIioZlJFLJtsoHYRDfiZoUyIxqCtRpVlANq0EU4dApjrtgezPFad5S19Wgjkc0hNVnuF4HjVA6C7QrSIbylB+oZe3aHgBsqlNqKYH48jXyJKMuAbiyVJ8KzaB3eRc0pg9VwQ4niFryI68qiOi3AbjwdsfnAtk0bCjTLJKr6mrD9g8iq/S/B81hguOMlQTnVyG40wAcjnmgsCNESDrjme7wfftP4P7SP4N3CJZdvzoNyGq2c/HWOXJGsvVg+RA/k2MC/wN6I2YA2Pt8GkAAAAASUVORK5CYII=) !important;
+}
+
+/* this class is assigned to each toasty message when autoClose
+ * plugin option is set to BOOLEAN false. */
+/* Normally, this is a pointer events handler:*/
+.toasty.close-on-click {
+  cursor: pointer;
+  pointer-events: auto;
+}
+
+/**
+ * Progress bar styles:
+ * ------------------------------------------------------------------------- */
+
+/* each progress bar gets this style: */
+.toasty-progressbar {
+  position: absolute;
+  height: 4px;
+  width: 0%;
+  left: 0px;
+  bottom: 0px;
+  opacity: 0.5;
+  -webkit-transition: width 0s ease;
+  -o-transition: width 0s ease;
+  transition: width 0s ease;
+}
+
+/* progress bar color for each toasty type: */
+.toasty-progressbar--info {
+  background-color: #91c5f2;
+}
+
+.toasty-progressbar--success {
+  background-color: #a6ca8a;
+}
+
+.toasty-progressbar--warning {
+  background-color: #f2c779;
+}
+
+.toasty-progressbar--error {
+  background-color: #f5aca6;
+}
+
+/**
+ * Available toasty transitions:
+ * ------------------------------------------------------------------------- */
+
+/* TRANSITION 01 - a [fade] transition (DEFAULT TRANSITION): */
+.toasty-container--fade {
+  right: 0;
+  bottom: 0;
+}
+
+.toasty-container--fade .toasty-wrapper {
+  display: inline-block;
+}
+
+.toasty.fade-init {
+  opacity: 0;
+}
+
+.toasty.fade-show {
+  opacity: 1;
+}
+
+.toasty.fade-hide {
+  opacity: 0;
+}
+/* ------------------------------------------------------------------------- */
+
+/* TRANSITION 02 - a [slideLeftFade] transition: */
+.toasty-container--slideLeftFade {
+  right: 0;
+  bottom: 0;
+}
+
+.toasty-container--slideLeftFade .toasty-wrapper {
+  display: inline-block;
+}
+
+.toasty.slideLeftFade-init {
+  right: -100%;
+  opacity: 0;
+}
+
+.toasty.slideLeftFade-show {
+  right: 0%;
+  opacity: 1;
+}
+
+.toasty.slideLeftFade-hide {
+  right: 100%;
+  opacity: 0;
+}
+/* ------------------------------------------------------------------------- */
+
+/* TRANSITION 03 - a [slideLeftRightFade] transition: */
+.toasty-container--slideLeftRightFade {
+  right: 0;
+  bottom: 0;
+}
+
+.toasty-container--slideLeftRightFade .toasty-wrapper {
+  display: inline-block;
+}
+
+.toasty.slideLeftRightFade-init {
+  right: -100%;
+  opacity: 0;
+}
+
+.toasty.slideLeftRightFade-show {
+  right: 0%;
+  opacity: 1;
+}
+
+.toasty.slideLeftRightFade-hide {
+  right: -100%;
+  opacity: 0;
+}
+/* ------------------------------------------------------------------------- */
+
+/* TRANSITION 04 - a [slideRightFade] transition: */
+.toasty-container--slideRightFade {
+  right: 0;
+  bottom: 0;
+}
+
+.toasty-container--slideRightFade .toasty-wrapper {
+  display: inline-block;
+}
+
+.toasty.slideRightFade-init {
+  left: -100%;
+  opacity: 0;
+}
+
+.toasty.slideRightFade-show {
+  left: 0%;
+  opacity: 1;
+}
+
+.toasty.slideRightFade-hide {
+  left: 100%;
+  opacity: 0;
+}
+/* ------------------------------------------------------------------------- */
+
+/* TRANSITION 05 - a [slideRightLeftFade] transition: */
+.toasty-container--slideRightLeftFade {
+  right: 0;
+  bottom: 0;
+}
+
+.toasty-container--slideRightLeftFade .toasty-wrapper {
+  display: inline-block;
+}
+
+.toasty.slideRightLeftFade-init {
+  left: -100%;
+  opacity: 0;
+}
+
+.toasty.slideRightLeftFade-show {
+  left: 0%;
+  opacity: 1;
+}
+
+.toasty.slideRightLeftFade-hide {
+  left: -100%;
+  opacity: 0;
+}
+/* ------------------------------------------------------------------------- */
+
+/* TRANSITION 06 - a [slideUpFade] transition: */
+.toasty-container--slideUpFade {
+  top: 0;
+  right: 0;
+  bottom: 0;
+}
+
+.toasty-container--slideUpFade .toasty-wrapper {
+  position: relative;
+  width: 100%;
+  height: 100%;
+}
+
+.toasty.slideUpFade-init {
+  bottom: -100%;
+  opacity: 0;
+}
+
+.toasty.slideUpFade-show {
+  bottom: 0%;
+  opacity: 1;
+}
+
+.toasty.slideUpFade-hide {
+  bottom: 100%;
+  opacity: 0;
+}
+/* ------------------------------------------------------------------------- */
+
+/* TRANSITION 07 - a [slideUpDownFade] transition: */
+.toasty-container--slideUpDownFade {
+  top: 0;
+  right: 0;
+  bottom: 0;
+}
+
+.toasty-container--slideUpDownFade .toasty-wrapper {
+  position: relative;
+  width: 100%;
+  height: 100%;
+}
+
+.toasty.slideUpDownFade-init {
+  bottom: -100%;
+  opacity: 0;
+}
+
+.toasty.slideUpDownFade-show {
+  bottom: 0%;
+  opacity: 1;
+}
+
+.toasty.slideUpDownFade-hide {
+  bottom: -100%;
+  opacity: 0;
+}
+/* ------------------------------------------------------------------------- */
+
+/* TRANSITION 08 - a [slideDownFade] transition: */
+.toasty-container--slideDownFade {
+  top: 0;
+  right: 0;
+  bottom: 0;
+}
+
+.toasty-container--slideDownFade .toasty-wrapper {
+  position: relative;
+  width: 100%;
+  height: 100%;
+}
+
+.toasty.slideDownFade-init {
+  top: -100%;
+  opacity: 0;
+}
+
+.toasty.slideDownFade-show {
+  top: 0%;
+  opacity: 1;
+}
+
+.toasty.slideDownFade-hide {
+  top: 100%;
+  opacity: 0;
+}
+/* ------------------------------------------------------------------------- */
+
+/* TRANSITION 09 - a [slideDownUpFade] transition: */
+.toasty-container--slideDownUpFade {
+  top: 0;
+  right: 0;
+  bottom: 0;
+}
+
+.toasty-container--slideDownUpFade .toasty-wrapper {
+  position: relative;
+  width: 100%;
+  height: 100%;
+}
+
+.toasty.slideDownUpFade-init {
+  top: -100%;
+  opacity: 0;
+}
+
+.toasty.slideDownUpFade-show {
+  top: 0%;
+  opacity: 1;
+}
+
+.toasty.slideDownUpFade-hide {
+  top: -100%;
+  opacity: 0;
+}
+/* ------------------------------------------------------------------------- */
+
+/* TRANSITION 10 - a [pinItUp] transition: */
+.toasty-container--pinItUp {
+  top: 0;
+  right: 0;
+  bottom: 0;
+}
+
+.toasty-container--pinItUp .toasty-wrapper {
+  display: inline-block;
+  height: 25px;
+  float: right;
+}
+
+.toasty.pinItUp-init {
+  bottom: -100%;
+  opacity: 0;
+}
+
+.toasty.pinItUp-show {
+  bottom: 0%;
+  opacity: 1;
+}
+
+.toasty.pinItUp-hide {
+  bottom: 100%;
+  opacity: 0;
+}
+/* ------------------------------------------------------------------------- */
+
+/* TRANSITION 11 - a [pinItDown] transition: */
+.toasty-container--pinItDown {
+  top: 0;
+  right: 0;
+  bottom: 0;
+}
+
+.toasty-container--pinItDown .toasty-wrapper {
+  display: inline-block;
+  height: 25px;
+  float: right;
+}
+
+.toasty.pinItDown-init {
+  top: -100%;
+  opacity: 0;
+}
+
+.toasty.pinItDown-show {
+  top: 0%;
+  opacity: 1;
+}
+
+.toasty.pinItDown-hide {
+  top: 100%;
+  opacity: 0;
+}
+/* ------------------------------------------------------------------------- */

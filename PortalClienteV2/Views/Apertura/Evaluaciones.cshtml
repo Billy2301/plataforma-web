@@ -1,0 +1,1158 @@
+﻿@using Entity.ClinicaModels
+@model AperturaViewModel
+
+@{
+    ViewData["title"] = "Pago de evaluaiones Seleccionadas";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    string? culqiPublicKey = ViewData["publicKey"] as string;
+}
+
+<style>
+    thead, tbody, tfoot, tr, td, th {
+        border-color: inherit;
+        border-style: dotted;
+        border-width: 1px;
+    }
+
+    .div-flotante {
+        position: fixed; /* Fijo en la ventana del navegador */
+        top: 100px; /* Distancia desde la parte inferior */
+        right: 20px; /* Distancia desde la derecha */
+        width: 350px; /* Ancho del div */
+        background-color: #f8f9fa; /* Color de fondo */
+        color: #333; /* Color del texto */
+        border: 2px solid #007bff; /* Borde con color */
+        border-radius: 8px; /* Bordes redondeados */
+        box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.2); /* Sombra */
+        text-align: center; /* Alineación del texto */
+        font-family: Arial, sans-serif; /* Fuente */
+        z-index: 1000; /* Asegura que esté por encima de otros elementos */
+    }
+</style>
+
+<!-- Div flotante -->
+<div class="accordion div-flotante d-none" id="miDiv">
+    <div class="accordion-item">
+        <h2 class="accordion-header">
+            <button class="accordion-button p-2" type="button" data-bs-toggle="collapse" data-bs-target="#collapseOne" aria-expanded="true" aria-controls="collapseOne">
+                <h5 class="card-title fw-semibold">
+                    <img class="object-contain rounded-full rounded-circle round" alt="Visa" style="width: 30px;height: 30px;" src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQM8aBDeMK7lX0IscaGUp4aDEEMs_DTbCh16drCQbeeFq-4JjTMswzgf8aEgXO6lfTHJ0M&usqp=CAU">
+                    Tarjetas de prueba
+                    </h5>
+            </button>
+        </h2>
+        <div id="collapseOne" class="accordion-collapse collapse show" data-bs-parent="#accordionExample">
+            <div class="accordion-body p-2">
+               
+                <div class="d-flex align-items-center border-1 border-bottom">
+                    <div class="flex-shrink-0 d-flex align-items-center justify-content-center">
+                        <img class="object-contain rounded-full rounded-circle round" alt="Visa" style="width: 25px;height: 25px;" src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcT7tTx07a9nRLlTE1D-MJSv3P5k6BLd058keA&s">
+                    </div>
+                    <div class="m-auto">
+                        <span class="fs-3 me-2">Nro celular: <b>900 000 001</b> <br />Código de verificación: <b>123456</b></span>
+                    </div>
+                </div>
+                
+                <div class="d-flex align-items-center border-1 border-bottom">
+                    <div class="flex-shrink-0 d-flex align-items-center justify-content-center">
+                        <img class="object-contain rounded-full" alt="Visa" width="30" src="https://docs.culqi.com/images/icons/brands/visa.svg">
+                    </div>
+                    <div class="ms-3">
+                        <h6 class="mb-0 fw-semibold">4111 1111 1111 1111</h6>
+                    </div>
+                    <div class="ms-auto">
+                        <span class="fs-3 fw-semibold me-2">09/25</span>
+                        <span class="fs-3 fw-semibold me-2">123</span>
+                    </div>
+                </div>
+
+                <div class="d-flex align-items-center border-1 border-bottom">
+                    <div class="flex-shrink-0 d-flex align-items-center justify-content-center">
+                        <img class="object-contain rounded-full" alt="Visa" width="30" src="https://docs.culqi.com/images/icons/brands/mastercard.png">
+                    </div>
+                    <div class="ms-3">
+                        <h6 class="mb-0 fw-semibold">5111 1111 1111 1118</h6>
+                    </div>
+                    <div class="ms-auto">
+                        <span class="fs-3 fw-semibold me-2">06/25</span>
+                        <span class="fs-3 fw-semibold me-2">039</span>
+                    </div>
+                </div>
+                <div class="d-flex align-items-center border-1 border-bottom">
+                    <div class="flex-shrink-0 d-flex align-items-center justify-content-center">
+                        <img class="object-contain rounded-full" alt="Visa" width="30" src="https://docs.culqi.com/images/icons/brands/amex.svg">
+                    </div>
+                    <div class="ms-3">
+                        <h6 class="mb-0 fw-semibold">3712 1212 1212 122</h6>
+                    </div>
+                    <div class="ms-auto">
+                        <span class="fs-3 fw-semibold me-2">11/25</span>
+                        <span class="fs-3 fw-semibold me-2">2841</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="card bg-info-subtle shadow-none position-relative overflow-hidden mb-4">
+    <div class="card-body px-4 py-3">
+        <div class="row align-items-center">
+            <div class="col-9">
+                <h4 class="fw-semibold mb-8 text-primary">
+                    Pago
+                </h4>
+                <nav aria-label="breadcrumb">
+                    <ol class="breadcrumb">
+                        <li class="breadcrumb-item">
+                            <a class="text-muted text-decoration-none" asp-action="Index" asp-controller="Home">Inicio</a>
+                        </li>
+                        <li class="breadcrumb-item" aria-current="page">Pago</li>
+                    </ol>
+                </nav>
+            </div>
+            <div class="col-3">
+                <div class="text-center">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="2.5em" height="2.5em" viewBox="0 0 24 24" class="cc BTC text-primary fs-7">
+                        <path fill="currentColor" d="M7 4C4.8 4 3 5.8 3 8s1.8 4 4 4s4-1.8 4-4s-1.8-4-4-4m0 6c-1.1 0-2-.9-2-2s.9-2 2-2s2 .9 2 2s-.9 2-2 2m0 4c-3.9 0-7 1.8-7 4v2h11v-2H2c0-.6 1.8-2 5-2c1.8 0 3.2.5 4 1v-2.2c-1.1-.5-2.5-.8-4-.8M22 4h-7c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h7c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2m-6 14h-1V6h1zm6 0h-4V6h4z" />
+                    </svg>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-12">
+        <div class="card">
+            <div class="card-body wizard-content">
+
+                @if (ViewBag.Exito != null)
+                {
+                    <script>
+                        document.addEventListener("DOMContentLoaded", function (event) {
+                            Swal.fire({
+                                title: "Genial !",
+                                text: "@(System.Net.WebUtility.HtmlDecode(ViewBag.Exito))",
+                                icon: "success",
+                                allowOutsideClick: false,
+                                allowEscapeKey: false,
+                                allowEnterKey: false,
+                                confirmButtonText: '<i class="fas fa-home"></i> Volver a Inicio!'
+                            }).then((result) => {
+                                if (result.isConfirmed) {
+                                    window.location.href = '@Url.Action("Index", "Home")';
+                                } else if (result.isDenied) {
+                                    window.location.href = '@Url.Action("Index", "Home")';
+                                }
+                            });
+                        });
+                    </script>
+                }
+                @if (ViewBag.Error != null)
+                {
+                    <script>
+                        document.addEventListener("DOMContentLoaded", function (event) {
+                            Swal.fire({
+                                title: "Error !",
+                                text: "@(System.Net.WebUtility.HtmlDecode(ViewBag.Error))",
+                                icon: "error"
+                            });
+                        });
+                    </script>
+                }
+                @{decimal total = 0;}
+
+                @if (Model != null && Model.ListaPagoCitasSearch.Count > 0)
+                {
+                    <form id="evaluacionesForm" method="post" action="@Url.Action("Evaluaciones", "Apertura")">
+                        <input type="hidden" id="__selectedIds" name="CitasSeleccionadas" asp-for="CitasSeleccionadas" />
+                        <input type="hidden" id="__pagoCitaId" name="PagoCitaId" asp-for="PagoCitaId" />
+                        <input type="hidden" id="__triajeOnlineId" name="TriajeOnlineId" asp-for="TriajeOnlineId" />
+                        <input type="hidden" id="__sedeId" name="sedeId" asp-for="sedeId" />
+                        <input type="hidden" id="__hc" name="Hc" asp-for="Hc" />
+                        <input type="hidden" id="__email" asp-for="Cargo.Email" />
+                        <input type="hidden" id="__card" asp-for="Cargo.Card" />
+                        <input type="hidden" id="__ip" asp-for="Cargo.Ip" />
+                        <input type="hidden" id="__cardtype" asp-for="Cargo.Cardtype" />
+                        <input type="hidden" id="__browser" asp-for="Cargo.Browser" />
+                        <input type="hidden" id="__cardbrand" asp-for="Cargo.Cardbrand" />
+                        <input type="hidden" id="__devicetype" asp-for="Cargo.Devicetype" />
+                        <input type="hidden" id="__installments" asp-for="Cargo.Installments" />
+                        <input type="hidden" id="__tokenId" asp-for="Cargo.TokenId" />
+                        <input type="hidden" id="__monto" asp-for="Monto" />
+
+                        <div class="">
+                            <div class="action-btn layout-top-spacing mb-4 d-md-flex text-center align-items-center justify-content-between flex-wrap gap-6">
+                                <h5 class="fw-semibold fs-5">Evaluación seleccionada</h5>
+
+                                <a id="add-list" class="mx-auto mx-md-0 btn btn-info py-0 d-none" onclick="verRespuesta()">
+                                    <div class="d-flex align-items-center justify-content-between">
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="4em" height="4em" viewBox="0 0 24 24" class="me-2">
+                                            <mask id="lineMdEmailCheckTwotone0">
+                                                <g fill="none" stroke="#fff" stroke-linecap="round" stroke-linejoin="round" stroke-width="2">
+                                                    <path stroke-dasharray="64" stroke-dashoffset="64" d="M4 5h16c0.55 0 1 0.45 1 1v12c0 0.55 -0.45 1 -1 1h-16c-0.55 0 -1 -0.45 -1 -1v-12c0 -0.55 0.45 -1 1 -1Z">
+                                                        <animate fill="freeze" attributeName="stroke-dashoffset" begin="0s" dur="5" values="64;0;0" keyTimes="0;0.1;1" repeatCount="indefinite"></animate>
+                                                    </path>
+                                                    <path stroke-dasharray="24" stroke-dashoffset="24" d="M3 6.5l9 5.5l9 -5.5">
+                                                        <animate fill="freeze" attributeName="stroke-dashoffset" begin="0s" dur="5s" values="24;0;0" keyTimes="0;0.1;1" repeatCount="indefinite"></animate>
+                                                    </path>
+                                                    <path fill="#fff" fill-opacity="0" stroke="none" d="M12 11l-8 -5h16l-8 5Z">
+                                                        <animate fill="freeze" attributeName="fill-opacity" begin="0s" dur="5s" values="0;0.3;0.3" keyTimes="0;0.1;1" repeatCount="indefinite"></animate>
+                                                    </path>
+                                                    <path fill="#000" fill-opacity="1" stroke="none" d="M19 13c3.31 0 6 2.69 6 6c0 3.31 -2.69 6 -6 6c-3.31 0 -6 -2.69 -6 -6c0 -3.31 2.69 -6 6 -6Z">
+                                                        <set fill="freeze" attributeName="fill-opacity" begin="0s" to="1" dur="1s" repeatCount="indefinite" keyTimes="0;0.1;1"></set>
+                                                    </path>
+                                                    <path stroke-dasharray="10" stroke-dashoffset="10" d="M16 19l1.75 1.75l3.75 -3.75">
+                                                        <animate fill="freeze" attributeName="stroke-dashoffset" begin="0s" dur="5s" values="10;0;0" keyTimes="0;0.1;1" repeatCount="indefinite"></animate>
+                                                    </path>
+                                                </g>
+                                            </mask>
+                                            <rect width="24" height="24" fill="currentColor" mask="url(#lineMdEmailCheckTwotone0)"></rect>
+                                        </svg>
+                                        <span>Ver correo de <br /> respuesta</span>
+                                    </div>
+                                </a>
+                            </div>
+                            <p style="text-align:justify;" class="fs-5 mb-0">
+                                A continuación, se indica el número total de sesiones. Para su programación, debe realizar como mínimo, el pago de la primera sesión de cada evaluación seleccionada.
+                            </p>
+                            <p class="fs-5 text-warning alert alert-warning">
+                                <img class="me-2" src="../../assets/images/svgs/icon-info-warning.svg" width="35" height="35" />
+                                <b>Importante: </b>
+                                Una vez realizado el pago, para definir la fecha y hora de cada sesión, una asesora se contactará con usted de lunes a viernes de 8:00 a 20:00 horas y sábados de 8:00 a 13:00 horas.
+                            </p>
+                            <div class="table-responsive">
+                                <table class="table align-middle text-nowrap mb-0">
+                                    <thead class="fs-2">
+                                        <tr class="text-center">
+                                            <th width="5%">Seleccionar</th>
+                                            <th width="10%">Especialidad</th>
+                                            <th>Evaluación</th>
+                                            <th>Modalidad</th>
+                                            @*                                     <th>fecha</th> *@
+                                            <th>Tarifa</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        @foreach (var cita in Model.ListaPagoCitasSearch)
+                                        {
+                                            var imgEval = cita.ImagenUrl.Replace("../../img/iconEval/", "../../assets/images/iconeval/");
+                                            total += Convert.ToDecimal(cita.Precio);
+                                            <tr>
+                                                <td class="border-bottom-0 text-center">
+                                                    <input class="form-check-input check-cita-detalle" type="checkbox" data-index="@cita.NumeroCita" data-group="@cita.EvaluacionId" @(cita.NumeroCita == 1 ? "checked" : "disabled") onclick="toggleNext(this)" value="@cita.Precio" id="cbx_@cita.PagoCitaDetalleId" data-precio="@cita.Precio" data-id="@cita.PagoCitaDetalleId">
+                                                </td>
+                                                <td class="border-bottom-0 text-center">
+                                                    <img src="@imgEval" width="30" />
+                                                </td>
+                                                <td class="border-bottom-0">
+                                                            <h6 class="fw-semibold fs-4 mb-0">@cita.Nombre</h6>
+                                                            <p class="mb-0 text-muted">@cita.CitaNombre</p>
+                                                </td>
+                                                <td class="border-bottom-0 text-center">
+                                                    @if (cita.TipoCitaId == 2)
+                                                    {
+                                                        <span class="badge fw-semibold py-1 w-85 text-success">Virtual</span>
+                                                    }
+                                                    else
+                                                    {
+                                                        <span class="badge fw-semibold py-1 w-85  bg-ligth  text-muted">Presencial</span>
+                                                    }
+                                                </td>
+                                                <td class="border-bottom-0 text-center">
+                                                    <h6 class="fs-4 fw-semibold mb-0">S/ @(cita.Precio?.ToString().Replace(".00", "")) </h6>
+                                                </td>
+                                            </tr>
+                                        }
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                        <div class="d-md-flex">
+                            <div class="order-summary border rounded p-md-3 my-4 col-md-7">
+                                <div class="row p-3 ">
+                                    <h5 class="fs-5 fw-semibold mb-4">
+                                        Datos para la emisión del comprobante de pago:
+                                    </h5>
+                                    <div class="col-md-12 mb-3 text-center">
+                                        <div class="form-check form-check-inline">
+                                            <input class="form-check-input warning check-outline outline-warning rdo-comprobante" type="radio" name="TipoComprobante" id="cbxBoleta" value="1" checked>
+                                            <label class="form-check-label" for="cbxBoleta"><b>Boleta</b></label>
+                                        </div>
+                                        <div class="form-check form-check-inline">
+                                            <input class="form-check-input warning check-outline outline-warning rdo-comprobante" type="radio" name="TipoComprobante" id="cbxFactura" value="2">
+                                            <label class="form-check-label" for="cbxFactura"><b>Factura</b></label>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <div class="form-floating mb-3">
+                                            <select class="form-select" asp-for="TipoDocumento" placeholder="" onchange="loadAtributeNroDocumento();">
+                                                <option value="">Seleccione un tipo de documento</option>
+                                            </select>
+                                            <label><b>Tipo de documento</b></label>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <div class="form-floating mb-3">
+                                            <input type="text" class="form-control" asp-for="NroDocumento" oninput="validateNroDocumento()" placeholder="">
+                                            <label><b id="textHtmlDocumento">DNI</b></label>
+                                            <span id="validationMessage" class="text-danger"></span>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <div class="form-floating mb-3">
+                                            <input type="text" class="form-control" asp-for="RazonSocial" oninput="validateRazonSocial()" placeholder="">
+                                            <label><b id="textHtmlRazonSocial">Nombre y Apellido</b></label>
+                                            <span id="razonSocialValidationMessage" class="text-danger"></span>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <div class="form-floating mb-3">
+                                            <input type="text" class="form-control" asp-for="Telefono" placeholder="" oninput="validateTelefono()"  maxlength="9" pattern="\d{9}">
+                                            <label><b>Teléfono </b></label>
+                                            <span asp-validation-for="Telefono" class="text-danger"></span>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-12">
+                                        <div class="form-floating mb-3">
+                                            <input type="text" class="form-control" asp-for="Direccion" placeholder="">
+                                            <label><b>Dirección </b></label>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="order-summary border rounded p-3 my-4 ms-auto col-md-4">
+                                <div class=" p-3 ">
+                                    <h5 class="fs-5 fw-semibold mb-4">
+                                        Resumen de pago
+                                    </h5>
+                                    <div class="d-flex justify-content-between mb-4">
+                                        <p class="mb-0 fs-4">Sub total</p>
+                                        <h6 id="subtotal" class="mb-0 fs-4 fw-semibold">S/ @(total.ToString().Replace(".00", ""))</h6>
+                                    </div>
+                                    <div class="d-flex justify-content-between mb-4">
+                                    </div>
+                                    <div class="d-flex justify-content-between mb-4">
+                                        <h6 class="mb-0 fs-4 fw-semibold">Total</h6>
+                                        <h6 id="total" class="mb-0 fs-5 fw-semibold">S/ @(total.ToString().Replace(".00", "")) </h6>
+                                    </div>
+                                    <div class="d-flex justify-content-between mb-4">
+                                        <a id="btnPagar" class="btn btn-primary w-100" onclick="javascript:IniciarPagoExterno();">Realizar el pago</a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </form>
+                }
+                else
+                {
+                    <div class="order-summary border rounded p-4 my-4 ms-auto">
+                        <div class=" p-3 ">
+                            <h5 class="fs-5 fw-semibold mb-4">
+                                No tiene evaluaciones seleccionadas para el pago de citas reservadas.
+                            </h5>
+                        </div>
+                    </div>
+                }
+            </div>
+        </div>
+
+    </div>
+</div>
+
+
+<!-- BEGIN MODAL CALENDAR-->
+<div class="modal fade" id="eventModal" tabindex="-1" aria-labelledby="eventModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-scrollable modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="eventModalLabel">
+                    Add / Edit Event
+                </h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <div class="row">
+                    <div class="col-md-12">
+                        <div>
+                            <label class="form-label">Event Title</label>
+                            <input id="event-title" type="text" class="form-control" />
+                        </div>
+                    </div>
+                    <div class="col-md-12 mt-4">
+                        <div><label class="form-label">Event Color</label></div>
+                        <div class="d-flex">
+                            <div class="n-chk">
+                                <div class="form-check form-check-primary form-check-inline">
+                                    <input class="form-check-input" type="radio" name="event-level" value="Danger"
+                                           id="modalDanger" />
+                                    <label class="form-check-label" for="modalDanger">Danger</label>
+                                </div>
+                            </div>
+                            <div class="n-chk">
+                                <div class="form-check form-check-warning form-check-inline">
+                                    <input class="form-check-input" type="radio" name="event-level" value="Success"
+                                           id="modalSuccess" />
+                                    <label class="form-check-label" for="modalSuccess">Success</label>
+                                </div>
+                            </div>
+                            <div class="n-chk">
+                                <div class="form-check form-check-success form-check-inline">
+                                    <input class="form-check-input" type="radio" name="event-level" value="Primary"
+                                           id="modalPrimary" />
+                                    <label class="form-check-label" for="modalPrimary">Primary</label>
+                                </div>
+                            </div>
+                            <div class="n-chk">
+                                <div class="form-check form-check-danger form-check-inline">
+                                    <input class="form-check-input" type="radio" name="event-level" value="Warning"
+                                           id="modalWarning" />
+                                    <label class="form-check-label" for="modalWarning">Warning</label>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-md-12 d-none">
+                        <div>
+                            <label class="form-label">Enter Start Date</label>
+                            <input id="event-start-date" type="text" class="form-control" />
+                        </div>
+                    </div>
+
+                    <div class="col-md-12 d-none">
+                        <div>
+                            <label class="form-label">Enter End Date</label>
+                            <input id="event-end-date" type="text" class="form-control" />
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn bg-danger-subtle text-danger" data-bs-dismiss="modal">
+                    Close
+                </button>
+                <button type="button" class="btn btn-success btn-update-event" data-fc-event-public-id="">
+                    Update changes
+                </button>
+                <button type="button" class="btn btn-primary btn-add-event">
+                    Add Event
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- END MODAL -->
+
+<!-- Vertically centered modal -->
+<div class="modal fade" id="modalRespuesta" tabindex="-1"
+     aria-labelledby="vertical-center-modal" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable modal-lg">
+        <div class="modal-content">
+            <div class="modal-body">
+                <div class="chat-box email-box mh-n100 p-9" data-simplebar="init">
+                    <div class="chat-list chat active-chat" data-user-id="1">
+                        <div class="hstack align-items-start border-bottom mb-2 pb-1 align-items-center justify-content-between flex-wrap gap-6">
+                            <div class="d-flex align-items-center gap-2">
+                                <img src="~/assets/images/logos/favicon.png" width="48" height="48" class="rounded-circle">
+                                <div>
+                                    <h6 class="fw-semibold mb-0">CPAL Triage</h6>
+                                    <p class="mb-0">contacto.triaje@cpal.edu.pe</p>
+                                </div>
+                            </div>
+                            <span class="badge text-bg-warning fs-2 rounded-4 py-1 px-2">Recibito</span>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                        </div>
+                        <div class="border-bottom pb-7 mb-7">
+                            <div id="respuesta">
+                                
+                            </div>
+                            
+                            <p class="mb-0 mt-4 text-dark text-center">Saludos cordiales,</p>
+                            <h6 class="fw-semibold mb-0 text-dark pb-1 text-center">Instituto de Diagnostico y tratamiento</h6>
+                        </div>
+                        <div class="mb-3">
+                            <h6 class="fw-semibold mb-0 text-dark mb-3">Attachments</h6>
+                            <div class="align-items-center text-center bg-muted pt-2 pb-1">
+                                <img src="~/assets/images/logos/CPAL-IDT.png" height="24" class="mb-2">
+                                <div style="line-height: initial;text-align:center">
+                                    <span style="color:#fff;Font-Size:8pt">Mi direccion - Perú</span>  <br>
+                                    <span style="color:#fff;Font-Size:8pt;">Horario de Atencion: Lunes - viernes 08:00 am a 08:00 pm Sábados 08:00 am a 1:00 pm</span>
+                                </div>
+
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn bg-danger-subtle text-danger  waves-effect text-start"
+                        data-bs-dismiss="modal">
+                    Salir
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+    <script src="https://checkout.culqi.com/js/v4" type="text/javascript" asp-append-version="true"></script>
+    <script src="~/assets/libs/fullcalendar/index.global.min.js" asp-append-version="true"></script>
+    <script src="~/assets/libs/fullcalendar/locales/es.global.js" asp-append-version="true"></script>
+    <script src="~/js/site.js" type="text/javascript" asp-append-version="true"></script>
+
+    @* <script src="~/assets/js/apps/calendar-init.js" asp-append-version="true"></script> *@
+    <script>
+        var publicKey_ = "@culqiPublicKey"
+        var id_;
+        var desc_;
+        var totalPagar_;
+        var totalPagarReal_;
+
+        var hc_;
+        var tipoDoc_;
+        var razonSocial_;
+        var ruc_;
+        var direccionPago_;
+        var Email_;
+        var conDni_ ;
+
+
+        const optionsTipoDoc = {
+            1: ["DNI", "PASAPORTE", "CARNET EXTR."],
+            2: ["RUC"]
+        };
+
+        // const CUSTOMER = {
+        //     pagoid: "",
+        //     area: "",
+        //     amount: "",
+        //     currency: "",
+        //     description: "",
+        //     hc: "",
+        //     tipodocpago: "",
+        //     razonsocial: "",
+        //     ruc: "",
+        //     direccionpago: "",
+        //     email: "",
+        //     totalpagar: "",
+        //     conDni: ""
+        // }
+        // const MODELO_CHARGE = {
+        //     tokenId: "",
+        //     email: "",
+        //     card: "",
+        //     ip: "",
+        //     browser: "",
+        //     devicetype: "",
+        //     installments: "",
+        //     cardbrand: "",
+        //     cardtype: "",
+        //     customer: CUSTOMER,
+        // }
+
+        $(document).ready(function () {
+            setTimeout(function () {
+                const documento = document.getElementById("NroDocumento");
+                $('#textHtmlDocumento').text('DNI');
+                $('#textHtmlRazonSocial').text('Nombre y apellido');
+                documento.setAttribute("maxlength", "8");
+                documento.setAttribute("pattern", "\\d{8}");
+                documento.setAttribute("title", "Debe contener exactamente 8 dígitos");
+                validationMessage.textContent = "Debe contener exactamente 8 dígitos";
+                validationMessage.style.display = "none";
+                updateTotal();
+                LoadTipoDoc();
+            }, 100);
+        });
+
+        document.addEventListener("DOMContentLoaded", function () {
+            const checkboxes = document.querySelectorAll('.check-cita-detalle');
+            const radios = document.querySelectorAll('.rdo-comprobante');
+            // Añade un evento de cambio a cada checkbox
+            checkboxes.forEach(checkbox => {
+                checkbox.addEventListener('change', function () {
+                    updateTotal();
+                });
+            });
+
+            // Añade un evento de cambio a cada radio
+            radios.forEach(radio => {
+                radio.addEventListener('change', function () {
+                    LoadTipoDoc();
+                });
+            });
+
+            // Verificar y habilitar los checkboxes correspondientes dentro de cada grupo al cargar la página
+            var firstCheckboxes = document.querySelectorAll('input[data-index="1"]');
+            firstCheckboxes.forEach(function (firstCheckbox) {
+                if (firstCheckbox.checked) {
+                    toggleNext(firstCheckbox);
+                }
+            });
+
+        });
+
+        function LoadTipoDoc(){
+            const boleta = document.getElementById("cbxBoleta");
+            const factura = document.getElementById("cbxFactura");
+            if (boleta.checked) {
+                showOptionsTipoDoc(1)
+            }
+            else if (factura.checked) {
+                showOptionsTipoDoc(2)
+            }
+        }
+
+        function showOptionsTipoDoc(tipo) {
+            const options = optionsTipoDoc[tipo] || [];
+            $("#TipoDocumento").empty();
+            options.forEach(function (option) {
+                $("#TipoDocumento").append(new Option(option, option));
+            });
+            loadAtributeNroDocumento()
+        }
+
+        function loadAtributeNroDocumento() {
+            const tipodocumento = document.getElementById("TipoDocumento");
+            const documento = document.getElementById("NroDocumento");
+            const validationMessage = document.getElementById("validationMessage");
+
+            if (tipodocumento.value == "RUC") {
+                $('#textHtmlDocumento').text('RUC');
+                $('#textHtmlRazonSocial').text('Razón social');
+                documento.value = "";
+                documento.setAttribute("maxlength", "11");
+                documento.setAttribute("pattern", "\\d{11}");
+                documento.setAttribute("title", "Debe contener exactamente 11 dígitos");
+                validationMessage.textContent = "Debe contener exactamente 11 dígitos";
+                validationMessage.style.display = "none";
+                console.log("Factura seleccionada");
+
+            } else if (tipodocumento.value == "DNI") {
+                $('#textHtmlDocumento').text('DNI');
+                $('#textHtmlRazonSocial').text('Nombre y apellido');
+                documento.value = "";
+                documento.setAttribute("maxlength", "8");
+                documento.setAttribute("pattern", "\\d{8}");
+                documento.setAttribute("title", "Debe contener exactamente 8 dígitos");
+                validationMessage.textContent = "Debe contener exactamente 8 dígitos";
+                validationMessage.style.display = "none";
+                console.log("Boleta seleccionada");
+            } else if (tipodocumento.value == "PASAPORTE") {
+                $('#textHtmlDocumento').text('PASAPORTE');
+                $('#textHtmlRazonSocial').text('Nombre y apellido');
+                documento.value = "";
+                documento.setAttribute("maxlength", "12");
+                documento.setAttribute("pattern", "\\d{12}");
+                documento.setAttribute("title", "Debe contener exactamente 12 dígitos");
+                validationMessage.textContent = "Debe contener exactamente 12 dígitos";
+                validationMessage.style.display = "none";
+                console.log("Boleta seleccionada");
+            } else if (tipodocumento.value == "CARNET EXTR.") {
+                $('#textHtmlDocumento').text('CARNET EXTR.');
+                $('#textHtmlRazonSocial').text('Nombre y apellido');
+                documento.value = "";
+                documento.setAttribute("maxlength", "9");
+                documento.setAttribute("pattern", "\\d{9}");
+                documento.setAttribute("title", "Debe contener exactamente 9 dígitos");
+                validationMessage.textContent = "Debe contener exactamente 9 dígitos";
+                validationMessage.style.display = "none";
+                console.log("Boleta seleccionada");
+            } else {
+
+            }
+        }
+
+        function validateNroDocumento() {
+            const documento = document.getElementById("NroDocumento");
+            const pattern = new RegExp(documento.getAttribute("pattern"));
+            const validationMessage = document.getElementById("validationMessage");
+            var flag = false
+            if (!pattern.test(documento.value)) {
+                documento.setCustomValidity("Invalid");
+                validationMessage.style.display = "block";
+                flag = false
+            } else {
+                documento.setCustomValidity("");
+                validationMessage.style.display = "none";
+                flag = true
+            }
+            return flag;
+        }
+
+        function validateRazonSocial() {
+            const razonSocial = document.getElementById("RazonSocial");
+            const validationMessage = document.getElementById("razonSocialValidationMessage");
+            var flag = false;
+            if (razonSocial.value.trim() === "") {
+                razonSocial.setCustomValidity("Invalid");
+                validationMessage.textContent = "Este campo no puede estar vacío";
+                flag = false;
+            } else {
+                razonSocial.setCustomValidity("");
+                validationMessage.textContent = "";
+                flag = true;
+            }
+            return flag;
+        }
+
+        function validateTelefono() {
+            const telefono = document.getElementById("Telefono");
+            const telefonoValue = telefono.value.trim();
+
+            // Si el campo está vacío, es válido porque el teléfono no es obligatorio.
+            if (telefonoValue === "") {
+                return true;
+            }
+
+            // Validar que solo contenga números y tenga entre 9 y 10 dígitos.
+            if (!/^\d{9,10}$/.test(telefonoValue)) {
+                // validationMessage.textContent = "El teléfono debe contener solo números y tener entre 9 y 10 dígitos.";
+                return false;
+            }
+
+            // Si pasa la validación, limpiar el mensaje de error.
+            return true;
+        }
+
+        function updateTotal() {
+            let total = 0;
+            const selectedIds = [];
+
+            const checkboxes = document.querySelectorAll('.check-cita-detalle');
+            // Recorre todos los checkboxes para calcular el total
+            checkboxes.forEach(checkbox => {
+                if (checkbox.checked) {
+                    total += parseFloat(checkbox.dataset.precio);
+                    selectedIds.push(checkbox.dataset.id);
+                }
+            });
+
+            totalPagar_ = total * 100
+            desc_ = 0
+            // Actualiza los elementos del DOM con el nuevo total
+            document.getElementById('subtotal').textContent = `S/ ${total.toFixed(0)}`;
+            document.getElementById('total').textContent = `S/ ${total.toFixed(0)}`;
+            document.getElementById('__monto').value = `${total.toFixed(0)}`;
+            document.getElementById('__selectedIds').value = selectedIds.join(',');
+        }
+       
+        function IniciarPagoExterno() {
+            actionLoagin(document.getElementById("btnPagar"));
+            
+            updateTotal()
+            if (totalPagar_ <= 0) { Swal.fire("", "¡Debe marcar  ☑  almenos la 1ra sesión!"); return }
+
+            if (!validateNroDocumento() || !validateRazonSocial() || !validateTelefono()) {
+                // validateNroDocumento();
+                // validateNroDocumento();
+                Swal.fire("", "¡Completar los datos del comprobante de pago!");
+                return
+            }
+
+            hc_ = $("#__hc").val();
+            tipoDoc_ = $("#TipoDocumento").val();
+            razonSocial_ = $("#RazonSocial").val();
+            ruc_ = $("#NroDocumento").val();
+            direccionPago_ = "";
+            Email_ = "";
+            conDni_ = true;
+
+            const modelo = structuredClone(MODELO_ORDEN);
+            modelo["order"] = "123";
+            modelo["description"] = "Pago apertura";
+            modelo["amount"] = totalPagar_;
+            modelo["currency"] = "PEN";
+            modelo["customer.pagoid"] = id_;
+            modelo["customer.area"] = "DIAGNOSTICO";
+            modelo["customer.amount"] = totalPagar_;
+            modelo["customer.currency"] = "PEN";
+            modelo["customer.description"] = "Pago apertura";
+            modelo["customer.hc"] = hc_;
+            modelo["customer.tipodocpago"] = tipoDoc_;
+            modelo["customer.razonsocial"] = razonSocial_;
+            modelo["customer.ruc"] = ruc_;
+            modelo["customer.direccionpago"] = direccionPago_;
+            modelo["customer.email"] = Email_;
+            modelo["customer.totalpagar"] = totalPagar_; // totalPagarReal_
+            modelo["customer.conDni"] = conDni_;
+
+            // obtener idOrder
+            generarOrderId(modelo).then(idOrder => {
+                // No ejecutar hasta obtener el valor de idOrder
+                let jsonParams = {
+                    installments: true,
+                    orderId: idOrder,
+                    buttonTex: 'Realizar Pago',
+                    amount: totalPagar_,
+                    description: desc_,
+                    title: "Pasarela de pago",
+                    currency: "PEN",
+                    publicKey: publicKey_
+                }
+                // Inicializamos la configuracon de Culqi  y abrimos el Checkout
+                culqiConfig(jsonParams);
+                Culqi.open();
+            }).catch(error => {
+                console.error("Error:", error);
+            }).finally(() => {
+            });
+
+            // // No ejecutar hasta obtener el valor de idOrder
+            // let jsonParams = {
+            //     installments: false,
+            //     orderId: "",
+            //     buttonTex: 'Realizar Pago',
+            //     amount: totalPagar_,
+            //     description: desc_,
+            //     title: "Pasarela de pago",
+            //     currency: "PEN",
+            //     publicKey: publicKey_
+            // }
+
+            // // Inicializamos la configuracon de Culqi  y abrimos el Checkout
+            // culqiConfig(jsonParams);
+            // Culqi.open();
+
+        }
+
+        const culqiConfig = (jsonParams) => {
+
+            Culqi.publicKey = jsonParams.publicKey;
+
+            Culqi.options({
+                lang: "auto",
+                installments: jsonParams.installments,
+                paymentMethods: {
+                    tarjeta: true,
+                    bancaMovil: true,
+                    agente: true,
+                    billetera: true,
+                    cuotealo: true,
+                    yape: true,
+                },
+                style: {
+                    logo: 'https://intra.cpal.edu.pe/IntraCPALv2/img/logo_cpal_pay.png',
+                    bannerColor: '#00438c', // hexadecimal
+                    buttonBackground: '#ffae1f', // hexadecimal
+                    menuColor: '#F18700', // hexadecimal
+                    linksColor: '#F18700', // hexadecimal
+                    buttonText: jsonParams.buttonTex, // texto que tomará el botón
+                    buttonTextColor: '#ffff', // hexadecimal
+                    priceColor: '#F18700' // hexadecimal
+                },
+            });
+
+            Culqi.settings({
+                title: jsonParams.title,
+                currency: jsonParams.currency,
+                description: jsonParams.description,
+                amount: jsonParams.amount,
+                order: jsonParams.orderId,
+            });
+
+
+        }
+
+        window.culqi = async () => {
+
+            if (Culqi.token) {
+                console.log(Culqi);
+                document.getElementById("__tokenId").value = Culqi.token.id === null ? "" : Culqi.token.id;
+                document.getElementById("__email").value = Culqi.token.email === null ? "" : Culqi.token.email;
+                document.getElementById("__card").value = Culqi.token.card_number === null ? "" : Culqi.token.card_number;
+                document.getElementById("__ip").value = Culqi.token.client.ip === null ? "" : Culqi.token.client.ip;
+                document.getElementById("__browser").value = Culqi.token.client.browser === null ? "" : Culqi.token.client.browser;
+                document.getElementById("__devicetype").value = Culqi.token.client.device_type === null ? "" : Culqi.token.client.device_type;
+                document.getElementById("__cardbrand").value = Culqi.token.iin.card_brand === null ? "" : Culqi.token.iin.card_brand;
+                document.getElementById("__cardtype").value = Culqi.token.iin.card_type === null ? "" : Culqi.token.iin.card_type;
+                document.getElementById("__installments").value = Culqi?.token?.metadata?.installments ?? 0;
+
+                // Enviar data del formulario al controlador
+                document.getElementById('evaluacionesForm').submit();
+                Culqi.close();
+            }
+            else if (Culqi.order) {  // ¡Objeto Order creado exitosamente!
+
+                const modelo_ = structuredClone(MODELO_ORDER);
+                modelo_["orderId"] = Culqi.order.id === null ? "" : Culqi.order.id;
+                modelo_["orderNumber"] = Culqi.order.order_number === null ? "" : Culqi.order.order_number;
+                modelo_["paymenCode"] = Culqi.order.payment_code === null ? "" : Culqi.order.payment_code;
+                modelo_["description"] = Culqi.order.description === null ? "" : Culqi.order.description;
+                modelo_["response"] = JSON.stringify(Culqi.order) === null ? "" : JSON.stringify(Culqi.order);
+                modelo_["object"] = JSON.stringify(Culqi.order) === null ? "" : JSON.stringify(Culqi.order);
+                modelo_["amount"] = totalPagar_;
+                modelo_["customer.pagoid"] =  Number($("#__pagoCitaId").val());
+                modelo_["customer.area"] = "DIAGNOSTICO";
+                modelo_["customer.amount"] = totalPagar_;
+                modelo_["customer.currency"] = "PEN";
+                modelo_["customer.description"] = "Pago apertura";
+                modelo_["customer.hc"] = hc_;
+                modelo_["customer.tipodocpago"] = tipoDoc_;
+                modelo_["customer.razonsocial"] = razonSocial_;
+                modelo_["customer.ruc"] = ruc_;
+                modelo_["customer.direccionpago"] = direccionPago_;
+                modelo_["customer.email"] = Email_;
+                modelo_["customer.totalpagar"] = totalPagar_; //totalPagarReal_;
+                modelo_["customer.sedeId"] = Number($("#__sedeId").val());
+                modelo_["customer.triajeOnId"] = $("#__triajeOnlineId").val();
+                modelo_["customer.detalle"] = $("#__selectedIds").val();
+
+                console.log("modelo enviado");
+                console.log(modelo_);
+
+                saveOrder(modelo_).then(objeto => {
+                    // No ejecutar hasta obtener el objeto "Charge"
+
+                    // pago realizado
+                    if (objeto.estado) {
+                        //------
+                        Swal.fire({
+                            icon: "success",
+                            title: "La orden fue creada !",
+                            // text: objeto.mensaje,
+                            html: objeto.mensaje,
+                            confirmButtonColor: "#4e73df",
+                            iconColor: "#1cc88a",
+                            confirmButtonText: "Cerrar",
+                            allowEscapeKey: false,
+                            allowEnterKey: false,
+                            allowOutsideClick: false
+                        }).then((result) => {
+                            if (result.isConfirmed) {
+                                // window.location.reload();
+                            }
+                        });
+                        //------
+                    }
+                    // pago Rechazado
+                    else if (!objeto.estado) {
+                        Swal.fire({
+                            icon: "error",
+                            title: "Oops...",
+                            text: objeto.mensaje,
+                            iconColor: "#e74a3b",
+                            allowEscapeKey: false,
+                            allowEnterKey: false,
+                            allowOutsideClick: false,
+                            confirmButtonColor: "#4e73df",
+                        }).then((result) => {
+                            if (result.isConfirmed) {
+                                // window.location.reload();
+                            }
+                        });
+
+                    }
+                    // pago error
+                    else {
+                        Swal.fire({
+                            icon: "error",
+                            title: "Oops...",
+                            text: "No se pudo crear la orden, intentelo mas tarde",
+                            iconColor: "#e74a3b",
+                            allowEscapeKey: false,
+                            allowEnterKey: false,
+                            allowOutsideClick: false,
+                            confirmButtonColor: "#4e73df",
+                        }).then((result) => {
+                            if (result.isConfirmed) {
+                                window.location.reload();
+                            }
+                        });
+                    }
+
+                }).catch(error => {
+                    console.error("Error:", error);
+                    Swal.fire({
+                        icon: "error",
+                        title: "Oops...",
+                        text: error,
+                        iconColor: "#e74a3b",
+                        allowEscapeKey: false,
+                        allowEnterKey: false,
+                        allowOutsideClick: false,
+                        confirmButtonColor: "#4e73df",
+                    }).then((result) => {
+                        if (result.isConfirmed) {
+                            window.location.reload();
+                        }
+                    });
+                }).finally(() => {
+
+                });
+
+            } else {
+                console.log(Culqi.error);
+                Swal.fire({
+                    icon: "error",
+                    title: "Oops...",
+                    text: Culqi.error.user_message,
+                    iconColor: "#e74a3b",
+                    allowEscapeKey: false,
+                    allowEnterKey: false,
+                    allowOutsideClick: false,
+                    confirmButtonColor: "#4e73df",
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        window.location.reload();
+                    }
+                });
+            }
+        };
+
+        function verRespuesta(){
+            $.ajax({
+                url: '@Url.Action("VerRespuesta", "Apertura")', // URL de la acción en el controlador
+                type: 'GET', // Método de la solicitud
+                data: { id: @Model.TriajeOnlineId }, // Parámetro que deseas enviar
+                success: function (response) {                  
+                    // Ejemplo: Actualizar el DOM con los datos recibidos
+                    $('#respuesta').html(`
+                        <div class="mb-0 text-dark text-end"><span class="ms-auto fw-semibold">${response.ultimaActualizacion}</span></div>
+                        <h4 class="fw-semibold text-dark mb-3">CPAL - Resultado de Triage en línea Nro: ${response.triageOnlineId}</h4>
+                        <p class="mb-3 text-dark">Estimado(a),</p>
+                        <p class="mb-3 text-dark" style=" text-align: justify;">${response.emailProcedimiento1}</p>
+                        <p class="mb-3 text-dark" style=" text-align: justify;">${response.emailProcedimiento2}</p>
+                        <p class="mb-3 text-dark" style=" text-align: justify;">${response.emailProcedimiento3}</p>
+                    `);
+
+                    $('#modalRespuesta').modal('show');
+                },
+                error: function (xhr, status, error) {
+                    // Manejo de errores
+                    console.error('Error en la solicitud AJAX:', status, error);
+                }
+            });
+        }
+
+        /** manejar el desbloqueo secuencial */
+        function toggleNext(checkbox) {
+            var currentIndex = parseInt(checkbox.getAttribute("data-index"));
+            var group = checkbox.getAttribute("data-group"); // Obtener el grupo al que pertenece el checkbox
+
+            if (checkbox.checked) {
+                // Buscar el siguiente checkbox en el mismo grupo
+                var nextCheckbox = document.querySelector('input[data-index="' + (currentIndex + 1) + '"][data-group="' + group + '"]');
+                if (nextCheckbox) {
+                    nextCheckbox.disabled = false;
+                    nextCheckbox.focus();
+                }
+            } else {
+                // Si se desmarca, deshabilitar todos los siguientes checkboxes en el mismo grupo
+                var subsequentCheckboxes = document.querySelectorAll('input[data-group="' + group + '"]');
+                subsequentCheckboxes.forEach(function (cb) {
+                    var index = parseInt(cb.getAttribute("data-index"));
+                    if (index > currentIndex) {
+                        cb.checked = false;
+                        cb.disabled = true;
+                    }
+                });
+            }
+        }
+
+        function generarOrderId(modelo) {
+
+            var idOrder = "";
+            var urlOrder = '@Url.Action("GenerarOrden", "Apertura")';
+            return fetch(urlOrder, {
+                method: "POST",
+                headers: { "Content-type": "application/json; charset=utf-8" },
+                body: JSON.stringify(modelo),
+            })
+                .then(response => {
+                    return response.ok ? response.json() : Promise.reject(response);
+                })
+                .then(responseJson => {
+                    if (responseJson.estado) {
+                        var objeto = JSON.parse(responseJson.objeto.body);
+                        if (objeto && objeto.id) {
+                            idOrder = objeto.id;
+                            return idOrder;
+                        }
+                        return idOrder;
+                    } else {
+                        var mensaje = responseJson.mensaje
+                        Swal.fire({
+                            icon: "warning",
+                            title: "Error!",
+                            text: mensaje,
+                            confirmButtonColor: "#4e73df",
+                            iconColor: "#f6c23e",
+                            allowEscapeKey: false,
+                            allowEnterKey: false,
+                            allowOutsideClick: false
+                        }).then((result) => {
+                            //if (result.isConfirmed) {
+                            //    window.location.reload();
+                            //}
+                        });
+                        return null;
+                    }
+                });
+        }
+        //^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+        function saveOrder(modelo_) {
+
+            var idCharge = "";
+            var urlOrder = '@Url.Action("GuardarOrden", "Apertura")';
+            return fetch(urlOrder, {
+                method: "POST",
+                headers: { "Content-type": "application/json; charset=utf-8" },
+                body: JSON.stringify(modelo_),
+            })
+                .then(response => {
+                    return response.ok ? response.json() : Promise.reject(response);
+                })
+                .then(responseJson => {
+                    return responseJson;
+                });
+        }
+        //^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+    </script>
+
+    <script>
+        // Obtener el div flotante
+        const miDiv = document.getElementById('miDiv');
+        let offsetX, offsetY, isDragging = false;
+
+        // Evento cuando se presiona el mouse sobre el div
+        miDiv.addEventListener('mousedown', (e) => {
+            isDragging = true; // Habilita el arrastre
+            offsetX = e.clientX - miDiv.offsetLeft; // Diferencia X
+            offsetY = e.clientY - miDiv.offsetTop;  // Diferencia Y
+            miDiv.style.cursor = 'grabbing'; // Cambia el cursor
+        });
+
+        // Evento cuando se mueve el mouse
+        document.addEventListener('mousemove', (e) => {
+            if (isDragging) {
+                // Calcula la nueva posición del div
+                const newX = e.clientX - offsetX;
+                const newY = e.clientY - offsetY;
+
+                // Asigna las nuevas coordenadas
+                miDiv.style.left = newX + 'px';
+                miDiv.style.top = newY + 'px';
+            }
+        });
+
+        // Evento cuando se suelta el mouse
+        document.addEventListener('mouseup', () => {
+            isDragging = false; // Desactiva el arrastre
+            miDiv.style.cursor = 'move'; // Restaura el cursor
+        });
+
+        // Función para cerrar el div
+        function cerrarDiv() {
+            miDiv.style.display = 'none';
+        }
+    </script>
+
+}

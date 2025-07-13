@@ -1,0 +1,130 @@
+﻿@model NuevoTriajeViewModel
+@{
+    ViewData["title"] = "Nueva Cita";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+<div class="card bg-info-subtle shadow-none position-relative overflow-hidden mb-4">
+    <div class="card-body px-4 py-3">
+        <div class="row align-items-center">
+            <div class="col-9">
+                <h4 class="fw-semibold mb-8 text-primary">
+                    Reserve su cita
+                </h4>
+                <nav aria-label="breadcrumb">
+                    <ol class="breadcrumb">
+                        <li class="breadcrumb-item">
+                            <a class="text-muted text-decoration-none" asp-action="Index" asp-controller="Home">Inicio</a>
+                        </li>
+                        <li class="breadcrumb-item" aria-current="page">Reserve su cita</li>
+                    </ol>
+                </nav>
+            </div>
+            <div class="col-3">
+                <div class="text-center">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="2.5em" height="2.5em" viewBox="0 0 24 24" class="cc BTC text-primary fs-7">
+                        <g fill="none" stroke="currentColor" stroke-linecap="round" stroke-width="2">
+                            <!-- Primer trazo -->
+                            <path d="M9 5H7a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V7a2 2 0 0 0-2-2h-2" stroke-dasharray="62" stroke-dashoffset="62">
+                                <animate fill="freeze" attributeName="stroke-dashoffset" begin="0.7s" dur="0.5s" values="62;0" />
+                            </path>
+                            <!-- Segundo trazo -->
+                            <path d="M9 5a2 2 0 0 1 2-2h2a2 2 0 0 1 2 2v0a2 2 0 0 1-2 2h-2a2 2 0 0 1-2-2m1 9h4m-2-2v4" stroke-dasharray="44" stroke-dashoffset="44">
+                                <animate fill="freeze" attributeName="stroke-dashoffset" begin="0.7s" dur="0.5s" values="44;0" />
+                            </path>
+                        </g>
+                    </svg>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-12">
+        <!--  start Step wizard with validation -->
+        <div class="card">
+            <div class="card-body wizard-content">
+
+                @if (ViewBag.Exito != null)
+                {
+                    <script>
+                        document.addEventListener("DOMContentLoaded", function (event) {
+                            Swal.fire({
+                                title: "Genial !",
+                                text: "@(System.Net.WebUtility.HtmlDecode(ViewBag.Exito))",
+                                icon: "success",
+                                allowOutsideClick: false,
+                                allowEscapeKey: false,
+                                allowEnterKey: false,
+                                confirmButtonText: '<i class="fas fa-home"></i> Volver a Inicio!'
+                            }).then((result) => {
+                                if (result.isConfirmed) {
+                                    window.location.href = '@Url.Action("Index", "Home")';
+                                } else if (result.isDenied) {
+                                    window.location.href = '@Url.Action("Index", "Home")';
+                                }
+                            });
+                        });
+                    </script>
+                }
+                @if (ViewBag.Error != null)
+                {
+                    <script>
+                        document.addEventListener("DOMContentLoaded", function (event) {
+                            Swal.fire({
+                                title: "Error !",
+                                text: "@(System.Net.WebUtility.HtmlDecode(ViewBag.Error))",
+                                icon: "error"
+                            });
+                        });
+                    </script>
+                }
+                <form asp-controller="SolicitudCita" asp-action="NuevaCita" method="post" onsubmit="return subminLoagin(this)">
+                    <div class="text-danger" asp-validation-summary="All" role="alert">
+                    </div>
+                    <div class="row">
+                        <div class="col-12 text-primary fs-6 mb-2">
+                            <b>
+                                El primer paso para solicitar una atención en el Instituto de Diagnóstico y Tratamiento es llenar un formulario para entender sus necesidades.
+                            </b>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="col-md-12 me-4 text-center">
+                                <img src="~/assets/images/grafics/child.svg" width="250" height="250" />
+                            </div>
+                        </div>
+                        <div class="col-md-6" style="text-align:justify">
+                            <h5 class="text-primary mt-5">
+                                <strong>
+                                    Elija el nombre de la persona que se atenderá con nosotros
+                                </strong>
+                            </h5>
+                            @* <p>Para sacar una cita con nosotros, debe de pasar por el Triaje Online. Elija si desea realizarlo para una persona que se atiende con nosotros por primera vez o para uno con historial clínico previo en CPAL. Seleccione la opción correspondiente en la lista desplegable y haga clic en el botón para proceder.</p> *@
+                            <p>Elija la opción si la persona que se atenderá lo hará por primera vez o si tiene una historia de tratamiento previo en CPAL </p>
+                            <div class=" mb-3">
+                                <select class="form-select border border-primary text-primary border-primary text-primary" asp-for="HistoriaClinica" asp-items="@Model.ListHistoriaClinica" required="">
+                                    <option disabled selected>--Seleccionar --</option>
+                                </select>
+                                <span asp-validation-for="HistoriaClinica" class="text-danger"></span>
+                            </div>
+                            <div class=" mb-3">
+                                <button type="submit" class="btn btn-primary w-100">Continuar</button>
+                            </div>
+                        </div>
+
+                    </div>
+
+
+                </form>
+            </div>
+        </div>
+        <!--  end Step wizard with validation -->
+    </div>
+</div>
+
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+}

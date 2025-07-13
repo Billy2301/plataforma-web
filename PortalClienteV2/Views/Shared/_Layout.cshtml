@@ -1,0 +1,699 @@
+﻿@using Microsoft.Extensions.Options
+@using PortalClienteV2.Models.Model
+@inject IOptions<HotjarSettings> HotjarSettings
+<!DOCTYPE html>
+<html lang="en" dir="ltr" data-bs-theme="cpal" data-color-theme="cpal_Theme" data-layout="vertical">
+<head>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@ViewData["Title"] - PortalClienteV2</title>
+    <!-- Favicon icon-->
+    <link rel="shortcut icon" type="image/png" href="~/assets/images/logos/favicon.png" />
+    <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" async />
+    <link rel="stylesheet" href="~/css/iconAnimate.css" asp-append-version="true" async />
+    <!-- Core Css -->
+    <link rel="stylesheet" href="~/assets/css/styles.css" asp-append-version="true" />
+    <!-- Owl Carousel  -->
+    <link rel="stylesheet" href="~/assets/libs/owl.carousel/dist/assets/owl.carousel.min.css" asp-append-version="true" />
+    <!-- SweetAlert  -->
+    <link rel="stylesheet" href="~/assets/libs/sweetalert2/dist/sweetalert2.min.css" asp-append-version="true">
+    <!-- DatePicker  -->
+    <link rel="stylesheet" href="~/assets/libs/bootstrap-datepicker/dist/css/bootstrap-datepicker.min.css">
+    <!-- Dropzone  -->
+    <link rel="stylesheet" href="~/assets/libs/dropzone/dist/min/dropzone.min.css">
+    <!-- Datatable  -->
+    <link rel="stylesheet" href="~/assets/libs/datatables.net-bs5/css/dataTables.bootstrap5.min.css">
+@*     <link rel="stylesheet" href="https://cdn.datatables.net/buttons/2.4.2/css/buttons.dataTables.min.css"> *@
+
+    <link rel="stylesheet" href="~/assets/libs/bt-switch/bootstrap-switch.min.css">
+    <link href="~/assets/libs/Toasty/toasty.css" rel="stylesheet">
+
+    @* <RazorCompileOnPublish>false</RazorCompileOnPublish> *@
+    <!-- Hotjar Tracking Code for Sitio 5093405 (falta el nombre) -->
+    <script>
+        (function (h, o, t, j, a, r) {
+            h.hj = h.hj || function () { (h.hj.q = h.hj.q || []).push(arguments) };
+            h._hjSettings = { hjid: @HotjarSettings.Value.SiteId, hjsv: 6 };
+            a = o.getElementsByTagName('head')[0];
+            r = o.createElement('script'); r.async = 1;
+            r.src = t + h._hjSettings.hjid + j + h._hjSettings.hjsv;
+            a.appendChild(r);
+        })(window, document, 'https://static.hotjar.com/c/hotjar-', '.js?sv=');
+    </script>
+
+</head>
+<body>
+    <!-- Preloader -->
+    <div class="preloader">
+        <div alt="loader" class="lds-ripple img-fluid">
+            <svg>
+                <g>
+                    <path d="M 50,100 A 1,1 0 0 1 50,0" stroke="#00438c" />
+                </g>
+                <g>
+                    <path d="M 50,50 A 1,1 0 0 0 50,-50" stroke="#FFA323" />
+                </g>
+            </svg>
+        </div>
+    </div>
+
+    <div id="main-wrapper">
+        <!-- Sidebar Start -->
+        <aside class="left-sidebar with-vertical">
+            <div>
+                <!-- ---------------------------------- -->
+                <!-- Start Vertical Layout Sidebar -->
+                <!-- ---------------------------------- -->
+                <div class="brand-logo d-flex align-items-center justify-content-between">
+                    <a asp-action="Index" asp-controller="Home" class="text-nowrap logo-img m-auto">
+                        <img src="~/assets/images/logos/dark-logo.svg"
+                             class="dark-logo"
+                             alt="Logo-Dark" width="110" />
+                        <img src="~/assets/images/logos/dark-logo.svg"
+                             class="light-logo"
+                             alt="Logo-light" width="110" />
+                    </a>
+                    <a href="javascript:void(0)"
+                       class="sidebartoggler ms-auto text-decoration-none fs-5 d-block d-xl-none">
+                        <i class="ti ti-x"></i>
+                    </a>
+                </div>
+
+                <nav class="sidebar-nav scroll-sidebar" data-simplebar>
+                    <ul id="sidebarnav">
+                        <!-- ---------------------------------- -->
+                        <!-- Home -->
+                        <!-- ---------------------------------- -->
+                        <li class="nav-small-cap">
+                            <i class="ti ti-dots nav-small-cap-icon fs-4"></i>
+                            <span class="hide-menu">Home</span>
+                        </li>
+                        <!-- ---------------------------------- -->
+                        <!-- Dashboard -->
+                        <!-- ---------------------------------- -->
+                        @*                         <li class="sidebar-item">
+                        <a class="sidebar-link" href="../minisidebar/index.html" aria-expanded="false">
+                        <span>
+                        <i class="ti ti-aperture"></i>
+                        </span>
+                        <span class="hide-menu">Mis Evaluaciones</span>
+                        </a>
+                        </li>
+                        <li class="sidebar-item">
+                        <a class="sidebar-link" href="../minisidebar/index2.html" aria-expanded="false">
+                        <span>
+                        <i class="ti ti-shopping-cart"></i>
+                        </span>
+                        <span class="hide-menu">Mis Terapias</span>
+                        </a>
+                        </li> *@
+                        <li class="sidebar-item">
+                            <a class="sidebar-link" asp-action="Index" asp-controller="Home">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="2em" height="2em" viewBox="0 0 24 24">
+                                    <rect width="4" height="6" x="10" y="14" fill="currentColor" fill-opacity="0">
+                                        <animate fill="freeze" attributeName="fill-opacity" begin="0.9s" dur="0.15s" values="0;0.3" />
+                                    </rect>
+                                    <g fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2">
+                                        <path stroke-dasharray="21" stroke-dashoffset="21" d="M5 21H19">
+                                            <animate fill="freeze" attributeName="stroke-dashoffset" dur="0.2s" values="21;0" />
+                                        </path>
+                                        <path stroke-dasharray="15" stroke-dashoffset="15" d="M5 21V8M19 21V8">
+                                            <animate fill="freeze" attributeName="stroke-dashoffset" begin="0.2s" dur="0.2s" values="15;0" />
+                                        </path><path stroke-dasharray="24" stroke-dashoffset="24" d="M9 21V13H15V21">
+                                            <animate fill="freeze" attributeName="stroke-dashoffset" begin="0.4s" dur="0.4s" values="24;0" />
+                                        </path><path stroke-dasharray="26" stroke-dashoffset="26" d="M2 10L12 2L22 10">
+                                            <animate fill="freeze" attributeName="stroke-dashoffset" begin="0.5s" dur="0.4s" values="26;0" />
+                                        </path>
+                                    </g>
+                                </svg>
+                                <span class="hide-menu">Inicio</span>
+                            </a>
+                        </li>
+
+
+                        <li class="sidebar-item">
+                            <a class="sidebar-link" asp-action="InicioDeReserva" asp-controller="ReservarCita">
+                                <span>
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="2em" height="2em" viewBox="0 0 24 24">
+                                        <g fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2">
+                                            <!-- Contorno del icono -->
+                                            <path d="M9 5H7a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V7a2 2 0 0 0-2-2h-2" stroke-dasharray="120" stroke-dashoffset="120">
+                                                <animate fill="freeze" attributeName="stroke-dashoffset" begin="0.5s" dur="1s" values="120;0"></animate>
+                                            </path>
+                                            <!-- Parte superior interna -->
+                                            <path d="M9 5a2 2 0 0 1 2-2h2a2 2 0 0 1 2 2v0a2 2 0 0 1-2 2h-2a2 2 0 0 1-2-2" stroke-dasharray="50" stroke-dashoffset="50">
+                                                <animate fill="freeze" attributeName="stroke-dashoffset" begin="0.6s" dur="0.7s" values="50;0"></animate>
+                                            </path>
+                                            <!-- Línea vertical -->
+                                            <path d="M10 11h2a2 2 0 0 1 0 6h-2v-6m0 0v4" stroke-dasharray="40" stroke-dashoffset="40">
+                                                <animate fill="freeze" attributeName="stroke-dashoffset" begin="0.8s" dur="0.7s" values="40;0"></animate>
+                                            </path>
+                                            <!-- Base del icono -->
+
+                                        </g>
+                                    </svg>
+                                </span>
+                                <span class="hide-menu">Reserve su cita para <br />diagnóstico</span>
+                            </a>
+                        </li>
+                        <li class="sidebar-item">
+                            <a class="sidebar-link" asp-action="InicioDeReserva" asp-controller="ReservarTratamiento">
+                                <span>
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="2em" height="2em" viewBox="0 0 24 24">
+                                        <g fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2">
+                                            <path d="M9 5H7a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V7a2 2 0 0 0-2-2h-2"
+                                                  stroke-dasharray="120" stroke-dashoffset="120">
+                                                <animate fill="freeze" attributeName="stroke-dashoffset" begin="0.5s" dur="1s" values="120;0" />
+                                            </path>
+                                            <path d="M9 5a2 2 0 0 1 2-2h2a2 2 0 0 1 2 2v0a2 2 0 0 1-2 2h-2a2 2 0 0 1-2-2"
+                                                  stroke-dasharray="50" stroke-dashoffset="50">
+                                                <animate fill="freeze" attributeName="stroke-dashoffset" begin="0.6s" dur="0.7s" values="50;0" />
+                                            </path>
+                                            <path d="M9 12v-1h6v1"
+                                                  stroke-dasharray="30" stroke-dashoffset="30">
+                                                <animate fill="freeze" attributeName="stroke-dashoffset" begin="0.7s" dur="0.5s" values="30;0" />
+                                            </path>
+                                            <path d="M12 11v6"
+                                                  stroke-dasharray="20" stroke-dashoffset="20">
+                                                <animate fill="freeze" attributeName="stroke-dashoffset" begin="0.8s" dur="0.5s" values="20;0" />
+                                            </path>
+                                            <path d="M11 17h2"
+                                                  stroke-dasharray="10" stroke-dashoffset="10">
+                                                <animate fill="freeze" attributeName="stroke-dashoffset" begin="0.9s" dur="0.3s" values="10;0" />
+                                            </path>
+                                        </g>
+                                    </svg>
+                                </span>
+                                <span class="hide-menu">Reserve su cita para <br /> tratamiento</span>
+                            </a>
+                        </li>
+                        <partial name="_MenuOpcionesParciales"></partial>
+
+                        <li class="sidebar-item mt-5">
+                            <a class="sidebar-link" asp-controller="Usuario" asp-area="" asp-action="EditarPerfil">
+                                <span>
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="2em" height="2em" viewBox="0 0 24 24">
+                                        <g fill="none" stroke="currentColor" stroke-dasharray="28" stroke-dashoffset="28" stroke-linecap="round" stroke-width="2">
+                                            <path d="M4 21V20C4 16.6863 6.68629 14 10 14H14C17.3137 14 20 16.6863 20 20V21">
+                                                <animate fill="freeze" attributeName="stroke-dashoffset" begin="0.5s" dur="0.6s" values="28;0" />
+                                            </path>
+                                            <path d="M12 11C9.79086 11 8 9.20914 8 7C8 4.79086 9.79086 3 12 3C14.2091 3 16 4.79086 16 7C16 9.20914 14.2091 11 12 11Z">
+                                                <animate fill="freeze" attributeName="stroke-dashoffset" begin="0.5s" dur="0.6s" values="28;0" />
+                                            </path>
+                                        </g>
+                                    </svg>
+                                </span>
+                                <span class="hide-menu">Mi perfil</span>
+                            </a>
+                        </li>
+                        <li class="sidebar-item d-none ">
+                            <a class="sidebar-link" asp-controller="GuiaRapida" asp-area="" asp-action="Asistencia">
+                                <span>
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="2em" height="2em" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon icon-tabler icons-tabler-outline icon-tabler-zoom-question">
+                                        <g fill="none" stroke="currentColor" stroke-linecap="round" stroke-width="2">
+                                            <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+
+                                            <path d="M10 10m-7 0a7 7 0 1 0 14 0a7 7 0 1 0 -14 0" stroke-dasharray="44" stroke-dashoffset="44">
+                                                <animate fill="freeze" attributeName="stroke-dashoffset" begin="0.5s" dur="0.6s" values="44;0" />
+                                            </path>
+
+                                            <path d="M21 21l-6 -6" stroke-dasharray="8.49" stroke-dashoffset="8.49">
+                                                <animate fill="freeze" attributeName="stroke-dashoffset" begin="0.5s" dur="0.6s" values="8.49;0" />
+                                            </path>
+
+                                            <path d="M10 13l0 .01" stroke-dasharray="1" stroke-dashoffset="1">
+                                                <animate fill="freeze" attributeName="stroke-dashoffset" begin="0.5s" dur="0.6s" values="1;0" />
+                                            </path>
+
+                                            <path d="M10 10a1.5 1.5 0 1 0 -1.14 -2.474" stroke-dasharray="8" stroke-dashoffset="8">
+                                                <animate fill="freeze" attributeName="stroke-dashoffset" begin="0.5s" dur="0.6s" values="8;0" />
+                                            </path>
+                                        </g>
+                                    </svg>
+                                </span>
+                                <span class="hide-menu">Guía rápida</span>
+                            </a>
+                        </li>
+
+                    </ul>
+                </nav>
+
+                <partial name="_FixedProfile"></partial>
+
+                <!-- ---------------------------------- -->
+                <!-- Start Vertical Layout Sidebar -->
+                <!-- ---------------------------------- -->
+            </div>
+        </aside>
+        <!--  Sidebar End -->
+        <div class="page-wrapper">
+            <!--  Header Start -->
+            <header class="topbar" style="box-shadow: 0px 5px 5px 0px rgba(0,0,0,0.1);">
+                <div class="with-vertical">
+                    <!-- ---------------------------------- -->
+                    <!-- Start Vertical Layout Header -->
+                    <!-- ---------------------------------- -->
+                    <nav class="navbar navbar-expand-lg p-0">
+                        <ul class="navbar-nav">
+                            <li class="nav-item">
+                                <a class="nav-link sidebartoggler nav-icon-hover ms-n3"
+                                   id="headerCollapse"
+                                   href="javascript:void(0)">
+                                    <i class="ti ti-menu-2"></i>
+                                </a>
+                            </li>
+                        </ul>
+
+
+
+                        <div class="d-block d-lg-none">
+                            <a href="~/index.html" class="text-nowrap logo-img">
+                                <img src="~/assets/images/logos/light-logo.svg"
+                                     class="light-logo"
+                                     alt="Logo-light" width="100" />
+                            </a>
+                        </div>
+                        <a class="navbar-toggler nav-icon-hover p-0 border-0"
+                           href="javascript:void(0)"
+                           data-bs-toggle="collapse"
+                           data-bs-target="#navbarNav"
+                           aria-controls="navbarNav"
+                           aria-expanded="false"
+                           aria-label="Toggle navigation">
+                            <span class="p-2">
+                                <i class="ti ti-dots fs-7"></i>
+                            </span>
+                        </a>
+                        <div class="collapse navbar-collapse justify-content-end" id="navbarNav">
+                            <div class="d-flex align-items-center justify-content-between">
+                                <ul class="navbar-nav flex-row ms-auto align-items-center justify-content-center">
+                                    <!-- ------------------------------- -->
+                                    <!-- start send mail Dropdown -->
+                                    <!-- ------------------------------- -->
+                                    <li class="nav-item d-none">
+                                        <a class="nav-link position-relative nav-icon-hover"
+                                           href="javascript:void(0)"
+                                           data-bs-toggle="offcanvas"
+                                           data-bs-target="#offcanvasRight"
+                                           aria-controls="offcanvasRight">
+                                            <i class="ti ti-mail"></i>
+                                        </a>
+                                    </li>
+                                    <!-- ------------------------------- -->
+                                    <!-- end send mail Dropdown -->
+                                    <!-- ------------------------------- -->
+                                    <!-- ------------------------------- -->
+                                    <!-- start notification Dropdown -->
+                                    <li class="nav-item dropdown d-none">
+                                        <a class="nav-link nav-icon-hover"
+                                           href="javascript:void(0)"
+                                           id="drop2"
+                                           data-bs-toggle="dropdown"
+                                           aria-expanded="false">
+                                            <i class="ti ti-bell-ringing"></i>
+                                            <span class="popup-badge rounded-pill bg-warning text-white fs-2">2</span>
+                                        </a>
+                                        <div class="dropdown-menu content-dd dropdown-menu-end dropdown-menu-animate-up"
+                                             aria-labelledby="drop2">
+                                            <div class="d-flex align-items-center justify-content-between py-3 px-7">
+                                                <h5 class="mb-0 fs-5 fw-semibold">Notificaciones</h5>
+                                                <span class="badge text-bg-primary rounded-4 px-3 py-1 lh-sm">3 nuevos</span>
+                                            </div>
+                                            <div class="message-body" data-simplebar>
+                                                <a href="javascript:void(0)"
+                                                   class="py-6 px-7 d-flex align-items-center dropdown-item">
+                                                    <span class="me-3">
+                                                        <i class="ti ti-message-dots fs-6 text-primary me-2 d-flex"></i>
+                                                    </span>
+                                                    <div class="w-75 d-inline-block v-middle">
+                                                        <h6 class="mb-1 fw-semibold lh-base">Notificacion prueba 1</h6>
+                                                        <span class="fs-2 d-block text-body-secondary">El triaje se envió correctamente</span>
+                                                    </div>
+                                                </a>
+                                                <a href="javascript:void(0)"
+                                                   class="py-6 px-7 d-flex align-items-center dropdown-item">
+                                                    <span class="me-3">
+                                                        <i class="ti ti-message-dots fs-6 text-primary me-2 d-flex"></i>
+                                                    </span>
+                                                    <div class="w-75 d-inline-block v-middle">
+                                                        <h6 class="mb-1 fw-semibold lh-base">Notificacion prueba 2</h6>
+                                                        <span class="fs-2 d-block text-body-secondary">El Pago se realizó correctamente</span>
+                                                    </div>
+                                                </a>
+                                                <a href="javascript:void(0)"
+                                                   class="py-6 px-7 d-flex align-items-center dropdown-item">
+                                                    <span class="me-3">
+                                                        <i class="ti ti-message-dots fs-6 text-primary me-2 d-flex"></i>
+                                                    </span>
+                                                    <div class="w-75 d-inline-block v-middle">
+                                                        <h6 class="mb-1 fw-semibold lh-base">Notificacion prueba 3</h6>
+                                                        <span class="fs-2 d-block text-body-secondary">El triaje ya fue respondido</span>
+                                                    </div>
+                                                </a>
+                                            </div>
+                                            <div class="py-6 px-7 mb-1">
+                                                <button class="btn btn-outline-primary w-100">Ver todas las notificaciones</button>
+                                            </div>
+
+                                        </div>
+                                    </li>
+                                    <!-- end notification Dropdown -->
+                                    <!-- ------------------------------- -->
+                                    <!-- start profile Dropdown -->
+                                    <!-- ------------------------------- -->
+                                    <partial name="_UserProfile"></partial>
+                                    <!-- ------------------------------- -->
+                                    <!-- end profile Dropdown -->
+                                    <!-- ------------------------------- -->
+                                </ul>
+                            </div>
+                        </div>
+                    </nav>
+                    <!-- ---------------------------------- -->
+                    <!-- End Vertical Layout Header -->
+                </div>
+
+            </header>
+            <!--  Header End -->
+            <!--  Body Start -->
+            <div class="body-wrapper">
+                <div class="container-fluid">
+                    @RenderBody()
+                </div>
+            </div>
+            <!--  Body End -->
+            <script>
+                function handleColorTheme(e) {
+                    $("html").attr("data-color-theme", e);
+                    $(e).prop("checked", !0);
+                }
+            </script>
+
+            <div class="offcanvas customizer offcanvas-end" tabindex="-1" id="offcanvasExample"
+                 aria-labelledby="offcanvasExampleLabel">
+                <div class="d-flex align-items-center justify-content-between p-3 border-bottom">
+                    <h4 class="offcanvas-title fw-semibold" id="offcanvasExampleLabel">
+                        Configuraciones
+                    </h4>
+                    <button type="button" class="btn-close" data-bs-dismiss="offcanvas" aria-label="Close"></button>
+                </div>
+                <div class="offcanvas-body h-n80" data-simplebar>
+                    <h6 class="fw-semibold fs-4 mb-2">Tema</h6>
+
+                    <div class="d-flex flex-row gap-3 customizer-box" role="group">
+                        <input type="radio" class="btn-check" name="theme-layout d-none" id="light-layout" autocomplete="off" />
+                        <label class="btn ps-2 btn-outline-primary light-layout d-none" for="light-layout">
+                            <i class="icon ti ti-brightness-up fs-7 me-2"></i>Claro
+                        </label>
+
+                        <input type="radio" class="btn-check" name="theme-layout" id="dark-layout" autocomplete="off" />
+                        <label class="btn ps-2 btn-outline-primary dark-layout" for="dark-layout"><i class="icon ti ti-moon fs-7 me-2"></i>Oscuro</label>
+
+                        <input type="radio" class="btn-check" name="theme-layout" id="cpal-layout" autocomplete="off" />
+                        <label class="btn ps-2 btn-outline-primary cpal-layout" for="cpal-layout">
+                            <i class="icon ti ti-brightness-up fs-7 me-2"></i>cpal
+                        </label>
+                    </div>
+
+                    <h6 class="mt-5 fw-semibold fs-4 mb-2 d-none">Theme Direction</h6>
+                    <div class="d-flex flex-row gap-3 customizer-box  d-none" role="group">
+                        <input type="radio" class="btn-check" name="direction-l" id="ltr-layout" autocomplete="off" />
+                        <label class="btn p-9 btn-outline-primary" for="ltr-layout">
+                            <i class="icon ti ti-text-direction-ltr fs-7 me-2"></i>IZQ
+                        </label>
+
+                        <input type="radio" class="btn-check" name="direction-l" id="rtl-layout" autocomplete="off" />
+                        <label class="btn p-9 btn-outline-primary" for="rtl-layout">
+                            <i class="icon ti ti-text-direction-rtl fs-7 me-2"></i>DER
+                        </label>
+                    </div>
+
+                    <h6 class="mt-5 fw-semibold fs-4 mb-2 d-none">Color de Tema</h6>
+
+                    <div class="d-flex flex-row flex-wrap gap-3 customizer-box color-pallete d-none" role="group">
+                        <input type="radio" class="btn-check" name="color-theme-layout" id="Blue_Theme"
+                               autocomplete="off" />
+                        <label class="btn p-9 btn-outline-primary d-flex align-items-center justify-content-center" onclick="handleColorTheme('Blue_Theme')"
+                               for="Blue_Theme" data-bs-toggle="tooltip" data-bs-placement="top" data-bs-title="BLUE_THEME">
+                            <div class="color-box rounded-circle d-flex align-items-center justify-content-center skin-1">
+                                <i class="ti ti-check text-white d-flex icon fs-5"></i>
+                            </div>
+                        </label>
+
+                        <input type="radio" class="btn-check" name="color-theme-layout" id="Aqua_Theme"
+                               autocomplete="off" />
+                        <label class="btn p-9 btn-outline-primary d-flex align-items-center justify-content-center" onclick="handleColorTheme('Aqua_Theme')"
+                               for="Aqua_Theme" data-bs-toggle="tooltip" data-bs-placement="top" data-bs-title="AQUA_THEME">
+                            <div class="color-box rounded-circle d-flex align-items-center justify-content-center skin-2">
+                                <i class="ti ti-check text-white d-flex icon fs-5"></i>
+                            </div>
+                        </label>
+
+                        <input type="radio" class="btn-check" name="color-theme-layout" id="Purple_Theme" autocomplete="off" />
+                        <label class="btn p-9 btn-outline-primary d-flex align-items-center justify-content-center" onclick="handleColorTheme('Purple_Theme')"
+                               for="Purple_Theme" data-bs-toggle="tooltip" data-bs-placement="top" data-bs-title="PURPLE_THEME">
+                            <div class="color-box rounded-circle d-flex align-items-center justify-content-center skin-3">
+                                <i class="ti ti-check text-white d-flex icon fs-5"></i>
+                            </div>
+                        </label>
+
+                        <input type="radio" class="btn-check" name="color-theme-layout" id="green-theme-layout" autocomplete="off" />
+                        <label class="btn p-9 btn-outline-primary d-flex align-items-center justify-content-center" onclick="handleColorTheme('Green_Theme')"
+                               for="green-theme-layout" data-bs-toggle="tooltip" data-bs-placement="top" data-bs-title="GREEN_THEME">
+                            <div class="color-box rounded-circle d-flex align-items-center justify-content-center skin-4">
+                                <i class="ti ti-check text-white d-flex icon fs-5"></i>
+                            </div>
+                        </label>
+
+                        <input type="radio" class="btn-check" name="color-theme-layout" id="cyan-theme-layout" autocomplete="off" />
+                        <label class="btn p-9 btn-outline-primary d-flex align-items-center justify-content-center" onclick="handleColorTheme('Cyan_Theme')"
+                               for="cyan-theme-layout" data-bs-toggle="tooltip" data-bs-placement="top" data-bs-title="CYAN_THEME">
+                            <div class="color-box rounded-circle d-flex align-items-center justify-content-center skin-5">
+                                <i class="ti ti-check text-white d-flex icon fs-5"></i>
+                            </div>
+                        </label>
+
+                        <input type="radio" class="btn-check" name="color-theme-layout" id="orange-theme-layout" autocomplete="off" />
+                        <label class="btn p-9 btn-outline-primary d-flex align-items-center justify-content-center" onclick="handleColorTheme('Orange_Theme')"
+                               for="orange-theme-layout" data-bs-toggle="tooltip" data-bs-placement="top" data-bs-title="ORANGE_THEME">
+                            <div class="color-box rounded-circle d-flex align-items-center justify-content-center skin-6">
+                                <i class="ti ti-check text-white d-flex icon fs-5"></i>
+                            </div>
+                        </label>
+                    </div>
+                    <h6 class="mt-5 fw-semibold fs-4 mb-2 d-none">Layout Type</h6>
+                    <div class="d-flex flex-row gap-3 customizer-box d-none" role="group">
+                        <div>
+                            <input type="radio" class="btn-check" name="page-layout" id="vertical-layout" autocomplete="off" />
+                            <label class="btn p-9 btn-outline-primary" for="vertical-layout">
+                                <i class="icon ti ti-layout-sidebar-right fs-7 me-2"></i>Vertical
+                            </label>
+                        </div>
+                        <div>
+                            <input type="radio" class="btn-check" name="page-layout" id="horizontal-layout" autocomplete="off" />
+                            <label class="btn p-9 btn-outline-primary" for="horizontal-layout">
+                                <i class="icon ti ti-layout-navbar fs-7 me-2"></i>Horizontal
+                            </label>
+                        </div>
+                    </div>
+
+                    <h6 class="mt-5 fw-semibold fs-4 mb-2">Opciones del contenedor</h6>
+
+                    <div class="d-flex flex-row gap-3 customizer-box" role="group">
+                        <input type="radio" class="btn-check" name="layout" id="boxed-layout" autocomplete="off" />
+                        <label class="btn p-9 btn-outline-primary" for="boxed-layout">
+                            <i class="icon ti ti-layout-distribute-vertical fs-7 me-2"></i>Caja
+                        </label>
+
+                        <input type="radio" class="btn-check" name="layout" id="full-layout" autocomplete="off" />
+                        <label class="btn p-9 btn-outline-primary" for="full-layout">
+                            <i class="icon ti ti-layout-distribute-horizontal fs-7 me-2"></i>Total
+                        </label>
+                    </div>
+
+                    <h6 class="fw-semibold fs-4 mb-2 mt-5">Barra lateral</h6>
+                    <div class="d-flex flex-row gap-3 customizer-box" role="group">
+                        <a href="javascript:void(0)" class="fullsidebar">
+                            <input type="radio" class="btn-check" name="sidebar-type" id="full-sidebar" autocomplete="off" />
+                            <label class="btn p-9 btn-outline-primary" for="full-sidebar">
+                                <i class="icon ti ti-layout-sidebar-right fs-7 me-2"></i>Extendido
+                            </label>
+                        </a>
+                        <div>
+                            <input type="radio" class="btn-check " name="sidebar-type" id="mini-sidebar" autocomplete="off" />
+                            <label class="btn p-9 btn-outline-primary" for="mini-sidebar">
+                                <i class="icon ti ti-layout-sidebar fs-7 me-2"></i>Colapsado
+                            </label>
+                        </div>
+                    </div>
+
+                    <h6 class="mt-5 fw-semibold fs-4 mb-2">Bordeado</h6>
+
+                    <div class="d-flex flex-row gap-3 customizer-box" role="group">
+                        <input type="radio" class="btn-check" name="card-layout" id="card-with-border" autocomplete="off" />
+                        <label class="btn p-9 btn-outline-primary" for="card-with-border">
+                            <i class="icon ti ti-border-outer fs-7 me-2"></i>Linea
+                        </label>
+
+                        <input type="radio" class="btn-check" name="card-layout" id="card-without-border" autocomplete="off" />
+                        <label class="btn p-9 btn-outline-primary" for="card-without-border">
+                            <i class="icon ti ti-border-none fs-7 me-2"></i>Sombra
+                        </label>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+    <div class="dark-transparent sidebartoggler"></div>
+
+    <!-- sample modal content -->
+    <div id="modal-politicas" class="modal fade" tabindex="-1"
+         aria-labelledby="bs-example-modal-md" aria-hidden="true">
+        <div class="modal-dialog  modal-lg">
+            <div class="modal-content">
+                <div class="modal-header d-flex align-items-center">
+                    <h3 class="modal-title m-auto text-primary">
+                        Política de Privacidad
+                    </h3>
+                    <button type="button" class="btn-close m-0" data-bs-dismiss="modal"
+                            aria-label="Close"></button>
+                </div>
+                <div class="modal-body text-primary p-3 pt-0 p-md-5 pt-md-0" style="font-weight:normal; text-align:justify">
+                    <p>
+                        De conformidad con la Ley N° 29733 (en adelante, la Ley) y el Decreto Supremo N° 003-2013-JUS (en adelante, el Reglamento), el usuario autoriza, mediante su firma o cualquier otra forma de aceptación expresa automatizada, el tratamiento de los datos personales que facilite al Centro Peruano de Audición,
+                        Lenguaje y Aprendizaje – CPAL (en adelante, el Centro), por cualquier medio físico o electrónico. El Centro, con domicilio en Calle Martín Pizarro N° 172, distrito de Santiago de Surco, declara ser el titular del Banco de Datos Personales e informa que los destinatarios de los datos personales serán las oficinas de la Escuela de Estudios Superiores,
+                        Instituto de Diagnóstico y Tratamiento, Colegio Antares, Colegio Fernando Wiese, Marketing, Sistemas y cualquier unidad académica o administrativa del Centro, con la finalidad de utilizarlos en gestiones institucionales, administrativas y comerciales, así como procesar y manejar información para cubrir las necesidades de sus interesados. En función a ello,
+                        el Centro queda autorizado a remitir información, para lo cual se utilizará la vía postal, telefónica o electrónica, o cualquier otro medio de comunicación, sobre sus diferentes servicios de diagnóstico, tratamiento, servicios de educación, programas académicos de posgrado, capacitación, encuestas de satisfacción, y eventos académicos, culturales, entretenimiento y comercialización de productos y servicios.
+                    </p>
+                    <p>
+                        Se pone en conocimiento de los usuarios que los formularios, mediante los cuales otorguen sus datos personales, incluyen preguntas obligatorias y facultativas, las cuales podrán ser identificadas en cada formulario. Las consecuencias de la concesión de datos personales,
+                        faculta al Centro a utilizarlos de acuerdo a la finalidad señalada en el párrafo anterior. La negativa en la entrega de los datos personales del usuario imposibilita al Centro a incluirlos en su base de datos que remite información instantánea y actualizada respecto a las capacitaciones,
+                        cursos, talleres o cualquier programa que ofrezca el Centro, así como otras actividades relacionadas al Centro.
+                    </p>
+                    <p>
+                        Asimismo, el usuario acepta y consiente los eventuales encargos, transferencias y flujos transfronterizos que se realicen sobre sus Datos proporcionados, a empresas vinculadas o proveedores del Centro, toda vez que sea necesario para: (a) Remitir información con fines comerciales, promocionales o publicidad relacionada a los servicios que el Centro presta,
+                        así como encuestas o estudios de mercado. (b) Comercialización de productos o servicios prestados por el Centro. De manera particular, acepta el flujo transfronterizo de sus datos personales a los Estados Unidos de América en la medida que el servidor de datos de la página web del CPAL se encuentra alojado en DigitalOcean, LLC ubicado en 101 Ave of the Americas, 10th Floor, Nueva York, Nueva York, 10013, Estados Unidos de América.
+                    </p>
+                    <p>
+                        La información que usted provea será almacenada y custodiada en el Banco de datos personales de titularidad del Centro, por un periodo de 10 años.
+                    </p>
+                    <p>
+                        En caso que el usuario desee ejercer sus derechos de revocatoria de consentimiento, modificación o cualquier otro derecho reconocido por la normativa de protección de datos personales, podrá recurrir a la oficina de Sistemas, la misma que se encuentra ubicada en la Calle Martín Pizarro N° 172, distrito de Santiago de Surco o escribir a comunicate@cpal.edu.pe, indicando el derecho que se quiere hacer valer.
+                    </p>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn bg-primary-subtle text-primary  waves-effect"
+                            data-bs-dismiss="modal">
+                        Cerrar
+                    </button>
+                </div>
+            </div>
+            <!-- /.modal-content -->
+        </div>
+        <!-- /.modal-dialog -->
+    </div>
+
+    <!--  Shopping Cart -->
+    <div class="offcanvas offcanvas-end shopping-cart"
+         tabindex="-1"
+         id="offcanvasRight"
+         aria-labelledby="offcanvasRightLabel">
+        <div class="offcanvas-header justify-content-between py-4">
+            <h5 class="offcanvas-title fs-5 fw-semibold" id="offcanvasRightLabel">
+                Enviar correo
+            </h5>
+            <span class="badge bg-primary rounded-4 px-3 py-1 lh-sm">Diagnostico</span>
+        </div>
+        <div class="offcanvas-body h-100 px-4 pt-0" data-simplebar>
+            <div class="align-bottom">
+                <div class="d-flex align-items-center pb-2">
+                    <div class="form-floating mb-3 w-100">
+                        <input class="form-control valid" id="txtAsunto" placeholder="Asunto" type="text">
+                        <label for="txtAsunto"><i class="ti ti-user me-2 fs-4"></i>Asunto :</label>
+                    </div>
+                </div>
+                <div class="d-flex align-items-center pb-2">
+                    <div class="form-floating mb-3 w-100">
+                        <textarea class="form-control h-140" placeholder="Mensaje" id="txtMensaje"></textarea>
+                        <label for="txtMensaje">Mensaje:</label>
+                    </div>
+                </div>
+                <a href="../minisidebar/eco-checkout.html" class="btn btn-outline-primary w-100">Enviar correo</a>
+            </div>
+        </div>
+    </div>
+
+    <!-- sample modal terminos y condiciones -->
+    <div id="modal-terminos" class="modal fade" tabindex="-1"
+         aria-labelledby="bs-example-modal-md" aria-hidden="true">
+        <div class="modal-dialog  modal-lg">
+            <div class="modal-content">
+                <div class="modal-header d-flex align-items-center">
+                    <h3 class="modal-title m-auto text-primary">
+                        Términos y Condiciones
+                    </h3>
+                    <button type="button" class="btn-close m-0" data-bs-dismiss="modal"
+                            aria-label="Close"></button>
+                </div>
+                <div class="modal-body text-primary p-3 pt-0 p-md-5 pt-md-0" style="font-weight:normal; text-align:justify">
+                    <p>
+                        <b>1.-Medios de Pago que se podrán utilizar en este sitio</b><br />
+                        Los productos y/o servicios ofrecidos en este sitio podrán ser cancelados utilizando los siguientes medios de pago:
+                        VISA / MASTERCARD / AMERICAN EXPRESS / DINERS CLUB. En cualquiera de los casos la tarjeta puede ser de crédito o débito.
+
+                    </p>
+                    <p>
+                        <b>2.-Política de Privacidad</b><br />
+                        De conformidad con la Ley N° 29733 (en adelante, la Ley) y el Decreto Supremo N° 003-2013-JUS (en adelante, el Reglamento), el usuario autoriza, mediante su firma o cualquier otra forma de aceptación expresa automatizada, el tratamiento de los datos personales que facilite al Centro Peruano de Audición, Lenguaje y Aprendizaje – CPAL (en adelante, el Centro), por cualquier medio físico o electrónico. El Centro, con domicilio en Calle Martín Pizarro N° 172, distrito de Santiago de Surco, declara ser el titular del Banco de Datos Personales e informa que los destinatarios de los datos personales serán las oficinas de Sistemas.
+                        En caso que el usuario desee ejercer sus derechos de revocatoria de consentimiento, modificación o cualquier otro, podrá recurrir a la oficina de Sistemas, la misma que se encuentra ubicada en la Calle Martín Pizarro N° 172, distrito de Santiago de Surco o escribir a pagoenlinea@cpal.edu.pe
+                    </p>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn bg-primary-subtle text-primary  waves-effect"
+                            data-bs-dismiss="modal">
+                        Cerrar
+                    </button>
+                </div>
+            </div>
+            <!-- /.modal-content -->
+        </div>
+        <!-- /.modal-dialog -->
+    </div>
+
+    <script src="~/assets/js/vendor.min.js"></script>
+    <!-- Import Js Files -->
+    <script src="~/assets/libs/bootstrap/dist/js/bootstrap.bundle.min.js" asp-append-version="true"></script>
+    <script src="~/assets/libs/simplebar/dist/simplebar.min.js" asp-append-version="true"></script>
+    <script src="~/assets/js/theme/app.minisidebar.init.js" asp-append-version="true"></script>
+    <script src="~/assets/js/theme/theme.js" asp-append-version="true"></script>
+    <script src="~/assets/js/theme/app.min.js" asp-append-version="true"></script>
+    <script src="~/assets/js/theme/sidebarmenu.js" asp-append-version="true"></script>
+    <script src="~/assets/libs/sweetalert2/dist/sweetalert2.min.js" asp-append-version="true"></script>
+
+    <!-- solar icons -->
+    <script src="https://cdn.jsdelivr.net/npm/iconify-icon@1.0.8/dist/iconify-icon.min.js" asp-append-version="true"></script>
+    <!-- Import DatePicker -->
+    <script src="~/assets/js/extra-libs/moment/moment.min.js"></script>
+    <script src="~/assets/libs/bootstrap-datepicker/dist/js/bootstrap-datepicker.min.js"></script>
+    <script src="~/assets/js/forms/datepicker-init.js"></script>
+    <!-- Import dropzone -->
+    <script src="~/assets/libs/dropzone/dist/min/dropzone.min.js"></script>
+
+    <!-- Import dropzone -->
+    <script src="~/assets/libs/loadingoverlay/loadingoverlay.min.js"></script>
+
+    <!-- Import Wizard -->
+    <script src="~/assets/libs/jquery-steps/build/jquery.steps.min.js"></script>
+    <script src="~/assets/libs/jquery-validation/dist/jquery.validate.min.js"></script>
+
+    <script src="~/assets/libs/bt-switch/bootstrap-switch.min.js"></script>
+    <script>
+        const ConsolStyle = "background-color: #1b46c5; color: #FFF; font-size: 13px; padding: 0.25em 0.4em;text-align: center; border-top-left-radius: 0.3rem; border-bottom-left-radius: 0.3rem; font-weight: 600;"
+        const ConsolStyle2 = "background-color: #f8a221; color: #FFF; font-size: 13px; padding: 0.25em 0.4em;text-align: center; border-top-right-radius: 0.3rem; border-bottom-right-radius: 0.3rem; font-weight: 600;"
+        console.log("%cCPAL PORTAL %cConsola", ConsolStyle, ConsolStyle2);
+    </script>
+    @await RenderSectionAsync("Scripts", required: false)
+</body>
+</html>

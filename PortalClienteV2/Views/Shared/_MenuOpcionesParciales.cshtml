@@ -1,0 +1,85 @@
+﻿@using BL.IServices
+@using Entity.ClinicaModels
+@inject IPacienteService _pacienteService
+@{
+    var HcPaciente = TempData["HcPaciente"];
+    TempData.Keep("HcPaciente"); // Mantener Hc en TempData
+    List<Paciente> ListPacientes = await _pacienteService.ListarPacientesPorUsuario(User.Identity.Name);
+}
+@if (ListPacientes != null && ListPacientes.Count > 0)
+{
+     <li class="sidebar-item">
+        <a class="sidebar-link" asp-action="Historias" asp-controller="HistoriaClinica">
+            <span>
+                <svg xmlns="http://www.w3.org/2000/svg" width="2em" height="2em" viewBox="0 0 24 24">
+                    <g fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" color="currentColor">
+                        <path d="M22 11.5V6.114c0-.791 0-1.186-.194-1.594a2.4 2.4 0 0 0-.565-.71c-.354-.28-.65-.347-1.241-.483c-.92-.21-1.934-.327-3-.327c-1.917 0-3.668.378-5 1S8.917 5 7 5c-1.066 0-2.08-.117-3-.327c-.96-.22-2 .456-2 1.441v10.772c0 .791 0 1.187.194 1.594c.11.233.363.55.565.71c.354.28.65.347 1.241.483c.92.21 1.934.327 3 .327c1.469 0 2.84-.222 4-.605M14 19s1 0 2 2c0 0 3.177-5 6-6" stroke-dasharray="120" stroke-dashoffset="120">
+                            <animate fill="freeze" attributeName="stroke-dashoffset" begin="0.5s" dur="1s" values="120;0" />
+                        </path>
+                        <path d="M14.5 11.5a2.5 2.5 0 1 1-5 0a2.5 2.5 0 0 1 5 0m-9 1v.009m13-2.017v.01" stroke-dasharray="35" stroke-dashoffset="35">
+                            <animate fill="freeze" attributeName="stroke-dashoffset" begin="0.5s" dur="0.7s" values="35;0" />
+                        </path>
+                    </g>
+                </svg>
+            </span>
+            <span class="hide-menu">Pagos pendientes</span>
+        </a>
+        <!-- sub menu HC aqui -->
+        @if (HcPaciente != null)
+        {
+            <ul aria-expanded="false" class="collapse two-level in">
+                <li class="sidebar-item">
+                    <a class="sidebar-link" asp-action="Evaluaciones" asp-controller="Diagnostico">
+                        <div class="d-flex align-items-center justify-content-center text-info">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="1.7em" height="1.7em" viewBox="0 0 24 24">
+                                <path fill="currentColor" d="M9.34 2a2 2 0 0 0 0 4h2V4a2 2 0 0 0-2-2m0 5.33H4a2 2 0 1 0 0 4h5.34a2 2 0 0 0 0-4" opacity="0.25"></path>
+                                <path fill="currentColor" d="M22 9.33a2 2 0 1 0-4 0v2h2a2 2 0 0 0 2-2m-5.32 0V4a2 2 0 1 0-4 0v5.33a2 2 0 1 0 4 0" opacity="0.5"></path>
+                                <path fill="currentColor" d="M14.66 22a2 2 0 0 0 0-4h-2v2a2 2 0 0 0 2 2m0-5.33H20a2 2 0 0 0 0-4h-5.34a2 2 0 0 0 0 4" opacity="0.7"></path>
+                                <path fill="currentColor" d="M2 14.67a2 2 0 1 0 4 0v-2H4a2 2 0 0 0-2 2m5.32 0V20a2 2 0 1 0 4 0v-5.33a2 2 0 1 0-4 0"></path>
+                            </svg>
+                        </div>
+                        <span class="hide-menu">Mis evaluaciones</span>
+                    </a>
+                </li>
+                <li class="sidebar-item">
+                    <a class="sidebar-link" asp-action="Terapias" asp-controller="Tratamiento">
+                        <div class="d-flex align-items-center justify-content-center text-warning">
+                            @* <svg xmlns="http://www.w3.org/2000/svg" width="1.7em" height="1.7em" viewBox="0 0 256 256">
+                                <path fill="currentColor" fill-rule="evenodd" d="M127 210c-44.735 0-81-36.265-81-81s36.265-81 81-81s81 36.265 81 81s-36.265 81-81 81m1-21c34.794 0 63-27.087 63-60.5S162.794 68 128 68s-63 27.087-63 60.5S93.206 189 128 189" />
+                            </svg> *@
+                            <svg xmlns="http://www.w3.org/2000/svg" width="1.7em" height="1.7em" viewBox="0 0 24 24">
+                                <path fill="currentColor" d="M9.34 2a2 2 0 0 0 0 4h2V4a2 2 0 0 0-2-2m0 5.33H4a2 2 0 1 0 0 4h5.34a2 2 0 0 0 0-4" opacity="0.25"></path>
+                                <path fill="currentColor" d="M22 9.33a2 2 0 1 0-4 0v2h2a2 2 0 0 0 2-2m-5.32 0V4a2 2 0 1 0-4 0v5.33a2 2 0 1 0 4 0" opacity="0.5"></path>
+                                <path fill="currentColor" d="M14.66 22a2 2 0 0 0 0-4h-2v2a2 2 0 0 0 2 2m0-5.33H20a2 2 0 0 0 0-4h-5.34a2 2 0 0 0 0 4" opacity="0.7"></path>
+                                <path fill="currentColor" d="M2 14.67a2 2 0 1 0 4 0v-2H4a2 2 0 0 0-2 2m5.32 0V20a2 2 0 1 0 4 0v-5.33a2 2 0 1 0-4 0"></path>
+                            </svg>
+                        </div>
+                        <span class="hide-menu">Mis tratamientos</span>
+                    </a>
+                </li>
+            </ul>
+        }
+    </li>
+    <li class="sidebar-item">
+        <a class="sidebar-link" asp-action="Informe" asp-controller="HistorialCita">
+            <div class="d-flex align-items-center justify-content-center">
+                <svg xmlns="http://www.w3.org/2000/svg" width="2em" height="2em" viewBox="0 0 48 48">
+                    <g fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="4">
+                        <path d="M42 24V9a3 3 0 0 0-3-3H9a3 3 0 0 0-3 3v30a3 3 0 0 0 3 3h15" stroke-dasharray="100" stroke-dashoffset="100">
+                            <animate fill="freeze" attributeName="stroke-dashoffset" begin="0.5s" dur="0.5s" values="100;0" />
+                        </path>
+                        <circle cx="32" cy="32" r="6" stroke-dasharray="37.7" stroke-dashoffset="37.7">
+                            <animate fill="freeze" attributeName="stroke-dashoffset" begin="0.5s" dur="0.5s" values="37.7;0" />
+                        </circle>
+                        <path d="m37 36l5 4M14 16h20m-20 8h8" stroke-dasharray="64" stroke-dashoffset="64">
+                            <animate fill="freeze" attributeName="stroke-dashoffset" begin="0.5s" dur="0.5s" values="64;0" />
+                        </path>
+                    </g>
+                </svg>
+            </div>
+            <span class="hide-menu">Historial de citas</span>
+        </a>
+    </li>
+}
+
+

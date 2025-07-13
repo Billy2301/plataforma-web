@@ -1,0 +1,131 @@
+﻿.customizer-timer {
+    opacity: 0; /* Inicialmente invisible */
+    transform: scale(0.8); /* Inicialmente reducido */
+    transition: opacity 0.25s ease, transform 0.25s ease, top 0.5s ease,right 0.5s ease, padding 0.5s ease; /* Transiciones adicionales */
+    position: fixed;
+    top: 100px;
+    right: 20px;
+    z-index: 10000;
+}
+.customizer-timer.show {
+    opacity: 1; /* Visible */
+    transform: scale(1); /* Escala normal */
+}
+.customizer-timer.mini {
+    position: fixed;
+    top: 2px;
+    right: 20%;
+    z-index: 10000;
+    display: flex;
+    background-color: white;
+    border-radius: 10px;
+    padding: 2px 10px 2px 10px;
+}
+.base-timer {
+    border-radius: 50%;
+    border: 1px solid #dfdfdf; 
+    background-color: white;
+    padding: 10px;
+    position: relative;
+    width: 100px;
+    height: 100px;
+    box-shadow: rgba(0, 0, 0, 0.35) 0px 5px 15px;
+}
+
+.mini > .base-timer {
+    border-radius: 50%;
+    border: 1px solid #dfdfdf;
+    background-color: white;
+    padding: 0px !important;
+    position: relative;
+    width: 55px !important;
+    height: 55px !important;
+    box-shadow: rgba(0, 0, 0, 0.35) 0px 5px 15px;
+}
+.mini > .base-timer__label {
+    top: -1px;
+    text-align: center;
+    display: block;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.5em;
+    width: 120px;
+    font-weight: 400;
+}
+.mini > .base-timer__label > .base-timer-text {
+    display: block;
+    font-weight: 600;
+    font-size: 0.6em !important;
+}
+
+.base-timer__svg {
+    transform: scaleX(-1);
+    position: relative;
+}
+
+.base-timer__circle {
+    fill: none;
+    stroke: none;
+}
+
+.base-timer__path-elapsed {
+    stroke-width: 10px;
+    stroke: #e5e5e5;
+}
+.base-timer__rec {
+    transition: 1s linear color;
+}
+.base-timer__path-remaining {
+    stroke-width: 10px;
+    stroke-linecap: round;
+    transform: rotate(90deg);
+    transform-origin: center;
+    transition: 1s linear all;
+    fill-rule: nonzero;
+    stroke: currentColor;
+}
+
+.green {
+    color: rgb(65, 184, 131);
+}
+
+.orange {
+    color: orange;
+}
+
+.red {
+    color: salmon;
+}
+
+.base-timer__label {
+    position: relative;
+    top: 10px;
+    font-weight: 600;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 2em;
+    width: 120px;
+    text-shadow: 2px 2px 0 #ffffff, 0px 0px 0 #ffffff, 0px 0px 0 #ffffff, 0px 0px 0 #ffffff, 0px 0px 0 #ffffff;
+}
+.base-timer-text{
+    display:none;
+}
+
+#countdown {
+    text-align: center;
+}
+
+#timer {
+    display: flex;
+    justify-content: center;
+}
+
+#timer div {
+    margin: 0 10px;
+}
+
+#timer span {
+    display: block;
+    font-size: 24px;
+}

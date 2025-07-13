@@ -1,0 +1,57 @@
+﻿@model RecuperarContraseñaViewModel
+@{
+    ViewData["title"] = "Recuperar contraseña";
+    Layout = "~/Views/Shared/_LayoutAcceso.cshtml";
+}
+<div class="card mb-0 shadow-none rounded-0 min-vh-100 h-100">
+    <div class="auth-max-width mx-auto d-flex align-items-center w-100 h-100">
+        <div class="card-body">
+            <div class="mb-3">
+                <h2 class="mb-1 fs-7 fw-bolder text-primary"><small>Bienvenido al</small><br /> Portal del usuario</h2>
+                @* <h7 class="mb-1 fw-bolder text-primary">Del Instituto de Diagnóstico y Tratamiento CPAL</h7> *@
+                <div class="subtitle-warning mb-5"></div>
+                <h2 class="fw-bolder fs-7 mb-1"><small>¿Olvidó su contraseña?</small></h2>
+                <p class="mb-0 ">
+                    Ingrese la dirección de correo electrónico que registró y le enviaremos un enlace para restablecerla
+                </p>
+            </div>
+            <div class="text-center mb-3">
+                <svg xmlns="http://www.w3.org/2000/svg" width="80" height="80" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon icon-tabler icons-tabler-outline icon-tabler-mail-fast">
+                    <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+                    <path d="M3 7h3" />
+                    <path d="M3 11h2" />
+                    <path d="M9.02 8.801l-.6 6a2 2 0 0 0 1.99 2.199h7.98a2 2 0 0 0 1.99 -1.801l.6 -6a2 2 0 0 0 -1.99 -2.199h-7.98a2 2 0 0 0 -1.99 1.801z" />
+                    <path d="M9.8 7.5l2.982 3.28a3 3 0 0 0 4.238 .202l3.28 -2.982" />
+                </svg>
+            </div>
+            <form asp-controller="Acceso" asp-action="RecuperarContraseña" method="post" onsubmit="return subminLoagin(this)">
+                @{
+                    if (ViewBag.Error != null)
+                    {
+                        <div class="alert customize-alert alert-dismissible alert-light-danger bg-danger-subtle text-danger fade show remove-close-icon" role="alert">
+                            <a class="btn-close" data-bs-dismiss="alert" aria-label="Close"></a>
+                            <div class="d-flex align-items-center  me-3 me-md-0">
+                                <i class="ti ti-info-circle fs-5 me-2 text-danger"></i>
+                                @Html.Raw(ViewBag.Error) !
+                            </div>
+                        </div>
+                    }
+
+                }
+                <div class="form-floating mb-3">
+                    <input asp-for="Email" id="Email" class="form-control" placeholder="Correo">
+                    <label asp-for="Email"><i class="ti ti-mail me-2 fs-4"></i>Correo</label>
+                    <span asp-validation-for="Email" class="text-danger"></span>
+                </div>
+                <button type="submit" class="btn btn-primary w-100 py-8 mb-4 rounded-2">Enviar correo</button>
+                <a class="btn bg-warning-subtle text-primary w-100 py-8" asp-controller="Acceso" asp-action="IniciarSesion">Volver a iniciar sesión</a>
+
+            </form>
+        </div>
+    </div>
+</div>
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+}

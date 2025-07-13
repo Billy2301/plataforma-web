@@ -1,0 +1,889 @@
+﻿@model ProgramacionCitaViewModel;
+@using PortalClienteV2.Utilities.Helpers
+@{
+    ViewData["title"] = "Programación de citas";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    bool btnPagarEnabled = true;
+    string hub = string.IsNullOrEmpty(Model.AppName) ? "/calendarHub" : "/" + Model.AppName + "/calendarHub";
+}
+<link rel="stylesheet" href="~/assets/libs/timer-color/timer-color.css">
+
+<div class="card bg-info-subtle shadow-none position-relative overflow-hidden mb-4">
+    <div class="card-body px-4 py-3">
+        <div class="row align-items-center">
+            <div class="col-9">
+                <h4 class="fw-semibold mb-8 text-primary">
+                    Programación de citas
+                </h4>
+                <nav aria-label="breadcrumb">
+                    <ol class="breadcrumb">
+                        <li class="breadcrumb-item">
+                            <a class="text-muted text-decoration-none" asp-action="Index" asp-controller="Home">Inicio</a>
+                        </li>
+                        <li class="breadcrumb-item" aria-current="page">Programación de citas</li>
+                    </ol>
+                </nav>
+            </div>
+            <div class="col-3">
+                <div class="text-center">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="2.5em" height="2.5em" viewBox="0 0 24 24" class="cc BTC text-primary fs-7">
+                        <path fill="currentColor" d="M19 3h-1V1h-2v2H8V1H6v2H5c-1.1 0-2 .9-2 2v14a2 2 0 0 0 2 2h14c1.11 0 2-.89 2-2V5a2 2 0 0 0-2-2m0 16H5V9h14zM5 7V5h14v2zm5.56 10.46l5.94-5.93l-1.07-1.06l-4.87 4.87l-2.11-2.11l-1.06 1.06z"></path>
+                    </svg>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="timer-container customizer-timer d-none" id="timerContainer">
+    <div id="timer" class="timer">5:00</div>
+</div>
+
+
+<div class="card w-100" id="cardProgramacion">
+
+  @*   <div style="padding: 3%;box-sizing: border-box;position: absolute;display: flex;flex-flow: column;align-items: center;justify-content: center;background: rgba(255, 255, 255, 0.5);z-index: 2147483647;opacity: 1;width: 100%;height: 100%;">
+        <svg xmlns="http://www.w3.org/2000/svg" width="15em" height="15em" viewBox="0 0 24 24" style="fill: rgb(255 255 255);">
+        <mask id="lineMdRedditLoop0" style="fill: rgb(0, 0, 0);">
+            <path fill="none" stroke="#fff" stroke-dasharray="12" stroke-dashoffset="12" stroke-linecap="round" stroke-linejoin="round" stroke-width="0.8" d="M12 8.75L13.18 3.11L18.21 4.18" style="fill: rgb(0 0 0);">
+                <animate attributeName="d" begin="1.5s" dur="6s" repeatCount="indefinite" values="M12 8.75L13.18 3.11L18.21 4.18;M12 8.75L12 2L12 4.18;M12 8.75L10.82 3.11L5.79 4.18;M12 8.75L12 2L12 4.18;M12 8.75L13.18 3.11L18.21 4.18"></animate>
+                <animate fill="freeze" attributeName="stroke-dashoffset" begin="1.5s" dur="0.2s" values="12;0"></animate>
+            </path>
+            <g fill="#fff" style="fill: rgb(0 0 0);">
+                <path fill-opacity="0" stroke="#fff" stroke-dasharray="48" stroke-dashoffset="48" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9.42c4.42 0 8 2.37 8 5.29c0 2.92 -3.58 5.29 -8 5.29c-4.42 0 -8 -2.37 -8 -5.29c0 -2.92 3.58 -5.29 8 -5.29Z" style="fill: rgb(255 255 255);">
+                    <animate fill="freeze" attributeName="fill-opacity" begin="0.2s" dur="0.2s" values="0;1" style="fill: rgb(32, 32, 32);"></animate>
+                    <animate fill="freeze" attributeName="stroke-dashoffset" dur="0.6s" values="48;0" style="fill: rgb(32, 32, 32);"></animate>
+                </path>
+                <circle cx="7.24" cy="11.97" r="2.24" opacity="0" style="fill: rgb(255 255 255);">
+                    <animate fill="freeze" attributeName="cx" begin="1s" dur="0.2s" values="7.24;3.94"></animate>
+                    <set fill="freeze" attributeName="opacity" begin="1s" to="1"></set>
+                </circle>
+                <circle cx="16.76" cy="11.97" r="2.24" opacity="0" style="fill: rgb(255 255 255);">
+                    <animate fill="freeze" attributeName="cx" begin="1s" dur="0.2s" values="16.76;20.06"></animate>
+                    <set fill="freeze" attributeName="opacity" begin="1s" to="1"></set>
+                </circle>
+                <circle cx="18.45" cy="4.23" r="1.61" opacity="0" style="fill: rgb(255 255 255);">
+                    <animate attributeName="cx" begin="1.5s" dur="6s" repeatCount="indefinite" values="18.45;5.75;18.45"></animate>
+                    <set fill="freeze" attributeName="opacity" begin="1.7s" to="1"></set>
+                </circle>
+            </g>
+            <g fill-opacity="0" style="fill: rgb(0 0 0);">
+                <circle cx="8.45" cy="13.59" r="1.61">
+                    <animate fill="freeze" attributeName="fill-opacity" begin="0.5s" dur="0.4s" values="0;1" style="fill: rgb(0 0 0);"></animate>
+                </circle>
+                <circle cx="15.55" cy="13.59" r="1.61" style="fill: rgb(0 0 0);">
+                    <animate fill="freeze" attributeName="fill-opacity" begin="0.5s" dur="0.4s" values="0;1" style="fill: rgb(0 0 0);"></animate>
+                </circle>
+            </g>
+            <path fill="none" stroke="#000" stroke-dasharray="10" stroke-dashoffset="10" stroke-linecap="round" stroke-linejoin="round" stroke-width="0.8" d="M8.47 17.52c0 0 0.94 1.06 3.53 1.06c2.58 0 3.53 -1.06 3.53 -1.06" style="fill: rgb(255 255 255);">
+                <animate fill="freeze" attributeName="stroke-dashoffset" begin="2s" dur="0.2s" values="10;0" style="fill: rgb(0, 0, 0);"></animate>
+            </path>
+        </mask>
+        <rect width="24" height="24" fill="currentColor" mask="url(#lineMdRedditLoop0)">
+        </rect>
+    </svg>
+        <div class="loadingoverlay_element loadingoverlay_text" style="order: 4;box-sizing: border-box;overflow: visible;flex: 0 0 auto;display: flex;justify-content: center;align-items: center;animation-name: loadingoverlay_animation__undefined;animation-timing-function: linear;animation-iteration-count: infinite;color: rgb(90 106 133);font-size: 34px;font-weight: bold;">En desarrollo...</div>
+    </div>
+    *@
+
+    <div class="card-body">
+        <h5 class="card-title fw-semibold">
+            <svg xmlns="http://www.w3.org/2000/svg" width="1.5em" height="1.5em" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon icon-tabler icons-tabler-outline icon-tabler-square-number-1">
+                <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+                <path d="M3 3m0 2a2 2 0 0 1 2 -2h14a2 2 0 0 1 2 2v14a2 2 0 0 1 -2 2h-14a2 2 0 0 1 -2 -2z" />
+                <path d="M10 10l2 -2v8" />
+            </svg>
+            Quiero programar mis fechas de citas
+        </h5>
+        <p class="card-subtitle">Click en el recuadro para selecionar las fechas de cada evaluación</p>
+            @if (Model.ListUvPagoCitaDetalle != null && Model.ListUvPagoCitaDetalle.Count > 0)
+            {
+                var CitasPorEvaluacion = Model.ListUvPagoCitaDetalle
+                .GroupBy(h => h.EvaluacionId)
+                .Select(g => new
+                {
+                    // Aquí seleccionamos los datos comunes de cada cita
+                    EvaluacionId = g.Key,
+                    EvaluacionNombre = g.FirstOrDefault().EvaluacionNombre,
+                    EvaluacionAreaId = g.FirstOrDefault().EvaluacionAreaId,
+                    EvaluacionAreaNombre = g.FirstOrDefault().EvaluacionAreaNombre,
+                    ImagenUrl = g.FirstOrDefault().ImagenUrl,
+                    SedeId = g.FirstOrDefault().SedeId,
+                    SedeNombre = g.FirstOrDefault().SedeNombre,
+                    IsProgramado = g.FirstOrDefault().IsProgramado,
+                    Citas = g.ToList() // Todas las citas del grupo
+                })
+                .OrderBy(grupo => grupo.EvaluacionAreaId) // Aquí ordenamos por NroRegistro
+                .ToList();
+
+
+                foreach (var item in CitasPorEvaluacion)
+                {
+                    
+                    var imgEval = item.ImagenUrl.Replace("../../img/iconEval/", "../../assets/images/iconeval/");
+                    var citasJson = System.Text.Json.JsonSerializer.Serialize(item.Citas);
+
+
+                <div class="my-3 border border-primary-subtle">
+                        <div class="p-6  d-md-flex align-items-center bg-light"  >
+                            <div class="d-flex">
+                                <div class="flex-shrink-0 bg-warning-subtle rounded-circle round d-flex align-items-center justify-content-center">
+                                    <img src="@imgEval" alt="" class="img-fluid rounded" width="40">
+                                </div>
+                                <div class="ms-3">
+                                    <h6 class="mb-0 fw-semibold">@item.EvaluacionNombre</h6>
+                                    <span class="fs-3">@item.EvaluacionAreaNombre</span>
+                                </div>
+                            </div>
+                            
+
+                            <div class="ms-auto mt-1 mt-md-0 d-flex" id="citasCheck">
+                                <a class="fs-2 d-flex ms-auto rounded-pill btn bg-primary-subtle text-primary card-hover align-items-center" onclick='OpenModalCalendario(@Html.Raw(citasJson))'>
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="1.5em" height="1.5em" viewBox="0 0 24 24">
+                                        <path fill="currentColor" d="M19 3h-1V1h-2v2H8V1H6v2H5c-1.1 0-2 .9-2 2v14a2 2 0 0 0 2 2h14c1.11 0 2-.89 2-2V5a2 2 0 0 0-2-2m0 16H5V9h14zM5 7V5h14v2zm5.56 10.46l5.94-5.93l-1.07-1.06l-4.87 4.87l-2.11-2.11l-1.06 1.06z">
+
+                                        </path>
+                                    </svg>
+                                    <div class="ms-2">Ver Calendario</div>
+                                </a>
+                                <a href="javascript:void(0)" class="link text-primary ms-2 mt-1 me-auto" onclick="EliminarEvaluacion(@item.EvaluacionId,@Model.PagoCitaId)">
+                                    <i class="ti ti-trash fs-7"></i>
+                                </a>
+                            </div>
+                        </div>
+                        @for (int i = 0; i < item.Citas.Count ; i++)
+                        {
+                            btnPagarEnabled = btnPagarEnabled && Convert.ToBoolean(item.Citas[i].IsProgramado);
+                            if (Convert.ToBoolean(item.Citas[i].IsProgramado))
+                            {
+                                var citaPara = item.Citas[i].CitaPara == 1 ? "Niño" : item.Citas[i].CitaPara == 2 ? "Padre" : "Adulto";
+                                var tipoCita = item.Citas[i].TipoCitaId == 1 ? "presencial" : "virtual";
+                                <div class="d-flex align-items-center justify-content-between mb-0 border-top border-primary-subtle px-2 px-md-5 " style="background-color: #fdfdfd;">
+                                    <small class="mb-0 fw-semibold">@item.Citas[i].NombreCita <br class="d-block  d-md-none">| Cita @tipoCita para @citaPara </small>
+                                    <div class="d-flex">
+                                        <small class="mb-1 fw-semibold"> @Convert.ToDateTime(item.Citas[i].FechaCita).ToString("dd-MM-yyyy") <br class="d-block  d-md-none">  @Helper.ConvertirHora(item.Citas[i].HoraCitaDesde) - @Helper.ConvertirHora(item.Citas[i].HoraCitaHasta)</small>
+                                    </div>
+                                </div>
+                            }
+                            
+                        }
+                    </div>
+                }
+            }
+        <div class=" text-center d-md-flex justify-content-md-end justify-content-center mt-3 mt-md-0">
+            @if (!btnPagarEnabled)
+            {
+                <small class="m-2 text-danger"><i class="ti ti-alert-triangle fs-5 me-2"></i> Debe programar el total de las citas en todas las evaluaciones para continuar</small>
+            }
+            else
+            {
+                <small class="m-2 text-success"><i class="ti ti-check fs-5 me-2"></i> Listo para pagar</small>
+            }
+            <a asp-action="PagoCitas" asp-controller="Apertura" asp-route-id="@Model.PagoCitaId" id="btn-add-contact" class="btn btn-primary d-flex align-items-center @(btnPagarEnabled?"":"disable-box")">
+                <span class="ms-auto">Ir a pagar</span>
+                <svg xmlns="http://www.w3.org/2000/svg" class="ms-2 me-auto" width="1.5em" height="1.5em" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon icon-tabler icons-tabler-outline icon-tabler-credit-card-pay">
+                    <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+                    <path d="M12 19h-6a3 3 0 0 1 -3 -3v-8a3 3 0 0 1 3 -3h12a3 3 0 0 1 3 3v4.5" />
+                    <path d="M3 10h18" />
+                    <path d="M16 19h6" />
+                    <path d="M19 16l3 3l-3 3" />
+                    <path d="M7.005 15h.005" />
+                    <path d="M11 15h2" />
+                </svg>
+            </a>
+        </div>
+    </div>
+</div>
+
+<div class="card w-100">
+    <div class="card-body">
+        <h5 class="card-title fw-semibold">
+            <svg xmlns="http://www.w3.org/2000/svg" width="1.5em" height="1.5em" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon icon-tabler icons-tabler-outline icon-tabler-square-number-2">
+                <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+                <path d="M3 3m0 2a2 2 0 0 1 2 -2h14a2 2 0 0 1 2 2v14a2 2 0 0 1 -2 2h-14a2 2 0 0 1 -2 -2z" />
+                <path d="M10 8h3a1 1 0 0 1 1 1v2a1 1 0 0 1 -1 1h-2a1 1 0 0 0 -1 1v2a1 1 0 0 0 1 1h3" />
+            </svg>
+            Quiero que CPAL programe mis citas
+        </h5>
+        <p class="card-subtitle">Click en el boton para continuar con el pago</p>
+        <div class="d-md-flex justify-content-md-end justify-content-center mt-3 mt-md-0">
+        <a asp-controller="Apertura" asp-area="" asp-action="Evaluaciones"
+           asp-route-id="@Model.PagoCitaId"
+             id="btn-add-contact" class="btn btn-primary d-flex align-items-center" >
+                <span class="ms-auto">Ir a pagar</span>
+                <svg xmlns="http://www.w3.org/2000/svg" class="ms-2 me-auto" width="1.5em" height="1.5em" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon icon-tabler icons-tabler-outline icon-tabler-credit-card-pay">
+                    <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+                    <path d="M12 19h-6a3 3 0 0 1 -3 -3v-8a3 3 0 0 1 3 -3h12a3 3 0 0 1 3 3v4.5" />
+                    <path d="M3 10h18" />
+                    <path d="M16 19h6" />
+                    <path d="M19 16l3 3l-3 3" />
+                    <path d="M7.005 15h.005" />
+                    <path d="M11 15h2" />
+                </svg>
+            </a>
+        </div>
+    </div>
+</div>
+
+
+
+
+<div class="modal fade" id="modalCalendar" tabindex="-1" aria-labelledby="bs-example-modal-lg" aria-hidden="true">
+    <div class="modal-dialog modal-fullscreen">
+        <div class="modal-content">
+            <div class="modal-header border-bottom border-2">
+                <h5 class="modal-title h4" id="exampleModalFullscreenLabel">.
+                </h5>
+                <a class="btn-close closeModalButton" data-bs-dismiss="modal" aria-label="Close"></a>
+            </div>
+            <div class="modal-body" id="modal-bodyCalendar">
+                <div class="row pb-4">
+                    <div class="col-md-3 align-items-stretch p-5">
+                        <div class="d-flex flex-column align-items-start w-100">
+                            <div class="text-start">
+                                @* <h5 class="modal-title h4" id="exampleModalFullscreenLabel">
+                                    Selecciona las fechas que mejor se ajusten a tu disponibilidad.
+                                </h5> *@
+                                <span>Especialista:</span>
+                            </div>
+                            <div class="input-group mb-5">
+                               @*  <label class="input-group-text" for="inputGroupSelect01">Especialista</label> *@
+                                <select class="form-select" id="sltEspecialista">
+                                </select>
+                            </div>
+                        </div>
+                        <form class="mt-3" id="formCitas">
+                            <input type="hidden" id="txtTotalCitas" />
+                            <div id="modal-inputs-container">
+
+                            </div>
+                        </form>
+                    </div>
+                    <div class="col-md-9 d-flex align-items-stretch">
+                        <div class="w-100">
+                            <div class="p-0 p-md-4 calender-sidebar app-calendar">
+                                <div id="calendar">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer border-top border-2" style="height:15%;">
+                <button type="button" class="btn bg-primary text-white px-md-5" id="btnConfirmarCitas" disabled data-bs-dismiss="modal">Confirmar Citas seleccionadas</button>
+                <button type="button" class="btn bg-danger-subtle text-danger closeModalButton" data-bs-dismiss="modal">Cerrar</button>
+            </div>
+        </div>
+        <!-- /.modal-content -->
+    </div>
+    <!-- /.modal-dialog -->
+</div>
+<div id="app" class="customizer-timer"></div>
+
+
+
+@section Scripts {
+    @{
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/microsoft-signalr/5.0.11/signalr.min.js"></script>
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+    <script>
+        var fechaExpiracion ='@(Model.TiempoDeExpiracion.HasValue ? Convert.ToDateTime(Model.TiempoDeExpiracion).ToString("o") : "null")';
+        var tiempoTotal = @Model.TiempoEsperaEnSegundos // tiempo en segundos
+    </script>
+    <script src="~/assets/libs/fullcalendar/index.global.min.js" asp-append-version="true"></script>
+    <script src="~/assets/libs/fullcalendar/locales/es.global.js" asp-append-version="true"></script>
+    <script src="~/assets/libs/timer-color/timer-color.js" asp-append-version="true"></script>
+
+    <script>
+
+        let changesMade = false;
+        var pagoCitaId = @Model.PagoCitaId
+        var especialistaId  = 0;
+        var edadPaciente = @Model.EdadPaciente;
+        var pathHub = '@hub';
+
+
+        $.LoadingOverlaySetup({
+            background: "rgba(255, 255, 255, 0.8)",
+            text: "Cargando datos...",
+        });
+        $(document).ready(function () {
+            // Si la fecha de exiracion existe y es mayor a la fecha actual
+            if (fechaExpiracion !== "null" && new Date(fechaExpiracion) > new Date()) {
+                //Inicializar el timer
+                startTimer();
+            }
+            // else{
+            //     endTimer();
+            // }
+        });
+        // Agregar el evento beforeunload solo si hay cambios
+        window.addEventListener('beforeunload', function (e) {
+            if (changesMade) {
+                e.preventDefault();
+            }
+        });
+        $('#modalCalendar').on('hide.bs.modal', function (e) {
+            if (changesMade) {
+                e.preventDefault();
+                // Aquí puedes ejecutar tu código cuando el modal se cierra
+                Swal.fire({
+                    title: '¿Estás seguro?',
+                    text: "¡Perderas los datos guardados!",
+                    icon: 'warning',
+                    showCancelButton: true,
+                    confirmButtonText: 'Sí, cerrar',
+                    cancelButtonText: 'No, mantener abierto'
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        // Permitir el cierre del modal manualmente si el usuario confirma
+                        especialistaId = 0;
+
+                        changesMade = false;
+                        $('#modalCalendar').modal('hide');
+                        window.location.reload();
+                    }
+                });
+            }
+        });
+
+        $('#sltEspecialista').on('change', function () {
+            var nextObjet = getObjetoDelSigInput()
+            if (nextObjet) {
+                RefreshCalendar(nextObjet);
+            }
+        })
+
+        /*=============================*/
+        // Calendar Elements and options
+        var calendarEl = document.querySelector("#calendar");
+        var checkWidowWidth = function () {
+                if (window.innerWidth <= 1199) {
+                    return true;
+                } else {
+                    return false;
+                }
+            };
+        var calendarHeaderToolbar = {
+            left: "prev next",
+            center: "title",
+            right: "dayGridMonth,timeGridWeek,timeGridDay",
+        };
+        var calendarEventClick = function (info) {
+            var eventObj = info.event;
+            if (eventObj.url) {
+                window.open(eventObj.url);
+                info.jsEvent.preventDefault();
+            } 
+            else 
+            {
+                var getEventId = eventObj._def.publicId;
+                var getEventLevel = eventObj._def.extendedProps["calendar"];
+                var getEventEspecialista = eventObj._def.extendedProps["especialista"];
+                var getEventEspecialistaId = eventObj._def.extendedProps["especialistaId"];
+                var getEventStart = eventObj._instance.range.start;
+                var getEventEnd = eventObj._instance.range.end;
+                var fechaStarFormateada = getEventStart.toISOString().split('T')[0] + " " + getFormatHoraISO2(getEventStart.toISOString())
+                var fechaEndFormateada = getEventEnd.toISOString().split('T')[0] + " " + getFormatHoraISO2(getEventEnd.toISOString())
+
+                especialistaId  = getEventEspecialistaId
+
+                $("#formCitas").LoadingOverlay("show", {text: ""});
+                $(info.el).LoadingOverlay("show", { text: "" });
+                document.getElementById('modal-bodyCalendar').style.pointerEvents = "none";
+                
+                setTimeout(function () {
+                    //guardar en los imputs
+                    var num = $("#txtTotalCitas").val(); // Cambia el límite según el número de inputs que tengas
+                    for (let i = 1; i <= Number(num); i++) { 
+                        const input = document.querySelector(`input[name="textFecha${i}"]`);
+                        if (input && input.value === '') {
+                            //Confirmacion para guardar datos
+                            Swal.fire({
+                                title: "Fecha:" + fechaStarFormateada,
+                                text: "Separar esta fecha para tu " + input.placeholder + "?",
+                                showCancelButton: true,
+                                confirmButtonText: "Lo quiero",
+                            }).then((result) => {
+                                if (result.isConfirmed) {
+
+                                    input.value = fechaStarFormateada; // Asignar la fecha/hora en el input vacío
+                                    input.classList.remove("disable-box");
+                                    input.classList.add("disable-click");
+                                    document.getElementById('divCita' + i).style.display = "";
+                                    const citaObjet = JSON.parse(input.getAttribute('data-citatype'));
+                                    citaObjet.EspecialistaId = getEventEspecialistaId;
+                                    citaObjet.FechaCita = getEventStart.toISOString().split('T')[0];
+                                    citaObjet.HoraCitaDesde = getFormatHoraISO2(getEventStart.toISOString());
+                                    citaObjet.HoraCitaHasta = getFormatHoraISO2(getEventEnd.toISOString());
+                                    console.log(citaObjet);
+
+                                    SaveFechaCita(citaObjet)
+                                        .then(function (success) {
+
+                                            blockedDate(getEventId) //bloquear fecha para los demas usuarios
+
+                                            // Agregar 300 segundos (5 minutos)
+                                            if (i == 1) {
+                                                RefreshCalendar(getObjetoDelSigInput());
+                                                changesMade = true;
+
+                                                let currentDate = new Date();
+                                                currentDate.setSeconds(currentDate.getSeconds() + tiempoTotal);
+                                                fechaExpiracion = getFormatFechaISO(currentDate) + " " + getFormatHoraISO(currentDate);
+                                                resetTimerVariables();
+                                                startTimer();
+                                            }
+                                            else if (i < Number(num)) {
+                                                RefreshCalendar(getObjetoDelSigInput());
+                                                changesMade = true;
+                                            }
+                                            else if (i == Number(num)) {
+                                                calendar.removeAllEvents();
+                                                changesMade = false;
+
+                                                Swal.fire({
+                                                    icon: "success",
+                                                    title: "Programación completa: " + num + " citas !",
+                                                    showConfirmButton: false,
+                                                    timer: 1500
+                                                }).then((result) => {
+                                                    if (result.dismiss === Swal.DismissReason.timer) {
+                                                        window.location.reload();
+                                                    }
+                                                });
+
+                                            }
+
+                                        })
+                                        .catch(function (error) {
+                                            // Lógica en caso de error
+                                            console.log("Error al guardar la fecha de la cita", error);
+                                        });
+                                    
+                                }
+                            });
+                            break; // Salimos del bucle al llenar el primer input vacío
+                        }
+                        else {
+                            const inputFecha = new Date(input.value);
+                            const fechaSeleccionada = new Date(fechaStarFormateada);
+
+                            // Comparar las fechas de manera adecuada
+                            if (getFormatFechaISO(fechaSeleccionada) <= getFormatFechaISO(inputFecha)) {
+                                Swal.fire({
+                                    icon: "error",
+                                    title: "Oops...",
+                                    text: "No puedes seleccionar una fecha anterior o igual a una ya programada!",
+                                });
+                                break;
+                            }
+                        }
+                    }
+
+                    enabledBtnSaveCitas(num);   
+
+
+
+                }, 500);
+                
+                document.getElementById('modal-bodyCalendar').style.pointerEvents = "auto";
+                $("#formCitas").LoadingOverlay("hide");
+                $(info.el).LoadingOverlay("hide");
+
+            }
+        };
+        var calendar = new FullCalendar.Calendar(calendarEl, {
+            locale: 'es',
+            timeZone: 'local',
+            selectable: true,
+            height: checkWidowWidth() ? 900 : 1052,
+            initialView: checkWidowWidth() ? "listWeek" : "dayGridMonth",
+            headerToolbar: calendarHeaderToolbar,
+            slotMinTime: '08:00:00', // Hora mínima
+            slotMaxTime: '21:00:00', // Hora máxima
+            nowIndicator: true, // Muestra una línea que indica la hora actual
+            unselect: function () {
+            },
+            eventClassNames: function ({ event: calendarEvent }) {
+                const getColorValue = calendarEvent._def.extendedProps.calendar;
+                return [ "event-fc-color fc-bg-" + getColorValue,];
+            },
+            eventClick: calendarEventClick,
+            windowResize: function (arg) {
+                    if (checkWidowWidth()) {
+                        calendar.changeView("listWeek");
+                        calendar.setOption("height", 900);
+                    } else {
+                        calendar.changeView("dayGridMonth");
+                        calendar.setOption("height", 1052);
+                    }
+                },
+        });
+        calendar.render();
+        /*=============================*/
+
+        // Abrir modal calendario
+        function OpenModalCalendario(citas) {
+            const container = document.getElementById('modal-inputs-container');
+            container.innerHTML = ''; // Limpiar el contenedor antes de agregar nuevos inputs
+            console.log(citas);
+            citas.forEach((cita, index) => {
+                var jsonCita = JSON.stringify(cita);
+                var inputHtml
+                if (cita.IsProgramado == true){
+                    var valueFecha = getFormatFechaISO(new Date(cita.FechaCita)) +" "+ convertDecimalToTime(cita.HoraCitaDesde)
+                    inputHtml = `<div class="input-group mb-3" id="divCita${index + 1}">
+                                 <span class="input-group-text" id="span${index + 1}">${index + 1}</span>
+                                    <input type="datetime-local" value='${valueFecha}' data-citatype='${jsonCita}' name="textFecha${index + 1}" id="${cita.PagoCitaDetalleId}" class="form-control fw-semibold disable-click fecha-Cita" placeholder="${cita.NombreCita}">
+                                    <button class="btn bg-danger-subtle text-danger rounded-end" type="button" onclick="deleteFechaCita('${cita.PagoCitaDetalleId}',${index + 1})">
+                                    <i class="ti ti-trash fs-5"></i>
+                                </button>
+                            </div>`;
+                }
+                else
+                {
+                    inputHtml = `<div class="input-group mb-3" id="divCita${index + 1}" style="display:;">
+                                <span class="input-group-text" id="span${index + 1}" >${index + 1}</span>
+                            <input type="datetime-local" data-citatype='${jsonCita}' name="textFecha${index + 1}" id="${cita.PagoCitaDetalleId}" class="form-control fw-semibold disable-box fecha-Cita" placeholder="${cita.NombreCita}">
+                            <button class="btn bg-danger-subtle text-danger rounded-end" type="button" onclick="deleteFechaCita('${cita.PagoCitaDetalleId}',${index + 1})">
+                            <i class="ti ti-trash fs-5"></i>
+                        </button>
+                    </div>`;
+                }
+                
+                container.insertAdjacentHTML('beforeend', inputHtml);
+                $("#txtTotalCitas").val(cita.NumeroCita);
+            });
+
+            GetEspecilistas(citas[0].EvaluacionId, edadPaciente)
+
+            especialistaId = citas[0].EspecialistaId == "" ? 0 : citas[0].EspecialistaId
+
+            $("#modalCalendar").modal("show");
+            // var nextObjet = getObjetoDelSigInput()
+            // if (nextObjet) {
+            //     RefreshCalendar(nextObjet);
+            //     $("#modalCalendar").modal("show");
+            // }
+
+        }
+        // Actualizar calendario
+        function RefreshCalendar(citaObjet) { //
+            $("#modal-bodyCalendar").LoadingOverlay("show");
+            calendar.removeAllEvents(); // Elimina los eventos antiguos
+
+            $.ajax({
+                url: '@Url.Action("GetCalendarioDiag", "Apertura")', // URL del método
+                type: 'GET', // Puede ser POST si así lo prefieres
+                data: {
+                    fecha: getFechaDelAntInput(),
+                    evaluacionID: citaObjet.EvaluacionId,
+                    edad: edadPaciente,
+                    especialistaId: especialistaId ,
+                    sedeId: citaObjet.SedeId,
+                    tipo: citaObjet.TipoCitaId,
+                    duracion: citaObjet.Duracion
+                },
+                success: function (response) {                   
+                    // 'response' es el JSON devuelto desde el controlador
+                    calendar.addEventSource(response); // Agrega los nuevos eventos
+                    // Encontrar el evento más cercano
+                    var nearestEvent = findNearestEvent(response);
+                    // Si existe un evento más cercano, ir a esa fecha
+                    if (nearestEvent) {
+                        calendar.gotoDate(nearestEvent.start); // Ir a la fecha del evento más cercano
+                    }
+                    $("#modal-bodyCalendar").LoadingOverlay("hide");
+                },
+                error: function (xhr, status, error) {
+                    Swal.fire({
+                        icon: "error",
+                        title: "Oops...",
+                        text: "Error al cargar el calendario: " + error,
+                    });
+                    $("#modal-bodyCalendar").LoadingOverlay("hide");
+                }
+            });
+        }
+        // Función para encontrar el evento más cercano
+        function findNearestEvent(events) {
+            let now = new Date();
+            let nearestEvent = events.reduce((nearest, event) => {
+                let eventDate = new Date(event.start);
+                if (eventDate >= now && (!nearest || eventDate < new Date(nearest.start))) {
+                    return event;
+                }
+                return nearest;
+            }, null);
+            return nearestEvent;
+        }
+        // Funccion para Habilitar o deshabilitar el botón
+        function enabledBtnSaveCitas(num) {
+            let todosLlenos = true; // Suponemos que todos están llenos al inicio
+            // Recorremos todos los inputs
+            for (let i = 1; i <= Number(num); i++) {
+                const input = document.querySelector(`input[name="textFecha${i}"]`);
+
+                if (!input || input.value === '') {
+                    todosLlenos = false; // Si alguno está vacío, cambiamos el valor
+                    break; // Salimos del bucle porque ya sabemos que no todos están llenos
+                }
+            }
+
+            // Habilitar o deshabilitar el botón dependiendo del estado de los inputs
+            const botonGuardar = document.getElementById('btnConfirmarCitas'); // Asegúrate de tener un botón con este ID
+
+            if (todosLlenos) {
+                botonGuardar.disabled = false; // Habilitar el botón si todos los inputs están llenos
+                Swal.fire({
+                    icon: "success",
+                    title: "Genial",
+                    text: "Completaste las " + num + " fechas para tus citas, ahora preciona el boton para confirmar",
+                    showConfirmButton: false,
+                    timer: 5000
+                });
+            } else {
+                botonGuardar.disabled = true; // Deshabilitar el botón si falta completar algún input
+            }
+        }
+        // Funccion eiminar imputs de fechas
+        function deleteFechaCita(id, i) {
+            var input = document.getElementById(id);
+            input.value = "";
+            input.classList.remove("disable-click");
+            input.classList.add("disable-box");
+            // document.getElementById('divCita' + i).style.display = "none";
+            var nextObjet = getObjetoDelSigInput()
+            if (nextObjet) {
+                RefreshCalendar(nextObjet);
+            }
+        }
+        // Guardar fechaCita en BD
+        function SaveFechaCita(cita) {
+            return new Promise(function (resolve, reject) {
+                // Enviar el objeto a tu controlador mediante AJAX
+                $.ajax({
+                    url: '@Url.Action("GuardarFechaCita", "Apertura")', // URL de tu controlador
+                    type: 'POST',                           // Método de la petición
+                    contentType: 'application/json',        // Tipo de contenido que se envía
+                    data: JSON.stringify(cita),             // Convertimos el objeto de vuelta a JSON
+                    success: function (response) {
+                        // Si es exitoso, resolvemos la promesa
+                        resolve(true);
+                    },
+                    error: function (error) {
+                        // Si hay un error, rechazamos la promesa
+                        reject(error);
+                        console.log(error);
+                        Swal.fire({
+                            icon: "error",
+                            title: "Oops...",
+                            text: error,
+                        });
+                        deleteFechaCita(cita.PagoCitaDetalleId, cita.NumeroCita);
+                    }
+                });
+            });
+        }
+        // Obtener el objeto cita-type del siguiente input vacio
+        function getObjetoDelSigInput() {
+            var citaObjet;
+            var num = $("#txtTotalCitas").val(); // Cambia el límite según el número de inputs que tengas
+            for (let i = 1; i <= Number(num); i++) {
+                const input = document.querySelector(`input[name="textFecha${i}"]`);
+                const span = document.getElementById(`span${i}`);
+                span.classList.remove("bg-muted", "text-white");
+                if (input && input.value === '') {
+                    span.classList.add("bg-muted", "text-white");
+                    citaObjet = JSON.parse(input.getAttribute('data-citatype'));
+                    break; // Salimos del bucle al llenar el primer input vacío
+                }
+            }
+            return citaObjet;
+        }
+        // Obtener el fecha input seleccionado anteriormente
+        function getFechaDelAntInput(){
+            var fecha = new Date()
+            var fechaFormateada = fecha.toISOString();
+            var num = $("#txtTotalCitas").val(); // Cambia el límite según el número de inputs que tengas
+            for (let i = Number(num); i >= 1; i--) {
+                const input = document.querySelector(`input[name="textFecha${i}"]`);
+                if (input && input.value !== '') {
+                    fechaFormateada = input.value
+                    break; // Salimos del bucle al llenar el primer input vacío
+                }
+            }
+            return fechaFormateada;
+        }
+        // finalizar el cronometro
+        function endTimer() {
+            $.ajax({
+                url: '@Url.Action("ExpirarCitasProgramadas", "Apertura")', // URL del método
+                type: 'GET',
+                data: { id: pagoCitaId },
+                success: function (response) {
+                    let timerInterval;
+                    Swal.fire({
+                        title: "El tiempo culmino",
+                        html: "Eliminando registros : <b></b> fechas.",
+                        timer: 2500,
+                        timerProgressBar: true,
+                        didOpen: () => {
+                            Swal.showLoading();
+                            const timer = Swal.getPopup().querySelector("b");
+                            timerInterval = setInterval(() => {
+                                timer.textContent = `${parseInt(Swal.getTimerLeft() / 250)}`;
+                            }, 250);
+                        },
+                        willClose: () => {
+                            clearInterval(timerInterval);
+                        }
+                    }).then((result) => {
+                        if (result.dismiss === Swal.DismissReason.timer) {
+                            changesMade = false;
+                            window.location.reload();
+                        }
+                    });
+                },
+                error: function (xhr, status, error) {
+                    Swal.fire({
+                        icon: "error",
+                        title: error,
+                        showConfirmButton: false,
+                        timer: 1500
+                    });
+                    window.location.reload();
+                }
+            });
+        }
+
+
+        //formatos de fecha hora
+        function getFormatFecha(fechaCompleta) {
+            const soloFecha = fechaCompleta.toLocaleDateString('es-PE', {
+                year: 'numeric',
+                month: '2-digit',
+                day: '2-digit'
+            });
+            return soloFecha
+        }  // '28/09/2024'
+        function getFormatHora(fechaCompleta) {
+            const soloHora = fechaCompleta.toLocaleTimeString('es-PE', {
+                hour: '2-digit',
+                minute: '2-digit',
+                // second: '2-digit'
+            });
+            return soloHora
+        }   // '05:13 p. m.'
+        function getFormatFechaISO(fechaCompleta) {
+            const año = fechaCompleta.getFullYear(); // Obtiene el año
+            const mes = ('0' + (fechaCompleta.getMonth() + 1)).slice(-2); // Obtiene el mes (recuerda que los meses empiezan en 0)
+            const dia = ('0' + fechaCompleta.getDate()).slice(-2); // Obtiene el día
+
+            return `${año}-${mes}-${dia}`; // Devuelve la fecha en formato ISO (YYYY-MM-DD)
+        } // '2024-09-28'
+        function getFormatHoraISO(fechaCompleta) {
+            const horas = ('0' + fechaCompleta.getHours()).slice(-2); // Obtiene la hora y asegura que tenga 2 dígitos
+            const minutos = ('0' + fechaCompleta.getMinutes()).slice(-2); // Obtiene los minutos y asegura que tenga 2 dígitos
+
+            return `${horas}:${minutos}`; // Devuelve la hora en formato HH:MM
+        } // '17:13'
+        function getFormatHoraISO2(dateString) {
+            var date = new Date(dateString);
+
+            // Si quieres la hora en UTC:
+            var hours = date.getUTCHours().toString().padStart(2, '0');
+            var minutes = date.getUTCMinutes().toString().padStart(2, '0');
+
+            // Si prefieres la hora local, usa getHours() y getMinutes()
+            // var hours = date.getHours().toString().padStart(2, '0');
+            // var minutes = date.getMinutes().toString().padStart(2, '0');
+
+            var formattedTime = `${hours}:${minutes}`;
+            return formattedTime;
+        } // '17:13'+5  =>  22:14
+        function convertDecimalToTime(decimalValue) {
+            let mReturn = "";
+
+            if (decimalValue !== null && decimalValue !== undefined) {
+                let mHours = Math.trunc(decimalValue).toString(); // Trunca el valor decimal para obtener las horas
+                let mMinutes = Math.round((decimalValue - Math.trunc(decimalValue)) * 60).toString(); // Calcula los minutos
+
+                // Asegurarse de que las horas y minutos tengan 2 dígitos
+                if (mHours.length !== 2) {
+                    mHours = "0" + mHours;
+                }
+
+                if (mMinutes.length !== 2) {
+                    mMinutes = "0" + mMinutes;
+                }
+
+                mReturn = mHours + ":" + mMinutes;
+            }
+
+            return mReturn;
+        } //8.5 => 08:30
+
+
+        /*=============================*/
+        // Conectar con SignalR
+        const connection = new signalR.HubConnectionBuilder().withUrl(pathHub).build();
+        connection.start().catch(err => console.error(err.toString()));
+        // Enviado al servidor el evento de bloqueo de fecha
+        function blockedDate(eventId) {
+            connection.invoke("LockDate", eventId).catch(err => console.error(err.toString()));
+        }
+        // Escucha el evento de bloqueo de fecha enviado por el servidor
+        connection.on("LockDate", function (date) {
+            var getPublicID = date;
+            var getEvent = calendar.getEventById(getPublicID);
+            if (getEvent) {
+                getEvent.remove();
+            }
+        });
+        /*=============================*/
+
+        //V_72_20241007_16
+
+ 
+
+
+
+
+
+
+
+
+
+
+
+
+
+        function GetEspecilistas(evaluacionId, edad) {
+            const url = `@Url.Action("GetEspecialistas", "Apertura")?id=${evaluacionId}&edad=${edad}`;
+            fetch(url)
+                .then(response => response.json())
+                .then(data => {
+                    const select = document.getElementById('sltEspecialista');
+                    select.innerHTML = '<option value="" selected="true">Seleccionar...</option>';
+                    data.forEach(especialista => {
+                        const option = document.createElement('option');
+                        option.value = especialista.personalId;
+                        option.textContent = especialista.nombres + ' ' + especialista.apellidos;
+                        select.appendChild(option);
+                    });
+                })
+                .catch(error => console.error('Error:', error));
+        };
+
+
+
+
+
+
+
+    </script>
+
+}

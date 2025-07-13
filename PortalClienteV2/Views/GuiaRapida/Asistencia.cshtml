@@ -1,0 +1,364 @@
+﻿@{
+    ViewData["title"] = "Guía Rápida";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div class="card bg-info-subtle shadow-none position-relative overflow-hidden mb-4">
+    <div class="card-body px-4 py-3">
+        <div class="row align-items-center">
+            <div class="col-9">
+                <h4 class="fw-semibold mb-8 text-primary">
+                    Guía Rápida
+                </h4>
+                <nav aria-label="breadcrumb">
+                    <ol class="breadcrumb">
+                        <li class="breadcrumb-item">
+                            <a class="text-muted text-decoration-none" asp-action="Index" asp-controller="Home">Inicio</a>
+                        </li>
+                        <li class="breadcrumb-item" aria-current="page">Guía Rápida</li>
+                    </ol>
+                </nav>
+            </div>
+            <div class="col-3">
+                <svg xmlns="http://www.w3.org/2000/svg" width="2.5em" height="2.5em" viewBox="0 0 24 24" class="cc BTC text-primary fs-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <g fill="none" stroke="currentColor" stroke-linecap="round" stroke-width="2">
+                        <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+
+                        <path d="M10 10m-7 0a7 7 0 1 0 14 0a7 7 0 1 0 -14 0" stroke-dasharray="44" stroke-dashoffset="44">
+                            <animate fill="freeze" attributeName="stroke-dashoffset" begin="0.5s" dur="0.6s" values="44;0" />
+                        </path>
+
+                        <path d="M21 21l-6 -6" stroke-dasharray="8.49" stroke-dashoffset="8.49">
+                            <animate fill="freeze" attributeName="stroke-dashoffset" begin="0.5s" dur="0.6s" values="8.49;0" />
+                        </path>
+
+                        <path d="M10 13l0 .01" stroke-dasharray="1" stroke-dashoffset="1">
+                            <animate fill="freeze" attributeName="stroke-dashoffset" begin="0.5s" dur="0.6s" values="1;0" />
+                        </path>
+
+                        <path d="M10 10a1.5 1.5 0 1 0 -1.14 -2.474" stroke-dasharray="8" stroke-dashoffset="8">
+                            <animate fill="freeze" attributeName="stroke-dashoffset" begin="0.5s" dur="0.6s" values="8;0" />
+                        </path>
+                    </g>
+                </svg>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row justify-content-center py-3">
+    <div class="col-lg-12">
+        <div class="text-center mb-7">
+            <h1 class="fw-semibold">Guía Rápida del Portal de Usuarios</h1>
+            <p class="fw-normal mb-0 fs-4">Bienvenido a la Guía Rápida del Portal de Usuarios. Aquí encontrarás todo lo que necesitas saber para comenzar a utilizar nuestra aplicación de manera eficiente.</p>
+        </div>
+        <div class="w-100">
+            <div>
+                <!-- accion 1 -->
+                <p class="button-group">
+                    
+                    <a class="fs-7 mb-2 fw-semibold px-4" data-bs-toggle="collapse"
+                       href="#collapseExample" role="button" aria-expanded="false" aria-controls="collapseExample">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="m-2" width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon icon-tabler icons-tabler-outline icon-tabler-square-number-1">
+                            <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+                            <path d="M3 3m0 2a2 2 0 0 1 2 -2h14a2 2 0 0 1 2 2v14a2 2 0 0 1 -2 2h-14a2 2 0 0 1 -2 -2z" />
+                            <path d="M10 10l2 -2v8" />
+                        </svg>
+                        <span>Solicita atención</span>
+                    </a>
+                </p>
+                <div class="collapse" id="collapseExample">
+                    <div class="card card-body">
+                        <div class="row row-cols-1 row-cols-md-2 g-3">
+                            <div class="col">
+                                <img src="../assets/images/guia/action1-1.jpg" class="img-fluid rounded-1 border mt-4" />
+                            </div>
+                            <div class="col">
+                                <img src="../assets/images/guia/action1-2.jpg" class="img-fluid rounded-1 border mt-4" />
+                            </div>
+                        </div>
+                        
+                        <div class="mt-4">
+                            <p class="fs-4">
+                                El primer paso para ser atendido es pasar por el formulario de atención.
+                                Este es un formulario en el que debe llenar cuáles son las dificultades que aquejan a la persona que será atendida, de modo que nuestras especialistas puedan derivarlo/a al área correspondiente.
+                                Una vez llenado, nuestras especialistas le contactarán en dos días hábiles y le indicarán los pasos a seguir.
+                            </p>
+                        </div>
+                        <div class="d-flex align-items-center">                           
+                            <div class="ms-auto">
+                                <a href="#" class="btn btn-dark">
+                                    Ir a formulario de atención <i class="ti ti-send fs-5"></i>
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- accion 2 -->
+                <p class="button-group">
+                    <a class="fs-7 mb-2 fw-semibold px-4" data-bs-toggle="collapse"
+                       href="#collapseExample2" role="button" aria-expanded="false" aria-controls="collapseExample2">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="m-2" width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon icon-tabler icons-tabler-outline icon-tabler-square-number-2">
+                            <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+                            <path d="M3 3m0 2a2 2 0 0 1 2 -2h14a2 2 0 0 1 2 2v14a2 2 0 0 1 -2 2h-14a2 2 0 0 1 -2 -2z" />
+                            <path d="M10 8h3a1 1 0 0 1 1 1v2a1 1 0 0 1 -1 1h-2a1 1 0 0 0 -1 1v2a1 1 0 0 0 1 1h3" />
+                        </svg>
+                        <span>Pago de apertura</span>
+                    </a>
+                </p>
+                <div class="collapse" id="collapseExample2">
+                    <div class="card card-body">
+                        <div class="row row-cols-1 row-cols-md-2 g-3">
+                            <div class="col">
+                                <img src="../assets/images/guia/action2-1.jpg" class="img-fluid rounded-1 mt-4" />
+                            </div>
+                            <div class="col">
+                                <img src="../assets/images/guia/action2-2.jpg" class="img-fluid rounded-1 mt-4" />
+                            </div>
+                        </div>
+
+                        <div class="mt-4">
+                            <p class="fs-4">
+                                Después de que nuestras especialistas hayan revisado el formulario de atención, se habilitará un enlace de pago en la pantalla principal <b>[Home]</b> del sistema. Este enlace te llevará a una lista con las evaluaciones recomendadas por nuestras especialistas, donde podrás seleccionar la cantidad de citas a pagar. Recuerda que, para confirmar tu interés en recibir atención, es necesario pagar al menos la primera cita. <br /><b>Nota:</b> Si solo pagas la primera cita, podrás abonar las citas restantes más adelante en la sección de cronograma de pagos y citas programadas.
+                            </p>
+                        </div>
+                        <div class="d-flex align-items-center">
+                            <div class="ms-auto">
+                                <a href="#" class="btn btn-dark">
+                                    Ir a Pagos <i class="ti ti-send fs-5"></i>
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- accion 3 -->
+                <p class="button-group">
+                    <a class="fs-7 mb-2 fw-semibold px-4" data-bs-toggle="collapse"
+                       href="#collapseExample3" role="button" aria-expanded="false" aria-controls="collapseExample3">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="m-2" width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon icon-tabler icons-tabler-outline icon-tabler-square-number-3">
+                            <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+                            <path d="M3 3m0 2a2 2 0 0 1 2 -2h14a2 2 0 0 1 2 2v14a2 2 0 0 1 -2 2h-14a2 2 0 0 1 -2 -2z" />
+                            <path d="M10 9a1 1 0 0 1 1 -1h2a1 1 0 0 1 1 1v2a1 1 0 0 1 -1 1h-2h2a1 1 0 0 1 1 1v2a1 1 0 0 1 -1 1h-2a1 1 0 0 1 -1 -1" />
+                        </svg>
+                        <span>Citas programadas</span>
+                    </a>
+                </p>
+                <div class="collapse" id="collapseExample3">
+                    <div class="card card-body">
+                        <div class="row row-cols-1 row-cols-md-2 g-3">
+                            <div class="col">
+                                <img src="../assets/images/guia/action3-1.jpg" class="img-fluid rounded-1 mt-4" />
+                            </div>
+                            <div class="col">
+                                <img src="../assets/images/guia/action3-2.jpg" class="img-fluid rounded-1 mt-4" />
+                            </div>
+                        </div>
+
+                        <div class="mt-4">
+                            <p class="fs-4">
+                                Una vez que el personal de CPAL haya confirmado el pago de apertura y generado la programación de sus citas, estas podrán ser consultadas en formato de lista o calendario en la pantalla principal del portal del cliente.
+                                <br /><b>Nota:</b> tener en consideración que solo se mostrarán sus citas pendientes.
+                            </p>
+                        </div>
+                        <div class="d-flex align-items-center">
+                            <div class="ms-auto">
+                                <a href="#" class="btn btn-dark">
+                                    Ir a Home <i class="ti ti-send fs-5"></i>
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- accion 4 -->
+                <p class="button-group">
+                    <a class="fs-7 mb-2 fw-semibold px-4" data-bs-toggle="collapse"
+                       href="#collapseExample4" role="button" aria-expanded="false" aria-controls="collapseExample4">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="m-2" width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon icon-tabler icons-tabler-outline icon-tabler-square-number-4">
+                            <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+                            <path d="M3 3m0 2a2 2 0 0 1 2 -2h14a2 2 0 0 1 2 2v14a2 2 0 0 1 -2 2h-14a2 2 0 0 1 -2 -2z" />
+                            <path d="M10 8v3a1 1 0 0 0 1 1h3" />
+                            <path d="M14 8v8" />
+                        </svg>
+                        <span>Pagos de citas programadas</span>
+                    </a>
+                </p>
+                <div class="collapse" id="collapseExample4">
+                    <div class="card card-body">
+                        <div class="row row-cols-1 row-cols-md-2 g-3">
+                            <div class="col">
+                                <img src="../assets/images/guia/action4-1.jpg" class="img-fluid rounded-1 mt-4" />
+                            </div>
+                            <div class="col">
+                                <img src="../assets/images/guia/action4-2.jpg" class="img-fluid rounded-1 mt-4" />
+                            </div>
+                        </div>
+
+                        <div class="mt-4">
+                            <p class="fs-4">
+                                Si en el pago de apertura no cubriste el total de las citas, puedes completar el pago de las demas citas en la ventana de "Pagos de Evaluaciones y/o Terapias". Para acceder, simplemente haz clic en la pestaña <b>[Historia Clínica]</b>. Si tienes más de un paciente registrado con tu correo de contacto, podras visualizar una ventana previa donde deberás seleccionar el paciente correspondiente para inspeccionar y gestionar los pagos de las citas programadas.
+                            </p>
+                        </div>
+                        <div class="d-flex align-items-center">
+                            <div class="ms-auto">
+                                <a href="#" class="btn btn-dark">
+                                    Ir a Home <i class="ti ti-send fs-5"></i>
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- accion 5 -->
+                <p class="button-group">
+                    <a class="fs-7 mb-2 fw-semibold px-4" data-bs-toggle="collapse"
+                       href="#collapseExample5" role="button" aria-expanded="false" aria-controls="collapseExample5">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="m-2" width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon icon-tabler icons-tabler-outline icon-tabler-square-number-5">
+                            <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+                            <path d="M3 3m0 2a2 2 0 0 1 2 -2h14a2 2 0 0 1 2 2v14a2 2 0 0 1 -2 2h-14a2 2 0 0 1 -2 -2z" />
+                            <path d="M10 15a1 1 0 0 0 1 1h2a1 1 0 0 0 1 -1v-2a1 1 0 0 0 -1 -1h-3v-4h4" />
+                        </svg>
+                        <span>Pago Online o subir voucher</span>
+                    </a>
+                </p>
+                <div class="collapse" id="collapseExample5">
+                    <div class="card card-body">
+                        <div class="row row-cols-1 row-cols-md-3 g-3">
+                            <div class="col">
+                                <img src="../assets/images/guia/action5-1.jpg" class="img-fluid rounded-1 mt-4" />
+                            </div>
+                            <div class="col">
+                                <img src="../assets/images/guia/action5-2.jpg" class="img-fluid rounded-1 mt-4" />
+                            </div>
+                            <div class="col">
+                                <img src="../assets/images/guia/action5-3.jpg" class="img-fluid rounded-1 mt-4" />
+                            </div>
+                        </div>
+
+                        <div class="mt-4">
+                            <p class="fs-4">
+                                xxxxxxx
+                            </p>
+                        </div>
+                        <div class="d-flex align-items-center">
+                            <div class="ms-auto">
+                                <a href="#" class="btn btn-dark">
+                                    Ir a Home <i class="ti ti-send fs-5"></i>
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+
+
+    </div>
+</div>
+
+<hr class="my-5"/>
+
+<div class="row justify-content-center py-3">
+    <div class="col-lg-12">
+        <div class="text-center mb-7">
+            <h1 class="fw-semibold">Preguntas frecuentes</h1>
+            <p class="fw-normal mb-0 fs-4">En esta sección de Preguntas Frecuentes (FAQ), hemos recopilado las respuestas a las dudas más comunes de nuestros usuarios.</p>
+        </div>
+        <div class="accordion accordion-flush mb-5 card position-relative overflow-hidden"
+             id="accordionFlushExample">
+            <div class="accordion-item">
+                <h2 class="accordion-header" id="flush-headingOne">
+                    <button class="accordion-button collapsed fs-4 fw-semibold shadow-none" type="button"
+                            data-bs-toggle="collapse" data-bs-target="#flush-collapseOne" aria-expanded="false"
+                            aria-controls="flush-collapseOne">
+                        ¿Cual es el primer paso para obtener una cita?
+                    </button>
+                </h2>
+                <div id="flush-collapseOne" class="accordion-collapse collapse" aria-labelledby="flush-headingOne"
+                     data-bs-parent="#accordionFlushExample">
+                    <div class="accordion-body fw-normal">
+                        En el apartado <b>[Solicita atención]</b> encontraras el formulario de atención que es el primer paso para recibir atención. Solo debes completar el formulario siendo especifico en el llenado de la información de la persona que será atendida. Este formulario será revisado por nuestras especialistas en un plazo máximo de 2 días hábiles.
+                    </div>
+                </div>
+            </div>
+            <div class="accordion-item">
+                <h2 class="accordion-header" id="flush-headingTwo">
+                    <button class="accordion-button collapsed fs-4 fw-semibold shadow-none" type="button"
+                            data-bs-toggle="collapse" data-bs-target="#flush-collapseTwo" aria-expanded="false"
+                            aria-controls="flush-collapseTwo">
+                        ¿Qué sucede después de completar el formulario de atención?
+                    </button>
+                </h2>
+                <div id="flush-collapseTwo" class="accordion-collapse collapse" aria-labelledby="flush-headingTwo"
+                     data-bs-parent="#accordionFlushExample">
+                    <div class="accordion-body fw-normal">
+                        Una vez que completes el formulario, nuestras especialistas revisarán la información y te enviarán una respuesta con indicaciones específicas. También se habilitará un enlace en el sistema para que puedas pagar las citas de la(s) evaluaciones sugeridas.
+                    </div>
+                </div>
+            </div>
+            <div class="accordion-item">
+                <h2 class="accordion-header" id="flush-headingThree">
+                    <button class="accordion-button collapsed fs-4 fw-semibold shadow-none" type="button"
+                            data-bs-toggle="collapse" data-bs-target="#flush-collapseThree" aria-expanded="false"
+                            aria-controls="flush-collapseThree">
+                        ¿Puedo pagar una sola cita?
+                    </button>
+                </h2>
+                <div id="flush-collapseThree" class="accordion-collapse collapse" aria-labelledby="flush-headingThree"
+                     data-bs-parent="#accordionFlushExample">
+                    <div class="accordion-body fw-normal">
+                        Si, se puede pagar una sola cita y las restantes las podras hacer en la opción de <b>[Pagos pendientes]</b>
+                    </div>
+                </div>
+            </div>
+            <div class="accordion-item">
+                <h2 class="accordion-header" id="flush-headingfour">
+                    <button class="accordion-button collapsed fs-4 fw-semibold shadow-none" type="button"
+                            data-bs-toggle="collapse" data-bs-target="#flush-collapsefour" aria-expanded="false"
+                            aria-controls="flush-collapsefour">
+                        ¿Cómo puedo ver mis citas programadas y el cronograma de pagos?
+                    </button>
+                </h2>
+                <div id="flush-collapsefour" class="accordion-collapse collapse" aria-labelledby="flush-headingfour"
+                     data-bs-parent="#accordionFlushExample">
+                    <div class="accordion-body fw-normal">
+                        Podrás ver todas tus citas programadas y el cronograma de pagos en el portal de usuarios. Una vez que se haya generado la historia clínica (para pacientes nuevos) y se hayan programado las citas, el calendario se habilitará en tu cuenta, junto con cualquier detalle pendiente de pago.
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<div class="card w-100 bg-info-subtle overflow-hidden shadow-none d-none">
+    <div class="card-body py-3">
+        <div class="row justify-content-between align-items-center">
+            <div class="col-sm-6">
+                <h5 class="fw-semibold mb-9 fs-5">Todavía tengo preguntas!</h5>
+                <p class="mb-9">
+                    ¿No encuentras la respuesta que estás buscando? Por favor chatee con nuestro equipo.
+                </p>
+                <a class="btn btn-outline-light" target="_blank" onclick="window.location.href='https://wa.me/926922691?text=Hola, necesito asistencia técnica.'">
+                    <span class="me-2 text-primary">Chatea con nosotros</span>
+                    <svg xmlns="http://www.w3.org/2000/svg" width="2em" height="2em" viewBox="0 0 256 258"><defs><linearGradient id="logosWhatsappIcon0" x1="50%" x2="50%" y1="100%" y2="0%"><stop offset="0%" stop-color="#1faf38" /><stop offset="100%" stop-color="#60d669" /></linearGradient><linearGradient id="logosWhatsappIcon1" x1="50%" x2="50%" y1="100%" y2="0%"><stop offset="0%" stop-color="#f9f9f9" /><stop offset="100%" stop-color="#fff" /></linearGradient></defs><path fill="url(#logosWhatsappIcon0)" d="M5.463 127.456c-.006 21.677 5.658 42.843 16.428 61.499L4.433 252.697l65.232-17.104a123 123 0 0 0 58.8 14.97h.054c67.815 0 123.018-55.183 123.047-123.01c.013-32.867-12.775-63.773-36.009-87.025c-23.23-23.25-54.125-36.061-87.043-36.076c-67.823 0-123.022 55.18-123.05 123.004" /><path fill="url(#logosWhatsappIcon1)" d="M1.07 127.416c-.007 22.457 5.86 44.38 17.014 63.704L0 257.147l67.571-17.717c18.618 10.151 39.58 15.503 60.91 15.511h.055c70.248 0 127.434-57.168 127.464-127.423c.012-34.048-13.236-66.065-37.3-90.15C194.633 13.286 162.633.014 128.536 0C58.276 0 1.099 57.16 1.071 127.416m40.24 60.376l-2.523-4.005c-10.606-16.864-16.204-36.352-16.196-56.363C22.614 69.029 70.138 21.52 128.576 21.52c28.3.012 54.896 11.044 74.9 31.06c20.003 20.018 31.01 46.628 31.003 74.93c-.026 58.395-47.551 105.91-105.943 105.91h-.042c-19.013-.01-37.66-5.116-53.922-14.765l-3.87-2.295l-40.098 10.513z" /><path fill="#fff" d="M96.678 74.148c-2.386-5.303-4.897-5.41-7.166-5.503c-1.858-.08-3.982-.074-6.104-.074c-2.124 0-5.575.799-8.492 3.984c-2.92 3.188-11.148 10.892-11.148 26.561s11.413 30.813 13.004 32.94c1.593 2.123 22.033 35.307 54.405 48.073c26.904 10.609 32.379 8.499 38.218 7.967c5.84-.53 18.844-7.702 21.497-15.139c2.655-7.436 2.655-13.81 1.859-15.142c-.796-1.327-2.92-2.124-6.105-3.716s-18.844-9.298-21.763-10.361c-2.92-1.062-5.043-1.592-7.167 1.597c-2.124 3.184-8.223 10.356-10.082 12.48c-1.857 2.129-3.716 2.394-6.9.801c-3.187-1.598-13.444-4.957-25.613-15.806c-9.468-8.442-15.86-18.867-17.718-22.056c-1.858-3.184-.199-4.91 1.398-6.497c1.431-1.427 3.186-3.719 4.78-5.578c1.588-1.86 2.118-3.187 3.18-5.311c1.063-2.126.531-3.986-.264-5.579c-.798-1.593-6.987-17.343-9.819-23.64" /></svg>
+                </a>
+            </div>
+            <div class="col-sm-5">
+                <div class="position-relative mb-n7 text-end">
+                    <img src="../assets/images/backgrounds/welcome-bg2.png" alt="" class="img-fluid">
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+}
